@@ -8,27 +8,32 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
-  ManyToOne,
-  JoinColumn,
   OneToOne,
 } from 'typeorm';
 import { ReviewEntity } from './reviews.entity';
-import { LocalCodesEntity } from './localcodes.entity';
 import { OrderEntity } from './orders.entity';
 import { RefreshTokensEntity } from './refresh-tokens.entity';
 import { LikesEntity } from './likes.entity';
-import { ChatRoomEntity } from './chat-rooms.entity';
 import { ChatsEntity } from './chats.entity';
 import { ChatRoomUsersEntity } from './chat-rooms-users.entity';
 import { CartsEntity } from './carts.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Entity('users')
 export class UsersEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ unique: true, name: 'login_id' })
+  loginId: string;
+
+  /**
+   * @example 010-1111-1111
+   */
+  @IsString()
+  @IsNotEmpty({ message: '전화번호는 필수 입력 항목입니다.' })
   @Column({ unique: true })
-  phone: string;
+  phoneNumber: string;
 
   @Column()
   nickname: string;
@@ -43,7 +48,7 @@ export class UsersEntity {
   })
   provider: SocialProviders;
 
-  @Column()
+  @Column({ nullable: true})
   address: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -54,10 +59,6 @@ export class UsersEntity {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
-
-  @ManyToOne(()=> LocalCodesEntity, (loaclCode)=> loaclCode.user)
-  @JoinColumn({ name: 'address' })
-  loaclCode: LocalCodesEntity;
 
   @OneToMany(() => ReviewEntity, (review) => review.user)
   review: ReviewEntity[];
