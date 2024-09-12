@@ -7,8 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle("잡일")
-    .setDescription("final-project : 일일 잡일 대행 구인 서비스")
+    .setTitle("북팡")
+    .setDescription("project : 북팡 구매 서비스")
     .setVersion("1.0")
     .addServer("api/v1")
     .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
@@ -21,6 +21,8 @@ async function bootstrap() {
       operationsSorter: "alpha", // API 그룹 내 정렬을 알파벳 순으로
     },
   });
+
+  app.setGlobalPrefix("api/v1");
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>("SERVER_PORT") || 3000;

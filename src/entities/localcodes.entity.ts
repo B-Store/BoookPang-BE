@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UsersEntity } from './users.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('local-codes')
 export class LocalCodesEntity {
@@ -17,7 +16,4 @@ export class LocalCodesEntity {
 
   @Column()
   dong: string;
-
-  @OneToMany(() => UsersEntity, (user) => user.loaclCode)
-  user: UsersEntity[];
 }
