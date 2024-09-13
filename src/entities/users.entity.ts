@@ -28,9 +28,9 @@ export class UsersEntity {
   loginId: string;
 
   /**
-   * @example 010-1111-1111
+   * @example 01011111111
    */
-  @IsString()
+  @IsString({ message: '전화번호는 문자열이여야 합니다.' })
   @IsNotEmpty({ message: '전화번호는 필수 입력 항목입니다.' })
   @Column({ unique: true })
   phoneNumber: string;

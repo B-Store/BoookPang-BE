@@ -31,7 +31,7 @@ export class AuthService {
     this.vonage = new Vonage(credentials);
   }
 
-  async sendVerificationCode(phoneNumber: string): Promise<void> {
+  async sendVerificationCode(phoneNumber: string){
     const verificationCode = this.generateVerificationCode();
     const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber);
 
@@ -95,11 +95,13 @@ export class AuthService {
     );
   }
 
-  // 전화번호 형식 변환 함수
-  private formatPhoneNumber(phoneNumber: string): string {
-    const cleaned = phoneNumber.replace(/-/g, '');
-    return cleaned.startsWith('01') ? `+82${cleaned.substring(1)}` : cleaned;
-  }
+// 전화번호 형식 변환 함수
+private formatPhoneNumber(phoneNumber: string){
+  
+  // 항상 '010'으로 시작한다고 가정
+  return `+82${phoneNumber.substring(1)}`;
+}
+
 
   findAll() {
     return `This action returns all auth`;
