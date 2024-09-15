@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { BookListSeeder } from 'src/database/seeds/01.book.seed';
 import { DataSource } from 'typeorm';
-import { BooksEntity } from '../../src/entities/books.entity'; // Book 엔티티를 가져옵니다.
+import { BooksEntity } from '../../src/entities/books.entity';
 
 @Injectable()
 export class BookListSchedulerService {
@@ -10,16 +10,14 @@ export class BookListSchedulerService {
 
   constructor(private dataSource: DataSource) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON) // 
+  @Cron(CronExpression.EVERY_DAY_AT_NOON) // 매일 오후 12시
   // @Cron('*/5 * * * *') // 5분마다 실행
   async handleCron() {
     const seeder = new BookListSeeder();
 
     try {
-      // 알라딘 API에서 데이터를 가져오는 작업
       await seeder.run(this.dataSource, null);
 
-      // 재고 업데이트 작업
       await this.updateBookStock();
     } catch (error) {
       this.logger.error('알라딘 API 실행 중 오류 발생:', error);
