@@ -66,6 +66,8 @@ export class BookListSeeder implements Seeder {
                 const bookEntity = bookRepository.create({
                   ...bookDetails,
                   stockQuantity: 10,
+                  sourceType: queryType,  // 여기서 queryType 값을 저장
+                  searchTarget: searchTarget
                 });
                 const savedBook = await bookRepository.save(bookEntity);
 
@@ -119,13 +121,14 @@ export class BookListSeeder implements Seeder {
             'previewImgList,eventList,authors,reviewList,fulldescription,fulldescription2,Toc,Story,categoryIdList,mdrecommend,phraseList',
         },
       });
-
+      
       if (!response.data || !Array.isArray(response.data.item) || response.data.item.length === 0) {
         this.logger.error(`No data found for ISBN13 ${isbn13}`);
         return {};
       }
 
       const bookDetails = response.data.item[0];
+      
       return {
         title: bookDetails.title,
         author: bookDetails.author,

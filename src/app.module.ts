@@ -7,6 +7,7 @@ import  {TypeOrmModules} from './database/typeorm/typeorm.module';
 import { RedisModule } from './database/redis/redis.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BookListSchedulerService } from './schedule/book-list-scheduler.service';
+import { BooksModule } from './modules/books/books.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { BookListSchedulerService } from './schedule/book-list-scheduler.service
     AuthModule,
     RedisModule,
     ScheduleModule.forRoot(),
+    BooksModule,
   ],
   controllers: [AppController],
   providers: [AppService, BookListSchedulerService],
