@@ -10,7 +10,7 @@ export class BookListSchedulerService {
 
   constructor(private dataSource: DataSource) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON) // 매일 오후 12시
+  @Cron(CronExpression.EVERY_12_HOURS) // 매일 오후 12시
   // @Cron('*/5 * * * *') // 5분마다 실행
   async handleCron() {
     const seeder = new BookListSeeder();

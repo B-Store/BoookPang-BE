@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { ReviewEntity } from "./reviews.entity";
 import { OrderEntity } from "./orders.entity";
 import { LikesEntity } from "./likes.entity";
@@ -7,69 +15,82 @@ import { CartsEntity } from "./carts.entity";
 
 @Entity("books")
 export class BooksEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ name: "title" })
-    title: string; // 책의 제목
+  // 기본 정보
+  @Column({ name: "title" })
+  title: string;
 
-    @Column({ name: "author" })
-    author: string; // 저자 이름
+  @Column({ name: "author" })
+  author: string;
 
-    @Column({ name: "publisher" })
-    publisher: string; // 출판사 이름
+  @Column({ name: "publisher" })
+  publisher: string;
 
-    @Column({ name: "regular_price" })
-    regularPrice: number; // 책의 정가
+  @Column({ nullable: true })
+  description: string; // 책의 설명
 
-    @Column({name: 'sale_price'})
-    salePrice: number; // 할인된 가격
+  // 가격 정보
+  @Column({ name: "regular_price" })
+  regularPrice: number;
 
-    @Column({ name: "stock_quantity", type: 'int' })
-    stockQuantity: number; // 재고 수량
+  @Column({ name: "sale_price" })
+  salePrice: number;
 
-    @Column({ name: "average_rating", nullable: true})
-    averageRating: number; // 평균 평점
+  @Column()
+  mileage: number;
 
-    @Column()
-    link: string; // 책의 관련 링크
+  // 재고 및 식별자
+  @Column({ name: "stock_quantity", type: "int" })
+  stockQuantity: number;
 
-    @Column()
-    cover: string; // 책의 표지 이미지 URL
+  @Column()
+  isbn13: string;
 
-    @Column()
-    mileage: number; // 구매 시 적립되는 마일리지
+  @Column()
+  itemId: string;
 
-    @Column()
-    isbn13: string; // ISBN13 번호
+  // 미디어 및 링크
+  @Column()
+  link: string;
 
-    @Column()
-    itemId: string; // 아이템 ID
+  @Column()
+  cover: string;
 
-    @Column({ nullable: true})
-    description: string; // 책의 설명
+  // 평가 및 검색
+  @Column({ name: "average_rating", nullable: true })
+  averageRating: number;
 
-    @CreateDateColumn({ name: "created_at" })
-    createdAt: Date;
+  @Column({ name: "source_type" })
+  sourceType: string;
 
-    @UpdateDateColumn({ name: "updated_at" })
-    updatedAt: Date;
+  @Column({ name: "search_target" })
+  searchTarget: string;
 
-    @DeleteDateColumn({ name: "deleted_at" })
-    deletedAt: Date;
+  // 타임스탬프
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-    @OneToMany(() => ReviewEntity, (review) => review.book)
-    review: ReviewEntity[]; 
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
-    @OneToMany(() => OrderEntity, (order) => order.book)
-    order: OrderEntity[];
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt: Date;
 
-    @OneToMany(() => LikesEntity, (likes) => likes.book)
-    likes: LikesEntity[]; 
+  // 관계 설정
+  @OneToMany(() => ReviewEntity, (review) => review.book)
+  review: ReviewEntity[];
 
-    @OneToMany(() => BooksCategoryEntity, (booksCategory) => booksCategory.book)
-    booksCategory: BooksCategoryEntity[]; 
+  @OneToMany(() => OrderEntity, (order) => order.book)
+  order: OrderEntity[];
 
-    @OneToMany(() => CartsEntity, (cart) => cart.book, { cascade: true })
-    cart: CartsEntity[];
+  @OneToMany(() => LikesEntity, (likes) => likes.book)
+  likes: LikesEntity[];
+
+  @OneToMany(() => BooksCategoryEntity, (booksCategory) => booksCategory.book)
+  booksCategory: BooksCategoryEntity[];
+
+  @OneToMany(() => CartsEntity, (cart) => cart.book, { cascade: true })
+  cart: CartsEntity[];
 }
