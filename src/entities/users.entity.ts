@@ -1,5 +1,4 @@
-
-import { SocialProviders } from '../common/customs/enums/enum-social-providers';
+import { SocialProviders } from "../common/customs/enums/enum-social-providers";
 import {
   Entity,
   Column,
@@ -9,30 +8,30 @@ import {
   DeleteDateColumn,
   OneToMany,
   OneToOne,
-} from 'typeorm';
-import { ReviewEntity } from './reviews.entity';
-import { OrderEntity } from './orders.entity';
-import { RefreshTokensEntity } from './refresh-tokens.entity';
-import { LikesEntity } from './likes.entity';
-import { ChatsEntity } from './chats.entity';
-import { ChatRoomUsersEntity } from './chat-rooms-users.entity';
-import { CartsEntity } from './carts.entity';
-import { IsNotEmpty, IsString } from 'class-validator';
+} from "typeorm";
+import { ReviewEntity } from "./reviews.entity";
+import { OrderEntity } from "./orders.entity";
+import { RefreshTokensEntity } from "./refresh-tokens.entity";
+import { LikesEntity } from "./likes.entity";
+import { ChatsEntity } from "./chats.entity";
+import { ChatRoomUsersEntity } from "./chat-rooms-users.entity";
+import { CartsEntity } from "./carts.entity";
+import { IsNotEmpty, IsString } from "class-validator";
 
-@Entity('users')
+@Entity("users")
 export class UsersEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, name: 'login_id' })
+  @Column({ unique: true, name: "login_id" })
   loginId: string;
 
   /**
    * @example 01011111111
    */
-  @IsString({ message: '전화번호는 문자열이여야 합니다.' })
-  @IsNotEmpty({ message: '전화번호는 필수 입력 항목입니다.' })
-  @Column({ unique: true })
+  @IsString({ message: "전화번호는 문자열이여야 합니다." })
+  @IsNotEmpty({ message: "전화번호는 필수 입력 항목입니다." })
+  @Column({ unique: true, nullable: true })
   phoneNumber: string;
 
   @Column()
@@ -42,22 +41,22 @@ export class UsersEntity {
   password: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: SocialProviders,
     default: SocialProviders.LOCAL,
   })
   provider: SocialProviders;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   address: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at' })
+  @DeleteDateColumn({ name: "deleted_at" })
   deletedAt: Date;
 
   @OneToMany(() => ReviewEntity, (review) => review.user)
@@ -75,7 +74,7 @@ export class UsersEntity {
   @OneToMany(() => ChatsEntity, (chat) => chat.user)
   chat: ChatsEntity[];
 
-  @OneToMany(() => CartsEntity, (cart) => cart.user, {cascade: true})
+  @OneToMany(() => CartsEntity, (cart) => cart.user, { cascade: true })
   cart: CartsEntity[];
 
   @OneToMany(() => OrderEntity, (order) => order.user)
