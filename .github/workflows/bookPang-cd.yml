@@ -39,7 +39,8 @@ jobs:
             echo "VONAGE_SENDER_NUMBER=${{ secrets.VONAGE_SENDER_NUMBER }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_NODE }}" >> .env
-          
+            echo "OPEN_API=${{ secrets.OPEN_API }}" >> .env
+
             npm ci
             npm run build
 
