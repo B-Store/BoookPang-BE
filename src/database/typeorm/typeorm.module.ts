@@ -10,4 +10,4 @@ import { TypeOrmConfig } from "./typeorm.config";
   ],
   exports: [NestTypeOrmModule],
 })
-export class TypeOrmModule {}
+export class TypeOrmModules {}
