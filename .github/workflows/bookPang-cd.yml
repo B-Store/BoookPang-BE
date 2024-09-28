@@ -45,5 +45,5 @@ jobs:
             npm run build
 
             pm2 delete BookPang-BE || true
-            pm2 --name BookPang-BE start dist/main.js
+            pm2 --name BookPang-BE start dist/src/main.js
             pm2 save
