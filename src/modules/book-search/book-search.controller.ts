@@ -36,5 +36,4 @@ export class BookSearchController {
     async findBooks(@Query('title') title: string) {
       return await this.searchService.findBooks(title);
     }
-  
 }

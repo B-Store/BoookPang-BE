@@ -4,14 +4,14 @@ import { ConfigService } from "@nestjs/config";
 import { CreateAuthDto } from "./dto/create-auth.dto";
 import { RedisConfig } from "../../database/redis/redis.config";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UsersEntity } from "src/entities/users.entity";
+import { UsersEntity } from "../../entities/users.entity";
 import { Repository } from "typeorm";
-import { AUTH_CONSTANT } from "src/constants/auth.constant";
+import { AUTH_CONSTANT } from "../../constants/auth.constant";
 import { Auth } from "@vonage/auth";
 import { Vonage } from "@vonage/server-sdk";
 import { LogInDto } from "./dto/log-in.dto";
 import { JwtService } from "@nestjs/jwt";
-import { RefreshTokensEntity } from "src/entities/refresh-tokens.entity";
+import { RefreshTokensEntity } from "../../entities/refresh-tokens.entity";
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,6 @@ export class AuthService {
     @InjectRepository(RefreshTokensEntity)
     private readonly refreshTokenRepository: Repository<RefreshTokensEntity>,
   ) {
-    // Vonage 인증 정보 설정
     const credentials = new Auth({
       apiKey: this.configService.get<string>("VONAGE_API_KEY"),
       apiSecret: this.configService.get<string>("VONAGE_API_SECRET"),
@@ -94,7 +93,6 @@ export class AuthService {
 
   // 전화번호 형식 변환 함수
   private formatPhoneNumber(phoneNumber: string) {
-    // 항상 '010'으로 시작한다고 가정
     return `+82${phoneNumber.substring(1)}`;
   }
 
