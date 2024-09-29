@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { BooksService } from "./books.service";
 import { ApiTags, ApiQuery } from "@nestjs/swagger";
 
@@ -71,5 +71,27 @@ export class BooksController {
   })
   categories(@Query("category") category: string) {
     return this.booksService.categories(category);
+  }
+
+  /**
+   * 책 카테고리 별 리스트 (국내도서 등)
+   * @param category
+   * @returns
+   */
+  @Get("category-books")
+  @ApiQuery({ name: "category", required: true, description: "카테고리", example: "국내도서" })
+  findBookDetail(@Query("category") category: string) {
+    return this.booksService.findBookCategoryList(category);
+  }
+
+  /**
+   * 책 상세조회
+   * @param bookId 
+   * @returns 
+   */
+  @Get("book-Detall/:book-id")
+  @ApiQuery({ name: "bookId", required: true, description: "책 ID", example: 1 })
+  findBookDetall(@Param("bookId") bookId: number) {
+    return this.booksService.findBookDetall(bookId);
   }
 }
