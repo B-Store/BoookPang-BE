@@ -1,12 +1,37 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
+import { Repository } from 'typeorm';
+import { UsersEntity } from '../../entities/users.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { RedisConfig } from '../../database/redis/redis.config';
+import { JwtService } from '@nestjs/jwt';
+import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let mockUsersRepository: Partial<Repository<UsersEntity>>;
 
   beforeEach(async () => {
+    mockUsersRepository = {
+      find: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        {
+          provide: getRepositoryToken(UsersEntity),
+          useValue: mockUsersRepository,
+        },
+        ConfigService,
+        RedisConfig,
+        JwtService,
+        {
+          provide: getRepositoryToken(RefreshTokensEntity),
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
