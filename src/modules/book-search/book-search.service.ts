@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable, NotFoundException, OnModuleInit } from "@nestjs/common";
 import { ElasticsearchService } from "@nestjs/elasticsearch";
 import { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -19,11 +19,11 @@ export class BookSearchService implements OnModuleInit {
   }
 
   async createIndex() {
-    const indexExists = await this.elasticsearchService.indices.exists({ index: 'books' });
+    const indexExists = await this.elasticsearchService.indices.exists({ index: "books" });
 
     if (!indexExists) {
       await this.elasticsearchService.indices.create({
-        index: 'books',
+        index: "books",
         body: {
           settings: {
             number_of_shards: 1,
@@ -31,17 +31,17 @@ export class BookSearchService implements OnModuleInit {
           },
           mappings: {
             properties: {
-              title: { type: 'text' },
-              author: { type: 'text' },
-              description: { type: 'text' },
-              published_date: { type: 'date' },
+              title: { type: "text" },
+              author: { type: "text" },
+              description: { type: "text" },
+              published_date: { type: "date" },
             },
           },
         },
       });
-      console.log('Index created: books');
+      console.log("Index created: books");
     } else {
-      console.log('Index already exists: books');
+      console.log("Index already exists: books");
     }
   }
 
@@ -50,7 +50,10 @@ export class BookSearchService implements OnModuleInit {
       index: "books",
       body: query,
     });
-    return response.hits.hits.map(hit => hit._source);
+    if (response.hits.hits.length === 0) {
+      throw new NotFoundException("도서를 찾을 수 없습니다.");
+    }
+    return response.hits.hits.map((hit) => hit._source);
   }
 
   async indexAllBooks() {
@@ -78,12 +81,14 @@ export class BookSearchService implements OnModuleInit {
   }
 
   async findBooks(title: string) {
-    // 제목에 해당하는 도서 검색
     const books = await this.booksRepository.find({
       where: {
-        title: Like(`%${title}%`), // 제목에 title이 포함된 도서를 찾기
+        title: Like(`%${title}%`),
       },
     });
+    if (books.length === 0) {
+      throw new NotFoundException("도서를 찾을 수 없습니다.");
+    }
     return books;
   }
 }
