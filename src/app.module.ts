@@ -10,9 +10,15 @@ import { BookListSchedulerService } from './schedule/book-list-scheduler.service
 import { BooksModule } from './modules/books/books.module';
 import { BookSearchModule } from './modules/book-search/book-search.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    CacheModule.register({
+      ttl: 180,
+      max: 100,
+      isGlobal: true,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
