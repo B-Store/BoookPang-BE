@@ -37,10 +37,12 @@ jobs:
             echo "VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }}" >> .env
             echo "VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }}" >> .env
             echo "VONAGE_SENDER_NUMBER=${{ secrets.VONAGE_SENDER_NUMBER }}" >> .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "ELASTICSEARCH_HOST=${{ secrets.ELASTICSEARCH_NODE }}" >> .env
             echo "OPEN_API=${{ secrets.OPEN_API }}" >> .env
-
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION}}" >> .env
+            echo "JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION}}" >> .env
+            
             npm ci
             npm run build
 
