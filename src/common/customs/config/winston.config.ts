@@ -1,11 +1,11 @@
 import * as winston from 'winston';
 
 export const winstonConfig = {
-  level: 'info', // 로그 레벨
+  level: 'info',
   transports: [
     new winston.transports.File({
-      filename: 'http-requests.log', // 로그 파일 이름
-      level: 'info', // 로그 레벨
+      filename: 'http-requests.log',
+      level: 'info',
       format: winston.format.combine(
         winston.format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss'
@@ -13,6 +13,6 @@ export const winstonConfig = {
         winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
       )
     }),
-    new winston.transports.Console() // 콘솔에도 로그 출력
+    new winston.transports.Console()
   ],
 };

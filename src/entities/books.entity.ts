@@ -29,7 +29,7 @@ export class BooksEntity {
   publisher: string;
 
   @Column({ nullable: true })
-  description: string; // 책의 설명
+  description: string;
 
   // 가격 정보
   @Column({ name: "regular_price" })
@@ -78,7 +78,6 @@ export class BooksEntity {
   @DeleteDateColumn({ name: "deleted_at" })
   deletedAt: Date;
 
-  // 관계 설정
   @OneToMany(() => ReviewEntity, (review) => review.book)
   review: ReviewEntity[];
 
