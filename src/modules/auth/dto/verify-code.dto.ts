@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { IsNumber, IsString, Matches } from 'class-validator';
-import { UsersEntity } from 'src/entities/users.entity';
+import { UsersEntity } from '../../../entities/users.entity';
 
 export class VerifyCodeDto extends PickType(UsersEntity, ['phoneNumber']) {
   /**
