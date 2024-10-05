@@ -11,6 +11,7 @@ import { BooksModule } from './modules/books/books.module';
 import { BookSearchModule } from './modules/book-search/book-search.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CartsModule } from './modules/carts/carts.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     RedisModule,
     ScheduleModule.forRoot(),
     BooksModule,
-    BookSearchModule
+    BookSearchModule,
+    CartsModule
   ],
   controllers: [AppController],
   providers: [AppService, BookListSchedulerService],
