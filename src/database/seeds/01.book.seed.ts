@@ -9,7 +9,7 @@ import { Logger } from '@nestjs/common';
 export class BookListSeeder implements Seeder {
   private readonly logger = new Logger(BookListSeeder.name);
 
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
+  public async run(dataSource: DataSource, p0: null): Promise<void> {
     const bookRepository = dataSource.getRepository(BooksEntity);
     const categoryRepository = dataSource.getRepository(CategoryEntity);
     const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
@@ -66,12 +66,11 @@ export class BookListSeeder implements Seeder {
                 const bookEntity = bookRepository.create({
                   ...bookDetails,
                   stockQuantity: 10,
-                  sourceType: queryType,  // 여기서 queryType 값을 저장
+                  sourceType: queryType,
                   searchTarget: searchTarget
                 });
                 const savedBook = await bookRepository.save(bookEntity);
 
-                // 카테고리 처리
                 for (const categoryId of bookDetails.categories) {
                   const category = await categoryRepository.findOne({
                     where: { CID: categoryId.categoryId },

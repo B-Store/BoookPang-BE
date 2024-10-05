@@ -14,16 +14,16 @@ export class BookListSchedulerService {
     private bookSearchService: BookSearchService,
   ) {}
 
-  @Cron(CronExpression.EVERY_12_HOURS) // 매일 오후 12시
+  @Cron(CronExpression.EVERY_12_HOURS)
   async handleCron() {
     const seeder = new BookListSeeder();
 
     try {
-      await seeder.run(this.dataSource, null); // 알라딘 API를 통해 도서 데이터 업데이트
+      await seeder.run(this.dataSource, null);
 
-      await this.updateBookStock(); // 재고 업데이트
-      await this.bookSearchService.reindexAllBooks(); // 모든 도서 재인덱싱
-      this.logger.log('모든 도서가 재인덱싱되었습니다.'); // 재인덱싱 완료 로그
+      await this.updateBookStock();
+      await this.bookSearchService.reindexAllBooks();
+      this.logger.log('모든 도서가 재인덱싱되었습니다.');
     } catch (error) {
       this.logger.error('알라딘 API 실행 중 오류 발생:', error);
     }
@@ -40,7 +40,7 @@ export class BookListSchedulerService {
         .createQueryBuilder()
         .update(BooksEntity)
         .set({ stockQuantity: 10 })
-        .where("stockQuantity < 10") // 재고가 10개 미만인 경우에만 업데이트
+        .where("stockQuantity < 10")
         .execute();
 
       await queryRunner.commitTransaction();

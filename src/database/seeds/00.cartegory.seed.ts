@@ -23,7 +23,7 @@ export class CategorySeeder implements Seeder {
           try {
             for (const row of categories) {
               const existingCategory = await categoryRepository.findOne({
-                where: { CID: row['CID'] }, // CID를 기준으로 카테고리 존재 여부 확인
+                where: { CID: row['CID'] },
               });
 
               // 카테고리가 존재하지 않을 경우에만 저장
@@ -33,7 +33,7 @@ export class CategorySeeder implements Seeder {
                 category.categoryName = row['카테고리명'];
                 category.mall = row['몰'];
                 category.depth1 = row['1Depth'];
-                category.depth2 = row['2Depth']; // 수정된 부분
+                category.depth2 = row['2Depth'];
                 category.depth3 = row['3Depth'];
                 category.depth4 = row['4Depth'];
                 category.depth5 = row['5Depth'];

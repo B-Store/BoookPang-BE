@@ -1,4 +1,3 @@
-import { PhoneNumber } from './../../../node_modules/libphonenumber-js/types.d';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';

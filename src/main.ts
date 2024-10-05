@@ -22,25 +22,25 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document, {
     swaggerOptions: {
-      persistAuthorization: true, // 새로고침 시에도 JWT 유지하기
-      tagsSorter: "alpha", // API 그룹 정렬을 알파벳 순으로
-      operationsSorter: "alpha", // API 그룹 내 정렬을 알파벳 순으로
+      persistAuthorization: true,
+      tagsSorter: "alpha",
+      operationsSorter: "alpha",
     },
   });
 
   app.use(
     morgan("combined", {
       stream: {
-        write: (message) => logger.info(message.trim()), // 로그를 winston을 통해 기록
+        write: (message) => logger.info(message.trim()),
       },
     }),
   );
   app.setGlobalPrefix("api/v1");
   app.enableCors({
-    origin: "*", // 모든 도메인에서의 요청을 허용
+    origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"], // 허용할 헤더
-    credentials: true, // 쿠키와 같은 인증 정보를 허용할지 여부
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   });
   try {
     await app.listen(port);

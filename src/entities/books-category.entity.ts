@@ -4,20 +4,20 @@ import { CategoryEntity } from "./category.entity";
 
 @Entity("books-category")
 export class BooksCategoryEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ name: "book_id" })
-    bookId: number;
+  @Column({ name: "book_id" })
+  bookId: number;
 
-    @Column({ name: "category_id" })
-    categoryId: number;
+  @Column({ name: "category_id" })
+  categoryId: number;
 
-    @ManyToOne(() => BooksEntity, (book) => book.booksCategory, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "book_id" })
-    book: BooksEntity;
+  @ManyToOne(() => BooksEntity, (book) => book.booksCategory, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "book_id" })
+  book: BooksEntity;
 
-    @ManyToOne(() => CategoryEntity, (category) => category.booksCategory, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "category_id" })
-    category: CategoryEntity;
+  @ManyToOne(() => CategoryEntity, (category) => category.booksCategory, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "category_id" })
+  category: CategoryEntity;
 }

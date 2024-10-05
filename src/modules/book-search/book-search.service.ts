@@ -14,12 +14,12 @@ export class BookSearchService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.createIndex(); // 서비스 초기화 시 인덱스 생성
-    await this.indexAllBooks(); // 모든 도서 인덱싱
+    await this.createIndex();
+    await this.indexAllBooks()
   }
 
   async reindexAllBooks() {
-    await this.indexAllBooks(); // 모든 도서 재인덱싱
+    await this.indexAllBooks();
   }
   
   async createIndex() {
