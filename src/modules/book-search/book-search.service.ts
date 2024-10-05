@@ -18,6 +18,10 @@ export class BookSearchService implements OnModuleInit {
     await this.indexAllBooks(); // 모든 도서 인덱싱
   }
 
+  async reindexAllBooks() {
+    await this.indexAllBooks(); // 모든 도서 재인덱싱
+  }
+  
   async createIndex() {
     const indexExists = await this.elasticsearchService.indices.exists({ index: "books" });
 

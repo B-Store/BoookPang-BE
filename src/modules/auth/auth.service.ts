@@ -118,11 +118,17 @@ export class AuthService {
       expiresIn: this.configService.get<string>("JWT_REFRESH_TOKEN_EXPIRATION"),
     });
 
-    await this.refreshTokenRepository.save({
-      userId: payload.userId,
-      refreshToken: refreshToken,
-    });
-
+    await this.refreshTokenRepository.upsert(
+      {
+        userId: payload.userId,
+        refreshToken: refreshToken,
+      },
+      {
+        conflictPaths: ['userId'],
+        skipUpdateIfNoValuesChanged: true,
+      }
+    );
+    
     return { accessToken, refreshToken };
   }
 

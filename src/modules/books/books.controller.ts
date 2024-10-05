@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { BooksService } from "./books.service";
-import { ApiTags, ApiQuery } from "@nestjs/swagger";
+import { ApiTags, ApiQuery, ApiParam } from "@nestjs/swagger";
 
 @ApiTags("books")
 @Controller("books")
@@ -89,8 +89,8 @@ export class BooksController {
    * @param bookId 
    * @returns 
    */
-  @Get("book-Detall/:book-id")
-  @ApiQuery({ name: "bookId", required: true, description: "책 ID", example: 1 })
+  @Get("book-Detall/:bookId")
+  @ApiParam({ name: "bookId", required: true, description: "책 ID", example: 1 })
   findBookDetall(@Param("bookId") bookId: number) {
     return this.booksService.findBookDetall(bookId);
   }

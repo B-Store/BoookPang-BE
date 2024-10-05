@@ -4,12 +4,12 @@ import { BookSearchController } from './book-search.controller';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksEntity } from '../../entities/books.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+
     ElasticsearchModule.registerAsync({
-      imports: [ConfigModule], // ConfigModule을 가져옴
       useFactory: (configService: ConfigService) => ({
         node: configService.get<string>('ELASTICSEARCH_NODE'),
       }),
@@ -19,5 +19,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   controllers: [BookSearchController],
   providers: [BookSearchService],
+  exports: [BookSearchService],
 })
 export class BookSearchModule {}

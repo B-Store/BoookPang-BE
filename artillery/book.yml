@@ -1,0 +1,26 @@
+config:
+  target: 'http://localhost:3095'
+  phases:
+    - duration: 20  # 테스트 지속 시간 (초)
+      arrivalRate: 50  # 초당 요청 수
+
+scenarios:
+  - flow:
+      - get:
+          url: '/api/v1/books/bestsellers?page=1&limit=10' 
+      - get:
+          url: '/api/v1/books/bestsellers?page=2&limit=10'
+      - get:
+          url: '/api/v1/books/bestsellers?page=3&limit=10'
+      - get:
+          url: '/api/v1/books/new-books?page=2&limit=10'
+      - get:
+          url: '/api/v1/books/new-books?page=3&limit=10'
+      - get:
+          url: '/api/v1/books/new-books?page=4&limit=10'
+      - get:
+          url: '/api/v1/books/recommended-books?page=3&limit=4&category=all'  # 추천 도서 테스트
+      - get:
+          url: '/api/v1/books/recommended-books?page=4&limit=4&category=eBook'  # 추천 도서 테스트
+      - get:
+          url: '/api/v1/books/recommended-books?page=5&limit=4&category=eBook'  # 추천 도서 테스트
