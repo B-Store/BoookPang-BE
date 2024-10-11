@@ -1,10 +1,10 @@
-import { DataSource, DeepPartial } from 'typeorm';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import axios from 'axios';
-import { BooksEntity } from '../../entities/books.entity';
-import { CategoryEntity } from '../../entities/category.entity';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
-import { Logger } from '@nestjs/common';
+import { DataSource, DeepPartial } from "typeorm";
+import { Seeder } from "typeorm-extension";
+import { BooksEntity } from "../../entities/books.entity";
+import { CategoryEntity } from "../../entities/category.entity";
+import { BooksCategoryEntity } from "../../entities/books-category.entity";
+import { Logger } from "@nestjs/common";
+import axios from "axios";
 
 export class BookListSeeder implements Seeder {
   private readonly logger = new Logger(BookListSeeder.name);
@@ -15,36 +15,33 @@ export class BookListSeeder implements Seeder {
     const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
 
     const queryTypes = [
-      'ItemNewAll',
-      'ItemNewSpecial',
-      'ItemEditorChoice',
-      'Bestseller',
-      'BlogBest',
+      "ItemNewAll",
+      "ItemNewSpecial",
+      "ItemEditorChoice",
+      "Bestseller",
+      "BlogBest",
     ];
-    const searchTargets = ['Book', 'Foreign', 'Music', 'DVD', 'Used', 'eBook'];
+    const searchTargets = ["Book", "Foreign", "Music", "DVD", "Used", "eBook"];
 
     if (!process.env.OPEN_API) {
-      this.logger.error('API key is not set in environment variables.');
+      this.logger.error("API key is not set in environment variables.");
       return;
     }
 
     for (const queryType of queryTypes) {
       for (const searchTarget of searchTargets) {
         try {
-          const response = await axios.get(
-            'http://www.aladin.co.kr/ttb/api/ItemList.aspx',
-            {
-              params: {
-                ttbkey: process.env.OPEN_API,
-                QueryType: queryType,
-                MaxResults: 1000,
-                start: 1,
-                SearchTarget: searchTarget,
-                output: 'js',
-                Version: '20131101',
-              },
+          const response = await axios.get("http://www.aladin.co.kr/ttb/api/ItemList.aspx", {
+            params: {
+              ttbkey: process.env.OPEN_API,
+              QueryType: queryType,
+              MaxResults: 1000,
+              start: 1,
+              SearchTarget: searchTarget,
+              output: "js",
+              Version: "20131101",
             },
-          );
+          });
 
           if (response.data && Array.isArray(response.data.item)) {
             const books = response.data.item;
@@ -58,7 +55,7 @@ export class BookListSeeder implements Seeder {
               if (!existingBook) {
                 const bookDetails = await this.fetchBookDetails(itemId, isbn13);
 
-                if (!bookDetails.description || bookDetails.description.trim() === '') {
+                if (!bookDetails.description || bookDetails.description.trim() === "") {
                   this.logger.warn(`Skipping book with ISBN13 ${isbn13} due to empty description.`);
                   continue;
                 }
@@ -67,7 +64,7 @@ export class BookListSeeder implements Seeder {
                   ...bookDetails,
                   stockQuantity: 10,
                   sourceType: queryType,
-                  searchTarget: searchTarget
+                  searchTarget: searchTarget,
                 });
                 const savedBook = await bookRepository.save(bookEntity);
 
@@ -101,33 +98,33 @@ export class BookListSeeder implements Seeder {
   }
 
   private async fetchBookDetails(itemId: string, isbn13: string): Promise<any> {
-    const baseUrl = 'http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx';
+    const baseUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
 
     try {
       if (!isbn13) {
-        this.logger.error('Invalid ISBN13:', isbn13);
+        this.logger.error("Invalid ISBN13:", isbn13);
         return {};
       }
 
       const response = await axios.get(baseUrl, {
         params: {
           ttbkey: process.env.OPEN_API,
-          ItemIdType: 'ISBN13',
+          ItemIdType: "ISBN13",
           ItemId: isbn13,
-          output: 'js',
-          Version: '20131101',
+          output: "js",
+          Version: "20131101",
           OptResult:
-            'previewImgList,eventList,authors,reviewList,fulldescription,fulldescription2,Toc,Story,categoryIdList,mdrecommend,phraseList',
+            "previewImgList,eventList,authors,reviewList,fulldescription,fulldescription2,Toc,Story,categoryIdList,mdrecommend,phraseList",
         },
       });
-      
+
       if (!response.data || !Array.isArray(response.data.item) || response.data.item.length === 0) {
         this.logger.error(`No data found for ISBN13 ${isbn13}`);
         return {};
       }
 
       const bookDetails = response.data.item[0];
-      
+
       return {
         title: bookDetails.title,
         author: bookDetails.author,

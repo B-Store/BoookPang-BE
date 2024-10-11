@@ -1,4 +1,4 @@
-import { SocialProviders } from "../common/customs/enums/enum-social-providers";
+import { SocialProviders } from "../common/enums/enum-social-providers";
 import {
   Entity,
   Column,
@@ -23,6 +23,9 @@ export class UsersEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /**
+   * @example example@gmail.com
+   */
   @Column({ unique: true, name: "login_id" })
   loginId: string;
 
@@ -34,9 +37,15 @@ export class UsersEntity {
   @Column({ unique: true, nullable: true })
   phoneNumber: string;
 
+  /**
+   * @example bookPang
+   */
   @Column()
   nickname: string;
 
+  /**
+   * @example 123456789
+   */
   @Column({ nullable: true })
   password: string;
 

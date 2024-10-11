@@ -39,8 +39,6 @@ export class CategorySeeder implements Seeder {
                 category.depth5 = row['5Depth'];
 
                 await categoryRepository.save(category);
-              } else {
-                console.log(`Category with CID ${row['CID']} already exists, skipping.`);
               }
             }
             resolve();

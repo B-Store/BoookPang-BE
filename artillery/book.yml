@@ -1,5 +1,5 @@
 config:
-  target: 'http://localhost:3095'
+  target: 'http://13.209.79.254:3095'
   phases:
     - duration: 20  # 테스트 지속 시간 (초)
       arrivalRate: 50  # 초당 요청 수

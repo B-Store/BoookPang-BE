@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { CreateAuthDto } from "./dto/create-auth.dto";
-import { PhoneDto } from "./dto/phone-number-dto";
+import { Controller, Get, Post, Body, Param, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { AuthService } from "./auth.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { PhoneDto } from "./dto/phone-number-dto";
 import { VerifyCodeDto } from "./dto/verify-code.dto";
 import { LogInDto } from "./dto/log-in.dto";
+import { RequestRefreshTokenByHttp } from "src/common/decorator/jwt-http-request";
+import { JwtRefreshGuards } from "./jwt-strategy";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -53,8 +56,8 @@ export class AuthController {
    * @returns
    */
   @Post("sign-up")
-  userCreate(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.userCreate(createAuthDto);
+  userCreate(@Body() createUserDto: CreateUserDto) {
+    return this.authService.userCreate(createUserDto);
   }
 
   /**
@@ -66,13 +69,17 @@ export class AuthController {
   async logIn(@Body() logInDto: LogInDto) {
     return this.authService.logIn(logInDto);
   }
+
   /**
    * 리프레시토큰 검증 후 새 액세스 토큰 발급
-   * @param refreshToken
+   * @param param0
    * @returns
    */
-  @Post("refresh-token/:refreshToken")
-  async refreshToken(@Body("refreshToken") refreshToken: string) {
-    return this.authService.refreshToken(refreshToken);
+  @Post("refresh-token")
+  @UseGuards(JwtRefreshGuards)
+  async refreshToken(@RequestRefreshTokenByHttp() { userId, refreshToken }: { userId: number; refreshToken: string }) {
+    {
+      return this.authService.refreshToken(userId, refreshToken);
+    }
   }
 }

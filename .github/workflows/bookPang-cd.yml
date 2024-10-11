@@ -43,9 +43,9 @@ jobs:
             echo "JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION}}" >> .env
             echo "JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION}}" >> .env
 
-            npm ci
-            npm run build
+#            npm ci
+#            npm run build
 
-            pm2 delete BookPang-BE || true
-            pm2 --name BookPang-BE start dist/src/main.js
-            pm2 save
+#            pm2 delete BookPang-BE || true
+#            pm2 --name BookPang-BE start dist/src/main.js
+#            pm2 save

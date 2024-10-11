@@ -31,8 +31,4 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
       console.error("TypeORM connection error : ", error);
     }
   }
-
-  getDataSource(): DataSource {
-    return this.dataSource;
-  }
 }
