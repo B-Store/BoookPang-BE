@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { UsersEntity } from '../../entities/users.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { RedisConfig } from '../../database/redis/redis.config';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
 
@@ -25,7 +24,6 @@ describe('AuthService', () => {
           useValue: mockUsersRepository,
         },
         ConfigService,
-        RedisConfig,
         JwtService,
         {
           provide: getRepositoryToken(RefreshTokensEntity),

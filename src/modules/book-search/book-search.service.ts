@@ -17,10 +17,6 @@ export class BookSearchService implements OnModuleInit {
     await this.createIndex();
     await this.indexAllBooks()
   }
-
-  async reindexAllBooks() {
-    await this.indexAllBooks();
-  }
   
   async createIndex() {
     const indexExists = await this.elasticsearchService.indices.exists({ index: "books" });

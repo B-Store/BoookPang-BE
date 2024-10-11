@@ -8,14 +8,13 @@ import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-
+    TypeOrmModule.forFeature([BooksEntity]),
     ElasticsearchModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         node: configService.get<string>('ELASTICSEARCH_NODE'),
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([BooksEntity]),
   ],
   controllers: [BookSearchController],
   providers: [BookSearchService],

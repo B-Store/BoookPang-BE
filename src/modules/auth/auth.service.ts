@@ -1,45 +1,37 @@
 import * as bcrypt from "bcrypt";
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, Inject, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { CreateAuthDto } from "./dto/create-auth.dto";
-import { RedisConfig } from "../../database/redis/redis.config";
+import { Repository } from "typeorm";
+import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersEntity } from "../../entities/users.entity";
-import { Repository } from "typeorm";
 import { AUTH_CONSTANT } from "../../constants/auth.constant";
-import { Auth } from "@vonage/auth";
 import { Vonage } from "@vonage/server-sdk";
 import { LogInDto } from "./dto/log-in.dto";
 import { JwtService } from "@nestjs/jwt";
 import { RefreshTokensEntity } from "../../entities/refresh-tokens.entity";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class AuthService {
-  private readonly vonage: Vonage;
-  private readonly MIN_VERIFICATION_CODE = 100000;
-  private readonly MAX_VERIFICATION_CODE = 999999;
-
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(UsersEntity)
-    private readonly userRepository: Repository<UsersEntity>,
-    private readonly configService: ConfigService,
-    private readonly redisConfig: RedisConfig,
-    private readonly jwtService: JwtService,
+    private userRepository: Repository<UsersEntity>,
     @InjectRepository(RefreshTokensEntity)
-    private readonly refreshTokenRepository: Repository<RefreshTokensEntity>,
-  ) {
-    const credentials = new Auth({
-      apiKey: this.configService.get<string>("VONAGE_API_KEY"),
-      apiSecret: this.configService.get<string>("VONAGE_API_SECRET"),
-    });
-    this.vonage = new Vonage(credentials);
-  }
+    private refreshTokenRepository: Repository<RefreshTokensEntity>,
+    private configService: ConfigService,
+    private jwtService: JwtService,
+    private vonage: Vonage,
+  ) {}
 
   async sendVerificationCode(phoneNumber: string) {
-    const verificationCode = this.generateVerificationCode();
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+    
     const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber);
 
-    await this.redisConfig.saveVerificationCode(formattedPhoneNumber, verificationCode);
+    await this.cacheManager.set(phoneNumber, verificationCode, 300000);
 
     const from = this.configService.get<string>("VONAGE_SENDER_NUMBER");
     const text = `Your verification code is ${verificationCode}`;
@@ -50,25 +42,27 @@ export class AuthService {
     });
   }
 
-  async phoneNumberValidator(phoneNumber: string, verificationCode: number) {
+  public async phoneNumberValidator(phoneNumber: string, verificationCode: number) {
     const phoneNumberForm = this.formatPhoneNumber(phoneNumber);
-    const userCode = await this.redisConfig.getVerificationCode(phoneNumberForm);
-
-    if (+userCode !== verificationCode) {
+    const cacheKey = await this.cacheManager.get(phoneNumber);
+    if (cacheKey !== verificationCode) {
       throw new BadRequestException("인증코드가 일치하지 않습니다.");
     }
-    await this.redisConfig.deleteVerificationCode(phoneNumberForm);
+    await this.cacheManager.del(phoneNumberForm);
   }
 
-  async checkLoginIdAvailability(loginId: string) {
-    const user = await this.userRepository.findOne({ where: { loginId } });
+  public async checkLoginIdAvailability(loginId: string) {
+    const user = await this.userRepository.findOne({
+      where: { loginId, deletedAt: null },
+    });
+
     if (user) {
       throw new BadRequestException("사용중인 아이디입니다.");
     }
   }
 
-  async userCreate(createAuthDto: CreateAuthDto) {
-    const { loginId, nickname, password, phoneNumber } = createAuthDto;
+  public async userCreate(createUserDto: CreateUserDto) {
+    const { loginId, nickname, password, phoneNumber } = createUserDto;
 
     await this.checkLoginIdAvailability(loginId);
 
@@ -83,20 +77,7 @@ export class AuthService {
     return { message: "회원가입 성공하였습니다." };
   }
 
-  // 인증코드 생성 함수
-  private generateVerificationCode(): number {
-    return Math.floor(
-      this.MIN_VERIFICATION_CODE +
-        Math.random() * (this.MAX_VERIFICATION_CODE - this.MIN_VERIFICATION_CODE),
-    );
-  }
-
-  // 전화번호 형식 변환 함수
-  private formatPhoneNumber(phoneNumber: string) {
-    return `+82${phoneNumber.substring(1)}`;
-  }
-
-  async logIn(logInDto: LogInDto) {
+  public async logIn(logInDto: LogInDto) {
     const { loginId, password } = logInDto;
     const user = await this.userRepository.findOne({ where: { loginId: loginId } });
 
@@ -110,51 +91,61 @@ export class AuthService {
       throw new BadRequestException("잘못된 비밀번호입니다.");
     }
 
-    const payload = { loginId: loginId, userId: user.id };
+    const payload = { userId: user.id };
     const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>("ACCESS_TOKEN_SECRET"),
       expiresIn: this.configService.get<string>("JWT_ACCESS_TOKEN_EXPIRATION"),
     });
+
     const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>("REFRESH_TOKEN_SECRET"),
       expiresIn: this.configService.get<string>("JWT_REFRESH_TOKEN_EXPIRATION"),
     });
 
+    const hashRefreshToken = await bcrypt.hash(refreshToken, AUTH_CONSTANT.HASH_SALT_ROUNDS);
     await this.refreshTokenRepository.upsert(
       {
-        userId: payload.userId,
-        refreshToken: refreshToken,
+        userId: user.id,
+        refreshToken: hashRefreshToken,
       },
       {
-        conflictPaths: ['userId'],
+        conflictPaths: ["userId"],
         skipUpdateIfNoValuesChanged: true,
-      }
+      },
     );
-    
+
     return { accessToken, refreshToken };
   }
 
-  async refreshToken(refreshToken: string) {
-    try {
-      const payload = this.jwtService.verify(refreshToken);
-      const storedRefreshToken = await this.refreshTokenRepository.findOne({
-        where: { refreshToken: refreshToken },
-      });
-
-      if (!storedRefreshToken || storedRefreshToken.refreshToken !== refreshToken) {
-        throw new BadRequestException("유효하지 않은 리프레시 토큰입니다.");
-      }
-
-      const newAccessToken = this.jwtService.sign(
-        { loginId: payload.loginId, userId: payload.userId },
-        { expiresIn: "60m" },
-      );
-
-      return { accessToken: newAccessToken };
-    } catch (e) {
-      throw new BadRequestException("유효하지 않은 리프레시 토큰입니다.");
+  public async refreshToken(userId: number, refreshToken: string) {
+    const user = await this.refreshTokenRepository.findOne({ where: { userId } });
+    if (!user) {
+      throw new NotFoundException("유저를 찾을 수 없습니다.");
     }
+
+    if (!user.refreshToken) {
+      throw new NotFoundException("저장된 리프레시 토큰이 없습니다.");
+    }
+
+    const userToken = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!userToken) {
+      throw new NotFoundException("인증 정보가 유효하지 않습니다.");
+    }
+    const payload = { userId: user.id };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get<string>("JWT_ACCESS_TOKEN_EXPIRATION"),
+    });
+
+    return { accessToken };
   }
 
-  async logout(userId) {
-    await this.refreshTokenRepository.delete({ userId: userId });
+  public async checkUserForAuth({ id }) {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
+  // 전화번호 형식 변환 함수
+  private formatPhoneNumber(phoneNumber: string) {
+    return `+82${phoneNumber.substring(1)}`;
   }
 }

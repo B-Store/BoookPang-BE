@@ -39,8 +39,8 @@ export class BooksController {
    */
   @Get("new-books")
   @ApiQuery({ name: "page", required: true, description: "페이지 번호", example: 1 })
-  @ApiQuery({ name: "limit", required: true, description: "페이지당 항목 수", example: 10 })
-  findNewBooks(@Query("page") page: number = 1, @Query("limit") limit: number = 10) {
+  @ApiQuery({ name: "limit", required: true, description: "페이지당 항목 수", example: 15 })
+  findNewBooks(@Query("page") page: number = 1, @Query("limit") limit: number = 15) {
     return this.booksService.findNewBooks(page, limit);
   }
 
@@ -52,8 +52,8 @@ export class BooksController {
    */
   @Get("bestsellers")
   @ApiQuery({ name: "page", required: true, description: "페이지 번호", example: 1 })
-  @ApiQuery({ name: "limit", required: true, description: "페이지당 항목 수", example: 10 })
-  findBestsellers(@Query("page") page: number = 1, @Query("limit") limit: number = 10) {
+  @ApiQuery({ name: "limit", required: true, description: "페이지당 항목 수", example: 15 })
+  findBestsellers(@Query("page") page: number = 1, @Query("limit") limit: number = 15) {
     return this.booksService.findBestsellers(page, limit);
   }
 
@@ -74,7 +74,7 @@ export class BooksController {
   }
 
   /**
-   * 책 카테고리 별 리스트 (국내도서 등)
+   * 책 카테고리 전체 리스트 (국내도서 등)
    * @param category
    * @returns
    */

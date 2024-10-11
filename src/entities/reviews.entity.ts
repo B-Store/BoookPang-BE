@@ -1,4 +1,4 @@
-import { ReviewRating } from "../common/customs/enums/enum-review";
+import { ReviewRating } from "../common/enums/enum-review";
 import {
   Entity,
   Column,
@@ -34,7 +34,7 @@ export class ReviewEntity {
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
-
+ 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
