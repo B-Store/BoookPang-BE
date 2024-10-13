@@ -6,12 +6,8 @@ import { BooksEntity } from '../entities/books.entity';
 import { BookSearchModule } from '../modules/book-search/book-search.module';
 
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([BooksEntity]),
-    BookSearchModule,
-  ],
+  imports: [ScheduleModule.forRoot(), TypeOrmModule.forFeature([BooksEntity]), BookSearchModule],
   providers: [BookSchedulerService],
-  exports: [BookSchedulerService]
+  exports: [BookSchedulerService],
 })
 export class BookSchedulerModule {}

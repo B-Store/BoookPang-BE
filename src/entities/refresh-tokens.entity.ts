@@ -6,27 +6,27 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { UsersEntity } from "./users.entity";
+} from 'typeorm';
+import { UsersEntity } from './users.entity';
 
-@Entity("refresh_tokens")
+@Entity('refresh_tokens')
 export class RefreshTokensEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "user_id" })
+  @Column({ name: 'user_id' })
   userId: number;
 
-  @Column({ name: "refresh_token", nullable: true })
+  @Column({ name: 'refresh_token', nullable: true })
   refreshToken: string;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   @OneToOne(() => UsersEntity, (user) => user.refreshToken)
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn({ name: 'user_id' })
   user: UsersEntity;
 }

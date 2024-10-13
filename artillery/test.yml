@@ -1,0 +1,1208 @@
+config:
+  target: 'http://127.0.0.1:3095'
+  phases:
+    - duration: 20
+      arrivalRate: 50
+
+scenarios:
+  - flow:
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 1, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 2, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 3, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 4, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 5, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 6, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 7, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 8, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 9, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 10, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 11, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 12, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 13, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 14, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 15, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 16, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 17, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 18, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 19, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 20, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 21, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 22, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 23, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 24, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 25, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 26, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 27, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 28, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 29, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 30, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 31, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 32, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 33, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 34, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 35, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 36, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 37, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 38, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 39, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 40, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 41, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 42, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 43, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 44, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 45, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 46, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 47, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 48, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 49, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 50, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 51, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 52, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 53, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 54, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 55, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 56, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 57, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 58, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 59, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 60, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 61, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 62, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 63, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 64, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 65, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 66, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 67, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 68, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 69, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 70, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 71, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 72, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 73, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 74, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 75, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 76, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 77, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 78, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 79, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 80, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 81, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 82, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 83, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 84, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 85, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 86, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 87, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 88, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 89, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 90, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 91, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 92, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 93, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 94, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 95, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 96, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 97, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 98, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 99, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 100, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 1, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 2, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 3, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 4, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 5, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 6, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 7, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 8, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 9, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 10, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 11, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 12, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 13, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 14, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 15, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 16, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 17, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 18, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 19, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 20, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 21, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 22, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 23, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 24, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 25, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 26, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 27, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 28, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 29, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 30, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 31, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 32, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 33, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 34, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 35, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 36, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 37, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 38, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 39, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 40, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 41, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 42, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 43, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 44, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 45, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 46, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 47, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 48, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 49, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 50, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 51, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 52, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 53, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 54, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 55, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 56, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 57, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 58, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 59, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 60, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 61, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 62, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 63, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 64, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 65, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 66, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 67, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 68, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 69, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 70, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 71, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 72, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 73, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 74, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 75, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 76, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 77, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 78, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 79, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 80, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 81, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 82, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 83, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 84, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 85, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 86, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 87, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 88, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 89, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 90, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 91, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 92, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 93, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 94, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 95, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 96, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 97, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 98, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 99, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 100, limit: 15 }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 1, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 2, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 3, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 4, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 5, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 6, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 7, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 8, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 9, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 10, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 11, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 12, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 13, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 14, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 15, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 16, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 17, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 18, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 19, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 20, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 21, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 22, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 23, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 24, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 25, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 26, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 27, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 28, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 29, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 30, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 31, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 32, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 33, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 34, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 35, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 36, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 37, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 38, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 39, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 40, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 41, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 42, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 43, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 44, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 45, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 46, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 47, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 48, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 49, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 50, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 51, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 52, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 53, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 54, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 55, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 56, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 57, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 58, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 59, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 60, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 61, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 62, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 63, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 64, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 65, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 66, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 67, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 68, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 69, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 70, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 71, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 72, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 73, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 74, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 75, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 76, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 77, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 78, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 79, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 80, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 81, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 82, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 83, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 84, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 85, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 86, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 87, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 88, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 89, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 90, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 91, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 92, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 93, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 94, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 95, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 96, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 97, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 98, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 99, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 100, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 1, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 2, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 3, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 4, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 5, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 6, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 7, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 8, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 9, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 10, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 11, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 12, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 13, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 14, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 15, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 16, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 17, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 18, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 19, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 20, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 21, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 22, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 23, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 24, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 25, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 26, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 27, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 28, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 29, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 30, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 31, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 32, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 33, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 34, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 35, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 36, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 37, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 38, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 39, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 40, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 41, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 42, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 43, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 44, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 45, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 46, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 47, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 48, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 49, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 50, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 51, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 52, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 53, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 54, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 55, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 56, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 57, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 58, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 59, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 60, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 61, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 62, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 63, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 64, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 65, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 66, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 67, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 68, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 69, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 70, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 71, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 72, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 73, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 74, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 75, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 76, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 77, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 78, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 79, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 80, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 81, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 82, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 83, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 84, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 85, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 86, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 87, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 88, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 89, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 90, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 91, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 92, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 93, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 94, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 95, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 96, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 97, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 98, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 99, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 100, limit: 4, category: 'book' }

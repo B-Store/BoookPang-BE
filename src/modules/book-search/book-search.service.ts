@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException, OnModuleInit } from "@nestjs/common";
-import { ElasticsearchService } from "@nestjs/elasticsearch";
-import { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
-import { InjectRepository } from "@nestjs/typeorm";
-import { BooksEntity } from "../../entities/books.entity";
-import { Like, Repository } from "typeorm";
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BooksEntity } from '../../entities/books.entity';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class BookSearchService implements OnModuleInit {
@@ -13,17 +13,17 @@ export class BookSearchService implements OnModuleInit {
     private readonly booksRepository: Repository<BooksEntity>,
   ) {}
 
-  async onModuleInit() {
+  public async onModuleInit() {
     await this.createIndex();
-    await this.indexAllBooks()
+    await this.indexAllBooks();
   }
-  
-  async createIndex() {
-    const indexExists = await this.elasticsearchService.indices.exists({ index: "books" });
+
+  public async createIndex() {
+    const indexExists = await this.elasticsearchService.indices.exists({ index: 'books' });
 
     if (!indexExists) {
       await this.elasticsearchService.indices.create({
-        index: "books",
+        index: 'books',
         body: {
           settings: {
             number_of_shards: 1,
@@ -31,46 +31,46 @@ export class BookSearchService implements OnModuleInit {
           },
           mappings: {
             properties: {
-              title: { type: "text" },
-              author: { type: "text" },
-              description: { type: "text" },
-              published_date: { type: "date" },
+              title: { type: 'text' },
+              author: { type: 'text' },
+              description: { type: 'text' },
+              published_date: { type: 'date' },
             },
           },
         },
       });
-      console.log("Index created: books");
+      console.log('Index created: books');
     } else {
-      console.log("Index already exists: books");
+      console.log('Index already exists: books');
     }
   }
 
-  async search(query: object) {
+  public async search(query: object) {
     const response: SearchResponse<any> = await this.elasticsearchService.search({
-      index: "books",
+      index: 'books',
       body: query,
     });
     if (response.hits.hits.length === 0) {
-      throw new NotFoundException("도서를 찾을 수 없습니다.");
+      throw new NotFoundException('도서를 찾을 수 없습니다.');
     }
     return response.hits.hits.map((hit) => hit._source);
   }
 
-  async indexAllBooks() {
+  private async indexAllBooks() {
     const books = await this.booksRepository.find();
     await this.indexBooks(books);
   }
 
-  async indexBooks(books: any[]) {
+  private async indexBooks(books: any[]) {
     for (const book of books) {
       const exists = await this.elasticsearchService.exists({
-        index: "books",
+        index: 'books',
         id: book.id.toString(),
       });
 
       if (!exists) {
         await this.elasticsearchService.index({
-          index: "books",
+          index: 'books',
           id: book.id.toString(),
           body: book,
         });
@@ -80,14 +80,14 @@ export class BookSearchService implements OnModuleInit {
     }
   }
 
-  async findBooks(title: string) {
+  public async findBooks(title: string) {
     const books = await this.booksRepository.find({
       where: {
         title: Like(`%${title}%`),
       },
     });
     if (books.length === 0) {
-      throw new NotFoundException("도서를 찾을 수 없습니다.");
+      throw new NotFoundException('도서를 찾을 수 없습니다.');
     }
     return books;
   }

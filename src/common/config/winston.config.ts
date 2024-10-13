@@ -4,7 +4,7 @@ import 'winston-daily-rotate-file';
 export const winstonConfig = {
   level: 'info',
   transports: [
-    new (winston.transports.DailyRotateFile)({
+    new winston.transports.DailyRotateFile({
       filename: 'log/%DATE%/http-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
@@ -15,7 +15,9 @@ export const winstonConfig = {
         winston.format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss',
         }),
-        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message} - IP: ${info.ip}`),
+        winston.format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message} - IP: ${info.ip}`,
+        ),
       ),
     }),
     new winston.transports.Console({
@@ -23,7 +25,9 @@ export const winstonConfig = {
         winston.format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss',
         }),
-        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message} - IP: ${info.ip}`),
+        winston.format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message} - IP: ${info.ip}`,
+        ),
       ),
     }),
   ],

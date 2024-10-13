@@ -1,15 +1,15 @@
-import { Module } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthController } from "./auth.controller";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersEntity } from "src/entities/users.entity";
-import { RefreshTokensEntity } from "src/entities/refresh-tokens.entity";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
-import { AccessTokenStrategy, RefreshTokenStrategy } from "./jwt-strategy";
-import { ConfigService } from "@nestjs/config";
-import { Vonage } from "@vonage/server-sdk";
-import { Auth } from "@vonage/auth";
+import { Module } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersEntity } from '../../entities/users.entity';
+import { RefreshTokensEntity } from 'src/entities/refresh-tokens.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AccessTokenStrategy, RefreshTokenStrategy } from './jwt-strategy';
+import { ConfigService } from '@nestjs/config';
+import { Vonage } from '@vonage/server-sdk';
+import { Auth } from '@vonage/auth';
 
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { Auth } from "@vonage/auth";
     TypeOrmModule.forFeature([UsersEntity, RefreshTokensEntity]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>("ACCESS_TOKEN_SECRET"),
+        secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>("JWT_ACCESS_TOKEN_EXPIRATION"),
+          expiresIn: configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION'),
         },
       }),
       inject: [ConfigService],

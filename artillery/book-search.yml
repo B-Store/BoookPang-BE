@@ -1,0 +1,88 @@
+config:
+  target: 'http://localhost:3095/api/v1' # NestJS 서버의 URL
+  phases:
+    - duration: 20 # 테스트 지속 시간 (초)
+      arrivalRate: 50 # 초당 요청 수
+
+scenarios:
+  - flow:
+      - get:
+          url: '/book-search'
+          qs:
+            title: '2025' # 첫 번째 엔드포인트 (1번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '2025' # 두 번째 엔드포인트 (1번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '귀금속' # 첫 번째 엔드포인트 (2번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '귀금속' # 두 번째 엔드포인트 (2번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '개혁주의' # 첫 번째 엔드포인트 (3번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '개혁주의' # 두 번째 엔드포인트 (3번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '주니' # 첫 번째 엔드포인트 (4번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '주니' # 두 번째 엔드포인트 (4번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '다리' # 첫 번째 엔드포인트 (5번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '다리' # 두 번째 엔드포인트 (5번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '디자이너' # 첫 번째 엔드포인트 (6번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '디자이너' # 두 번째 엔드포인트 (6번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '아무튼' # 첫 번째 엔드포인트 (7번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '아무튼' # 두 번째 엔드포인트 (7번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '1학년' # 첫 번째 엔드포인트 (8번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '1학년' # 두 번째 엔드포인트 (8번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '두근두근' # 첫 번째 엔드포인트 (9번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '두근두근' # 두 번째 엔드포인트 (9번째 요청)
+      - get:
+          url: '/book-search'
+          qs:
+            title: '운명이' # 첫 번째 엔드포인트 (10번째 요청)
+      - get:
+          url: '/book-search/find-book'
+          qs:
+            title: '운명이' # 두 번째 엔드포인트 (10번째 요청)

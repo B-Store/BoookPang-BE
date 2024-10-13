@@ -1,4 +1,4 @@
-export class CreateCartDto{
-  bookId: number
-  quantity: number
+export class CreateCartDto {
+  bookId: number;
+  quantity: number;
 }

@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
-import { TypeOrmModule } from './database/typeorm/typeorm.module';
+import { DatabaseModule } from './database/typeorm/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BooksModule } from './modules/books/books.module';
 import { BookSearchModule } from './modules/book-search/book-search.module';
@@ -22,12 +22,12 @@ import { BookSchedulerModule } from './schedule/book-scheduler.module';
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
-    TypeOrmModule,
+    DatabaseModule,
     AuthModule,
     BooksModule,
     BookSearchModule,
     CartsModule,
-    BookSchedulerModule
+    BookSchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

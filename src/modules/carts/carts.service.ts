@@ -1,9 +1,9 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { CreateCartDto } from "./dto/create-card.dto";
-import { Injectable } from "@nestjs/common";
-import { CartsEntity } from "src/entities/carts.entity";
-import { In, Repository } from "typeorm";
-import { BooksEntity } from "../../entities/books.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateCartDto } from './dto/create-card.dto';
+import { Injectable } from '@nestjs/common';
+import { CartsEntity } from '../../entities/carts.entity';
+import { In, Repository } from 'typeorm';
+import { BooksEntity } from '../../entities/books.entity';
 
 @Injectable()
 export class CartsService {
@@ -32,15 +32,15 @@ export class CartsService {
 
     const books = await this.bookRepository.find({
       select: [
-        "id",
-        "title",
-        "author",
-        "publisher",
-        "description",
-        "regularPrice",
-        "salePrice",
-        "mileage",
-        "cover",
+        'id',
+        'title',
+        'author',
+        'publisher',
+        'description',
+        'regularPrice',
+        'salePrice',
+        'mileage',
+        'cover',
       ],
       where: { id: In(bookIds) },
     });
