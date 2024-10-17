@@ -1,4 +1,4 @@
-import { SocialProviders } from '../common/enums/enum-social-providers';
+import { SocialProviders } from '../enums/enum-social-providers';
 import {
   Entity,
   Column,

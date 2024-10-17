@@ -1,4 +1,4 @@
-import { ReviewRating } from '../common/enums/enum-review';
+import { ReviewRating } from '../enums/enum-review';
 import {
   Entity,
   Column,

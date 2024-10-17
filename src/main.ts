@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { winstonConfig } from './common/config/winston.config';
+import { winstonConfig } from './common/winston.config';
 import * as winston from 'winston';
 import * as morgan from 'morgan';
 

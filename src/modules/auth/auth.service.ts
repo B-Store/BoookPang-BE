@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from '../../entities/users.entity';
-import { AUTH_CONSTANT } from '../../constants/auth.constant';
+import { AUTH_CONSTANT } from '../../common/auth.constant';
 import { Vonage } from '@vonage/server-sdk';
 import { LogInDto } from './dto/log-in.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -68,7 +68,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { loginId, deletedAt: null },
     });
-
+    console.log(user)
     if (user) {
       throw new BadRequestException('사용중인 아이디입니다.');
     }

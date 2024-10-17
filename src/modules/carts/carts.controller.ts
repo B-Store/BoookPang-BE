@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { CreateCartDto } from './dto/create-card.dto';
-import { RequestAccessTokenByHttp } from '../../common/decorator/jwt-http-request';
+import { RequestAccessTokenByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAccessGuards } from '../auth/jwt-strategy';

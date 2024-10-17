@@ -56,7 +56,6 @@ export class BookListSeeder implements Seeder {
                 const bookDetails = await this.fetchBookDetails(itemId, isbn13);
 
                 if (!bookDetails.description || bookDetails.description.trim() === '') {
-                  this.logger.warn(`Skipping book with ISBN13 ${isbn13} due to empty description.`);
                   continue;
                 }
 
@@ -79,16 +78,10 @@ export class BookListSeeder implements Seeder {
                       category: category as DeepPartial<CategoryEntity>,
                     });
                     await booksCategoryRepository.save(booksCategory);
-                  } else {
-                    this.logger.warn(`Category with ID ${categoryId} not found.`);
                   }
                 }
-              } else {
-                this.logger.log(`Book with ISBN13 ${isbn13} already exists.`);
               }
             }
-          } else {
-            this.logger.warn(`No items found for ${queryType} - ${searchTarget}`);
           }
         } catch (error) {
           this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
@@ -119,7 +112,6 @@ export class BookListSeeder implements Seeder {
       });
 
       if (!response.data || !Array.isArray(response.data.item) || response.data.item.length === 0) {
-        this.logger.error(`No data found for ISBN13 ${isbn13}`);
         return {};
       }
 
@@ -142,7 +134,6 @@ export class BookListSeeder implements Seeder {
         description: bookDetails.description,
       };
     } catch (error) {
-      this.logger.error(`Error fetching details for ISBN13 ${isbn13}:`, error);
       return {};
     }
   }

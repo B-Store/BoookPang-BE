@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { LogInDto } from './dto/log-in.dto';
-import { RequestRefreshTokenByHttp } from 'src/common/decorator/jwt-http-request';
+import { RequestRefreshTokenByHttp } from 'src/decorator/jwt-http-request';
 import { JwtRefreshGuards } from './jwt-strategy';
 
 @ApiTags('인증')
@@ -45,6 +45,7 @@ export class AuthController {
    */
   @Get('check-login-id/:loginId')
   async checkLoginId(@Param('loginId') loginId: string) {
+    console.log(loginId)
     await this.authService.checkLoginIdAvailability(loginId);
     return { message: '사용 가능한 아이디입니다.' };
   }
