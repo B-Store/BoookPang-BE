@@ -6,43 +6,44 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { ReviewEntity } from "./reviews.entity";
-import { OrderEntity } from "./orders.entity";
-import { LikesEntity } from "./likes.entity";
-import { BooksCategoryEntity } from "./books-category.entity";
-import { CartsEntity } from "./carts.entity";
+} from 'typeorm';
+import { ReviewEntity } from './reviews.entity';
+import { OrderEntity } from './orders.entity';
+import { LikesEntity } from './likes.entity';
+import { BooksCategoryEntity } from './books-category.entity';
+import { CartsEntity } from './carts.entity';
+import { WishlistEntity } from './wishlist.entity';
 
-@Entity("books")
+@Entity('books')
 export class BooksEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   // 기본 정보
-  @Column({ name: "title" })
+  @Column({ name: 'title' })
   title: string;
 
-  @Column({ name: "author" })
+  @Column({ name: 'author' })
   author: string;
 
-  @Column({ name: "publisher" })
+  @Column({ name: 'publisher' })
   publisher: string;
 
   @Column({ nullable: true })
   description: string;
 
   // 가격 정보
-  @Column({ name: "regular_price" })
+  @Column({ name: 'regular_price' })
   regularPrice: number;
 
-  @Column({ name: "sale_price" })
+  @Column({ name: 'sale_price' })
   salePrice: number;
 
   @Column()
   mileage: number;
 
   // 재고 및 식별자
-  @Column({ name: "stock_quantity", type: "int" })
+  @Column({ name: 'stock_quantity', type: 'int' })
   stockQuantity: number;
 
   @Column()
@@ -59,23 +60,23 @@ export class BooksEntity {
   cover: string;
 
   // 평가 및 검색
-  @Column({ name: "average_rating", nullable: true })
+  @Column({ name: 'average_rating', nullable: true })
   averageRating: number;
 
-  @Column({ name: "source_type" })
+  @Column({ name: 'source_type' })
   sourceType: string;
 
-  @Column({ name: "search_target" })
+  @Column({ name: 'search_target' })
   searchTarget: string;
 
   // 타임스탬프
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: "deleted_at" })
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
   @OneToMany(() => ReviewEntity, (review) => review.book)
@@ -92,4 +93,7 @@ export class BooksEntity {
 
   @OneToMany(() => CartsEntity, (cart) => cart.book, { cascade: true })
   cart: CartsEntity[];
+
+  @OneToMany(()=> WishlistEntity, (wishlists) => wishlists.book)
+  wishlists: WishlistEntity[];
 }

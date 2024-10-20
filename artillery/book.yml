@@ -1,26 +1,135 @@
 config:
-  target: 'http://13.209.79.254:3095'
+  target: 'http://127.0.0.1:3095'
   phases:
     - duration: 20  # 테스트 지속 시간 (초)
       arrivalRate: 50  # 초당 요청 수
 
 scenarios:
   - flow:
+      # 베스트셀러 페이지 요청
       - get:
-          url: '/api/v1/books/bestsellers?page=1&limit=10' 
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 1, limit: 15 }
       - get:
-          url: '/api/v1/books/bestsellers?page=2&limit=10'
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 2, limit: 15 }
       - get:
-          url: '/api/v1/books/bestsellers?page=3&limit=10'
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 3, limit: 15 }
       - get:
-          url: '/api/v1/books/new-books?page=2&limit=10'
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 4, limit: 15 }
       - get:
-          url: '/api/v1/books/new-books?page=3&limit=10'
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 5, limit: 15 }
       - get:
-          url: '/api/v1/books/new-books?page=4&limit=10'
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 6, limit: 15 }
       - get:
-          url: '/api/v1/books/recommended-books?page=3&limit=4&category=all'  # 추천 도서 테스트
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 7, limit: 15 }
       - get:
-          url: '/api/v1/books/recommended-books?page=4&limit=4&category=eBook'  # 추천 도서 테스트
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 8, limit: 15 }
       - get:
-          url: '/api/v1/books/recommended-books?page=5&limit=4&category=eBook'  # 추천 도서 테스트
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 9, limit: 15 }
+      - get:
+          url: '/api/v1/books/bestsellers'
+          qs: { page: 10, limit: 15 }
+
+      # 신규 도서 페이지 요청
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 1, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 2, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 3, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 4, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 5, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 6, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 7, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 8, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 9, limit: 15 }
+      - get:
+          url: '/api/v1/books/new-books'
+          qs: { page: 10, limit: 15 }
+
+      # 추천 도서 페이지 요청 (eBook 카테고리)
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 1, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 2, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 3, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 4, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 5, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 6, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 7, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 8, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 9, limit: 4, category: 'eBook' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 10, limit: 4, category: 'eBook' }
+
+      # 추천 도서 페이지 요청 (일반 카테고리)
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 1, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 2, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 3, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 4, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 5, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 6, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 7, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 8, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 9, limit: 4, category: 'book' }
+      - get:
+          url: '/api/v1/books/recommended-books'
+          qs: { page: 10, limit: 4, category: 'book' }

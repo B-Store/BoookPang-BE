@@ -13,6 +13,7 @@ import { CategoryEntity } from "./src/entities/category.entity";
 import { CartsEntity } from "./src/entities/carts.entity";
 import { BooksEntity } from "./src/entities/books.entity";
 import { BooksCategoryEntity } from "./src/entities/books-category.entity";
+import { TermsOfServiceEntity } from "./src/entities/terms_of_service.entity";
 
 export const config = new DataSource({
   type: "mysql",
@@ -30,8 +31,10 @@ export const config = new DataSource({
     CategoryEntity,
     CartsEntity,
     BooksEntity,
-    BooksCategoryEntity
+    BooksCategoryEntity,
+    TermsOfServiceEntity
   ],
   synchronize: true,
   logging: true,
+  connectTimeout: 30000, // 30초로 설정
 });

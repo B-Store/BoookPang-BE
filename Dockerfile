@@ -18,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # Expose ports for both applications
-EXPOSE 3095
+EXPOSE 9000
 
 # Start Elasticsearch and NestJS
 CMD ["node", "dist/src/main.js"]

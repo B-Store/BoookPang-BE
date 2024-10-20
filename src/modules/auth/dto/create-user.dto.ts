@@ -1,9 +1,22 @@
-import { PickType } from "@nestjs/swagger";
-import { UsersEntity } from "../../../entities/users.entity";
+import { PickType } from '@nestjs/swagger';
+import { UsersEntity } from '../../../entities/users.entity';
+import { TermsOfServiceEntity } from '../../../entities/terms_of_service.entity';
 
-export class CreateUserDto extends PickType(UsersEntity, [
-  'loginId',
+class UserBaseDto extends PickType(UsersEntity, [
+  'externalId',
   'phoneNumber',
   'password',
-  'nickname'
-]){}
+  'nickname',
+]) {}
+
+class TermsOfServiceBaseDto extends PickType(TermsOfServiceEntity, [
+  'serviceTerms', 
+  'privacyPolicy',
+  'carrierTerms',
+  'identificationInfoPolicy',
+  'verificationServiceTerms'
+]) {}
+
+export class CreateUserDto extends UserBaseDto {
+  termsOfService: TermsOfServiceBaseDto;
+}

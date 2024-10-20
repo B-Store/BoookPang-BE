@@ -1,19 +1,19 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { AuthGuard, PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthGuard, PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from './auth.service';
-import { JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
-export class AccessTokenStrategy extends PassportStrategy(Strategy, "accessToken") {
+export class AccessTokenStrategy extends PassportStrategy(Strategy, 'accessToken') {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get<string>("ACCESS_TOKEN_SECRET"),
+      secretOrKey: configService.get<string>('ACCESS_TOKEN_SECRET'),
     });
   }
   async validate(payload: JwtPayload) {
@@ -25,14 +25,14 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, "accessToken
 }
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(Strategy, "refreshToken") {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refreshToken') {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get<string>("REFRESH_TOKEN_SECRET"),
+      secretOrKey: configService.get<string>('REFRESH_TOKEN_SECRET'),
     });
   }
   async validate(payload: JwtPayload) {
@@ -44,6 +44,6 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, "refreshTok
 }
 
 @Injectable()
-export class JwtAccessGuards extends AuthGuard("accessToken") {}
+export class JwtAccessGuards extends AuthGuard('accessToken') {}
 @Injectable()
-export class JwtRefreshGuards extends AuthGuard("refreshToken") {}
+export class JwtRefreshGuards extends AuthGuard('refreshToken') {}

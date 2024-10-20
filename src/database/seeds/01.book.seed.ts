@@ -1,10 +1,10 @@
-import { DataSource, DeepPartial } from "typeorm";
-import { Seeder } from "typeorm-extension";
-import { BooksEntity } from "../../entities/books.entity";
-import { CategoryEntity } from "../../entities/category.entity";
-import { BooksCategoryEntity } from "../../entities/books-category.entity";
-import { Logger } from "@nestjs/common";
-import axios from "axios";
+import { DataSource, DeepPartial } from 'typeorm';
+import { Seeder } from 'typeorm-extension';
+import { BooksEntity } from '../../entities/books.entity';
+import { CategoryEntity } from '../../entities/category.entity';
+import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { Logger } from '@nestjs/common';
+import axios from 'axios';
 
 export class BookListSeeder implements Seeder {
   private readonly logger = new Logger(BookListSeeder.name);
@@ -15,50 +15,44 @@ export class BookListSeeder implements Seeder {
     const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
 
     const queryTypes = [
-      "ItemNewAll",
-      "ItemNewSpecial",
-      "ItemEditorChoice",
-      "Bestseller",
-      "BlogBest",
+      'ItemNewAll', // 신간 전체 리스트
+      'ItemNewSpecial', // 주목할 만한 신간 리스트
+      'ItemEditorChoice', // 편집자 추천 리스트 (카테고리로만 조회가능 - 국내도서 / 음반 / 외서)
+      'Bestseller', // 베스트셀러
+      'BlogBest', // 블로거 베스트셀러 (국내도서만 조회 가능)
     ];
-    const searchTargets = ["Book", "Foreign", "Music", "DVD", "Used", "eBook"];
+    const searchTargets = ['Book', 'Foreign', 'eBook'];
 
     if (!process.env.OPEN_API) {
-      this.logger.error("API key is not set in environment variables.");
+      this.logger.error('API ker가 없습니다.');
       return;
     }
 
     for (const queryType of queryTypes) {
       for (const searchTarget of searchTargets) {
         try {
-          const response = await axios.get("http://www.aladin.co.kr/ttb/api/ItemList.aspx", {
+          const response = await axios.get('http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
             params: {
               ttbkey: process.env.OPEN_API,
               QueryType: queryType,
-              MaxResults: 1000,
+              MaxResults: 10000,
               start: 1,
               SearchTarget: searchTarget,
-              output: "js",
-              Version: "20131101",
+              output: 'js',
+              Version: '20131101',
             },
           });
-
+          
           if (response.data && Array.isArray(response.data.item)) {
             const books = response.data.item;
-
             for (const book of books) {
               const { itemId, isbn13 } = book;
               const existingBook = await bookRepository.findOne({
                 where: { isbn13 },
               });
-
+              
               if (!existingBook) {
                 const bookDetails = await this.fetchBookDetails(itemId, isbn13);
-
-                if (!bookDetails.description || bookDetails.description.trim() === "") {
-                  this.logger.warn(`Skipping book with ISBN13 ${isbn13} due to empty description.`);
-                  continue;
-                }
 
                 const bookEntity = bookRepository.create({
                   ...bookDetails,
@@ -79,16 +73,10 @@ export class BookListSeeder implements Seeder {
                       category: category as DeepPartial<CategoryEntity>,
                     });
                     await booksCategoryRepository.save(booksCategory);
-                  } else {
-                    this.logger.warn(`Category with ID ${categoryId} not found.`);
                   }
                 }
-              } else {
-                this.logger.log(`Book with ISBN13 ${isbn13} already exists.`);
               }
             }
-          } else {
-            this.logger.warn(`No items found for ${queryType} - ${searchTarget}`);
           }
         } catch (error) {
           this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
@@ -98,28 +86,27 @@ export class BookListSeeder implements Seeder {
   }
 
   private async fetchBookDetails(itemId: string, isbn13: string): Promise<any> {
-    const baseUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
+    const baseUrl = 'http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx';
 
     try {
       if (!isbn13) {
-        this.logger.error("Invalid ISBN13:", isbn13);
+        this.logger.error('Invalid ISBN13:', isbn13);
         return {};
       }
 
       const response = await axios.get(baseUrl, {
         params: {
           ttbkey: process.env.OPEN_API,
-          ItemIdType: "ISBN13",
+          ItemIdType: 'ISBN13',
           ItemId: isbn13,
-          output: "js",
-          Version: "20131101",
+          output: 'js',
+          Version: '20131101',
           OptResult:
-            "previewImgList,eventList,authors,reviewList,fulldescription,fulldescription2,Toc,Story,categoryIdList,mdrecommend,phraseList",
+            'previewImgList,eventList,authors,reviewList,fulldescription,fulldescription2,Toc,Story,categoryIdList,mdrecommend,phraseList',
         },
       });
 
       if (!response.data || !Array.isArray(response.data.item) || response.data.item.length === 0) {
-        this.logger.error(`No data found for ISBN13 ${isbn13}`);
         return {};
       }
 
@@ -142,7 +129,6 @@ export class BookListSeeder implements Seeder {
         description: bookDetails.description,
       };
     } catch (error) {
-      this.logger.error(`Error fetching details for ISBN13 ${isbn13}:`, error);
       return {};
     }
   }

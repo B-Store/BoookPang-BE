@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("local-codes")
+@Entity('local_codes')
 export class LocalCodesEntity {
   @PrimaryGeneratedColumn()
   id: number;

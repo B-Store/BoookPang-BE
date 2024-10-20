@@ -1,25 +1,28 @@
-import { Module } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthController } from "./auth.controller";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersEntity } from "src/entities/users.entity";
-import { RefreshTokensEntity } from "src/entities/refresh-tokens.entity";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
-import { AccessTokenStrategy, RefreshTokenStrategy } from "./jwt-strategy";
-import { ConfigService } from "@nestjs/config";
-import { Vonage } from "@vonage/server-sdk";
-import { Auth } from "@vonage/auth";
+import { Module } from '@nestjs/common';
+import { Vonage } from '@vonage/server-sdk';
+import { AuthService } from './auth.service';
+import { CacheModule } from '@nestjs/cache-manager';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { Auth } from '@vonage/auth';
+import { PassportModule } from '@nestjs/passport';
+import { AuthController } from './auth.controller';
+import { UsersEntity } from '../../entities/users.entity';
+import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
+import { AccessTokenStrategy, RefreshTokenStrategy } from './jwt-strategy';
+import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
 
 @Module({
   imports: [
+    CacheModule.register(),
     PassportModule,
-    TypeOrmModule.forFeature([UsersEntity, RefreshTokensEntity]),
+    TypeOrmModule.forFeature([UsersEntity, RefreshTokensEntity, TermsOfServiceEntity]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>("ACCESS_TOKEN_SECRET"),
+        secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>("JWT_ACCESS_TOKEN_EXPIRATION"),
+          expiresIn: configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION'),
         },
       }),
       inject: [ConfigService],

@@ -2,15 +2,15 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { BookSearchService } from './book-search.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('book-search')
+@ApiTags('도서 검색')
 @Controller('book-search')
 export class BookSearchController {
   constructor(private readonly searchService: BookSearchService) {}
 
   /**
    * 도서 검색 서치
-   * @param query 
-   * @returns 
+   * @returns
+   * @param title
    */
   @Get()
   async search(@Query('title') title: string) {
@@ -24,16 +24,16 @@ export class BookSearchController {
         },
       },
     };
-    return await this.searchService.search(query);
+    return this.searchService.search(query);
   }
 
-    /**
+  /**
    * 도서 검색 라이크
-   * @param query 
-   * @returns 
+   * @returns
+   * @param title
    */
-    @Get('find-book')
-    async findBooks(@Query('title') title: string) {
-      return await this.searchService.findBooks(title);
-    }
+  @Get('find-book')
+  async findBooks(@Query('title') title: string) {
+    return this.searchService.findBooks(title);
+  }
 }

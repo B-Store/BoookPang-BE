@@ -1,4 +1,4 @@
-import { SocialProviders } from "../common/enums/enum-social-providers";
+import { SocialProviders } from '../enums/enum-social-providers';
 import {
   Entity,
   Column,
@@ -8,17 +8,18 @@ import {
   DeleteDateColumn,
   OneToMany,
   OneToOne,
-} from "typeorm";
-import { ReviewEntity } from "./reviews.entity";
-import { OrderEntity } from "./orders.entity";
-import { RefreshTokensEntity } from "./refresh-tokens.entity";
-import { LikesEntity } from "./likes.entity";
-import { ChatsEntity } from "./chats.entity";
-import { ChatRoomUsersEntity } from "./chat-rooms-users.entity";
-import { CartsEntity } from "./carts.entity";
-import { IsNotEmpty, IsString } from "class-validator";
+} from 'typeorm';
+import { ReviewEntity } from './reviews.entity';
+import { OrderEntity } from './orders.entity';
+import { RefreshTokensEntity } from './refresh-tokens.entity';
+import { LikesEntity } from './likes.entity';
+import { ChatsEntity } from './chats.entity';
+import { ChatRoomUsersEntity } from './chat-rooms-users.entity';
+import { CartsEntity } from './carts.entity';
+import { TermsOfServiceEntity } from './terms_of_service.entity';
+import { WishlistEntity } from './wishlist.entity';
 
-@Entity("users")
+@Entity('users')
 export class UsersEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -26,14 +27,12 @@ export class UsersEntity {
   /**
    * @example example@gmail.com
    */
-  @Column({ unique: true, name: "login_id" })
-  loginId: string;
+  @Column({ unique: true, name: 'external_id' })
+  externalId: string;
 
   /**
    * @example 01011111111
    */
-  @IsString({ message: "전화번호는 문자열이여야 합니다." })
-  @IsNotEmpty({ message: "전화번호는 필수 입력 항목입니다." })
   @Column({ unique: true, nullable: true })
   phoneNumber: string;
 
@@ -44,13 +43,13 @@ export class UsersEntity {
   nickname: string;
 
   /**
-   * @example 123456789
+   * @example bookPang12345
    */
   @Column({ nullable: true })
   password: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: SocialProviders,
     default: SocialProviders.LOCAL,
   })
@@ -59,13 +58,13 @@ export class UsersEntity {
   @Column({ nullable: true })
   address: string;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: "deleted_at" })
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
   @OneToMany(() => ReviewEntity, (review) => review.user)
@@ -88,4 +87,10 @@ export class UsersEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   order: OrderEntity[];
+
+  @OneToMany(() => TermsOfServiceEntity, (termsOfService) => termsOfService.user)
+  termsOfServiceEntity: TermsOfServiceEntity[];
+
+  @OneToMany(()=> WishlistEntity, (wishlists) => wishlists.user)
+  wishlists: WishlistEntity[];
 }
