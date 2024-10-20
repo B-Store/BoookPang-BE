@@ -12,6 +12,7 @@ import { OrderEntity } from './orders.entity';
 import { LikesEntity } from './likes.entity';
 import { BooksCategoryEntity } from './books-category.entity';
 import { CartsEntity } from './carts.entity';
+import { WishlistEntity } from './wishlist.entity';
 
 @Entity('books')
 export class BooksEntity {
@@ -92,4 +93,7 @@ export class BooksEntity {
 
   @OneToMany(() => CartsEntity, (cart) => cart.book, { cascade: true })
   cart: CartsEntity[];
+
+  @OneToMany(()=> WishlistEntity, (wishlists) => wishlists.book)
+  wishlists: WishlistEntity[];
 }

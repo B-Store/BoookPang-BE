@@ -5,8 +5,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { LogInDto } from './dto/log-in.dto';
-import { RequestRefreshTokenByHttp } from 'src/decorator/jwt-http-request';
 import { JwtRefreshGuards } from './jwt-strategy';
+import { RequestRefreshTokenByHttp } from '../../decorator/jwt-http-request';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -18,9 +18,9 @@ export class AuthController {
    * @param phoneDto
    * @returns
    */
-  @Post('verify-phone')
+  @Post('send-verification-AuthCode')
   async sendVerificationCode(@Body() phoneDto: PhoneDto) {
-    await this.authService.sendVerificationCode(phoneDto.phoneNumber);
+    await this.authService.sendVerificationCode(phoneDto);
     return { message: '인증코드가 전송되었습니다.' };
   }
 
@@ -29,11 +29,10 @@ export class AuthController {
    * @param verifyCodeDto
    * @returns
    */
-  @Post('verify-code')
+  @Post('validation-AuthCode')
   async phoneNumberValidator(@Body() verifyCodeDto: VerifyCodeDto) {
-    await this.authService.phoneNumberValidator(
-      verifyCodeDto.phoneNumber,
-      verifyCodeDto.verificationCode,
+    await this.authService.phoneNumberValidator( 
+      verifyCodeDto
     );
     return { message: '인증코드가 일치합니다.' };
   }
@@ -43,17 +42,27 @@ export class AuthController {
    * @param loginId
    * @returns
    */
-  @Get('check-login-id/:loginId')
-  async checkLoginId(@Param('loginId') loginId: string) {
-    console.log(loginId)
-    await this.authService.checkLoginIdAvailability(loginId);
+  @Get('check-external-id/:externalId')
+  async checkExternalId(@Param('externalId') externalId: string) {
+    await this.authService.checkExternalId(externalId);
     return { message: '사용 가능한 아이디입니다.' };
   }
 
+    /**
+   * 닉네임 중복 확인
+   * @param loginId
+   * @returns
+   */
+    @Get('check-external-id/:externalId')
+    async checkNickName(@Param('nickname') nickname: string) {
+      await this.authService.checkNickName(nickname);
+      return { message: '사용 가능한 닉네임입니다.' };
+    }
+
   /**
    * 회원가입
-   * @returns
-   * @param createUserDto
+   * @param createUserDto 
+   * @returns 
    */
   @Post('sign-up')
   async userCreate(@Body() createUserDto: CreateUserDto) {

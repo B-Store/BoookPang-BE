@@ -11,7 +11,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('SERVER_PORT') || 3000;
   const logger = winston.createLogger(winstonConfig);
-
+  
   const config = new DocumentBuilder()
     .setTitle('북팡')
     .setDescription('project : 북팡 구매 서비스')
@@ -37,12 +37,8 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api/v1');
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  });
+  app.enableCors();
+  
   try {
     await app.listen(port);
     console.log(`Server is running on: ${port}, Great to see you! 😊`);

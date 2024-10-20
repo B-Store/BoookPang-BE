@@ -1,9 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCartDto } from './dto/create-card.dto';
-import { Injectable } from '@nestjs/common';
+import { CreateCartDto } from './dto/create-cart.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CartsEntity } from '../../entities/carts.entity';
 import { In, Repository } from 'typeorm';
 import { BooksEntity } from '../../entities/books.entity';
+import { UpdateCartDto } from './dto/update-cart.dto';
 
 @Injectable()
 export class CartsService {
@@ -42,12 +43,37 @@ export class CartsService {
         'mileage',
         'cover',
       ],
-      where: { id: In(bookIds) },
+      where: { id: In(bookIds), deletedAt: null },
     });
 
     return cartItems.map((item) => ({
       ...item,
       book: books.find((book) => book.id === item.bookId),
     }));
+  }
+
+  public async updateBookCart(userId: number, cartId: number, updateCartDto: UpdateCartDto) {
+    const { quantity } = updateCartDto;
+
+    const cartItem = await this.cartRepository.findOne({ where: { id: cartId, userId } });
+
+    if (!cartItem) {
+      throw new NotFoundException('장바구니 항목을 찾을 수 없습니다.');
+    }
+
+    cartItem.quantity = quantity;
+
+    return this.cartRepository.save(cartItem);
+  }
+
+  public async deleteBookCart(userId: number, cartId: number) {
+    const cartItem = await this.cartRepository.findOne({ where: { id: cartId, userId } });
+
+    if (!cartItem) {
+      throw new NotFoundException('장바구니 항목을 찾을 수 없습니다.');
+    }
+    cartItem.deletedAt = new Date();
+
+    return this.cartRepository.save(cartItem);
   }
 }

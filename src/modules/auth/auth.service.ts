@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt';
 import {
   Injectable,
   BadRequestException,
@@ -6,18 +5,24 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { Vonage } from '@vonage/server-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { VerifyCodeDto } from './dto/verify-code.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from '../../entities/users.entity';
 import { AUTH_CONSTANT } from '../../common/auth.constant';
-import { Vonage } from '@vonage/server-sdk';
 import { LogInDto } from './dto/log-in.dto';
-import { JwtService } from '@nestjs/jwt';
 import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { PhoneDto } from './dto/phone-number-dto';
+import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
+
+const userAuthStates = {};
 
 @Injectable()
 export class AuthService {
@@ -27,12 +32,16 @@ export class AuthService {
     private userRepository: Repository<UsersEntity>,
     @InjectRepository(RefreshTokensEntity)
     private refreshTokenRepository: Repository<RefreshTokensEntity>,
+    @InjectRepository(TermsOfServiceEntity)
+    private termsOfServiceRepository: Repository<TermsOfServiceEntity>,
     private configService: ConfigService,
     private jwtService: JwtService,
     private vonage: Vonage,
   ) {}
 
-  public async sendVerificationCode(phoneNumber: string) {
+  public async sendVerificationCode(phoneDto: PhoneDto) {
+    const { phoneNumber } = phoneDto;
+
     if (!phoneNumber) {
       throw new NotFoundException('phoneNumber 값을 확인해 주세요.');
     }
@@ -41,14 +50,17 @@ export class AuthService {
     const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber);
     await this.cacheManager.set(phoneNumber, verificationCode, 300000);
 
+    userAuthStates[phoneNumber] = { isVerified: false };
     this.vonage.sms.send({
       to: formattedPhoneNumber,
       from: this.configService.get<string>('VONAGE_SENDER_NUMBER'),
-      text: `Your verification code is ${verificationCode}`,
+      text: `Your bookPang verification code is ${verificationCode}`,
     });
   }
 
-  public async phoneNumberValidator(phoneNumber: string, verificationCode: number) {
+  public async phoneNumberValidator(verifyCodeDto: VerifyCodeDto) {
+    const { phoneNumber, verificationCode } = verifyCodeDto;
+
     if (!phoneNumber || !verificationCode) {
       throw new BadRequestException('phoneNumber, verificationCode 값을 확인해 주세요.');
     }
@@ -57,51 +69,92 @@ export class AuthService {
     if (cacheKey !== verificationCode) {
       throw new BadRequestException('인증코드가 일치하지 않습니다.');
     }
+    userAuthStates[phoneNumber].isVerified = true;
     await this.cacheManager.del(phoneNumber);
   }
 
-  public async checkLoginIdAvailability(loginId: string) {
-    if (!loginId) {
-      throw new BadRequestException('loginId 값을 확인해 주세요.');
+  public async checkExternalId(externalId: string) {
+    if (!externalId) {
+      throw new BadRequestException('externalId 값을 확인해 주세요.');
     }
 
     const user = await this.userRepository.findOne({
-      where: { loginId, deletedAt: null },
+      where: { externalId, deletedAt: null },
     });
-    console.log(user)
+
     if (user) {
       throw new BadRequestException('사용중인 아이디입니다.');
     }
     return null;
   }
 
+  public async checkNickName(nickname: string) {
+    if (!nickname) {
+      throw new BadRequestException('nickname 값을 확인해 주세요.');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { nickname, deletedAt: null },
+    });
+
+    if (user) {
+      throw new BadRequestException('사용중인 닉네임입니다.');
+    }
+    return null;
+  }
+
   public async userCreate(createUserDto: CreateUserDto) {
-    const { loginId, nickname, password, phoneNumber } = createUserDto;
-    if (!loginId || !nickname || !password || !phoneNumber) {
+    const { externalId, nickname, password, phoneNumber } = createUserDto;
+    if (!externalId || !nickname || !password || !phoneNumber) {
       throw new BadRequestException(
         'loginId, nickname, password, phoneNumber 값들을 확인해 주세요.',
       );
     }
-    await this.checkLoginIdAvailability(loginId);
+
+    const userState = userAuthStates[phoneNumber];
+    if (!userState || !userState.isVerified) {
+      throw new BadRequestException("이메일 인증이 필요합니다.");
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,15}$/;
+    if (!passwordRegex.test(password)) {
+      throw new BadRequestException(
+        '비밀번호는 8~15자 이내의 영문 소문자와 숫자가 혼합되어야 합니다.',
+      );
+    }
+
+    await this.checkExternalId(externalId);
 
     const hashPassword = bcrypt.hashSync(password, AUTH_CONSTANT.HASH_SALT_ROUNDS);
 
-    return this.userRepository.save({
-      loginId,
+    const userCreateData = await this.userRepository.save({
+      externalId,
       nickname,
       password: hashPassword,
       phoneNumber,
     });
+
+    await this.termsOfServiceRepository.save({
+      userId: userCreateData.id,
+      serviceTerms: createUserDto.termsOfService.serviceTerms,
+      privacyPolicy: createUserDto.termsOfService.privacyPolicy,
+      carrierTerms: createUserDto.termsOfService.carrierTerms,
+      identificationInfoPolicy: createUserDto.termsOfService.identificationInfoPolicy,
+      verificationServiceTerms: createUserDto.termsOfService.verificationServiceTerms
+    })
+    delete userAuthStates[phoneNumber];
+
+    return userCreateData
   }
 
   public async logIn(logInDto: LogInDto) {
-    const { loginId, password } = logInDto;
-    if (!loginId || !password) {
+    const { externalId, password } = logInDto;
+    if (!externalId || !password) {
       throw new BadRequestException('loginId, password 값을 확인해 주세요.');
     }
 
     const user = await this.userRepository.findOne({
-      where: { loginId: loginId, deletedAt: null },
+      where: { externalId: externalId, deletedAt: null },
     });
 
     if (!user) {

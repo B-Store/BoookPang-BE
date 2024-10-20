@@ -16,6 +16,8 @@ import { LikesEntity } from './likes.entity';
 import { ChatsEntity } from './chats.entity';
 import { ChatRoomUsersEntity } from './chat-rooms-users.entity';
 import { CartsEntity } from './carts.entity';
+import { TermsOfServiceEntity } from './terms_of_service.entity';
+import { WishlistEntity } from './wishlist.entity';
 
 @Entity('users')
 export class UsersEntity {
@@ -25,8 +27,8 @@ export class UsersEntity {
   /**
    * @example example@gmail.com
    */
-  @Column({ unique: true, name: 'login_id' })
-  loginId: string;
+  @Column({ unique: true, name: 'external_id' })
+  externalId: string;
 
   /**
    * @example 01011111111
@@ -41,7 +43,7 @@ export class UsersEntity {
   nickname: string;
 
   /**
-   * @example 123456789
+   * @example bookPang12345
    */
   @Column({ nullable: true })
   password: string;
@@ -85,4 +87,10 @@ export class UsersEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   order: OrderEntity[];
+
+  @OneToMany(() => TermsOfServiceEntity, (termsOfService) => termsOfService.user)
+  termsOfServiceEntity: TermsOfServiceEntity[];
+
+  @OneToMany(()=> WishlistEntity, (wishlists) => wishlists.user)
+  wishlists: WishlistEntity[];
 }

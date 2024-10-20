@@ -15,16 +15,16 @@ export class BookListSeeder implements Seeder {
     const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
 
     const queryTypes = [
-      'ItemNewAll',
-      'ItemNewSpecial',
-      'ItemEditorChoice',
-      'Bestseller',
-      'BlogBest',
+      'ItemNewAll', // 신간 전체 리스트
+      'ItemNewSpecial', // 주목할 만한 신간 리스트
+      'ItemEditorChoice', // 편집자 추천 리스트 (카테고리로만 조회가능 - 국내도서 / 음반 / 외서)
+      'Bestseller', // 베스트셀러
+      'BlogBest', // 블로거 베스트셀러 (국내도서만 조회 가능)
     ];
-    const searchTargets = ['Book', 'Foreign', 'Music', 'DVD', 'Used', 'eBook'];
+    const searchTargets = ['Book', 'Foreign', 'eBook'];
 
     if (!process.env.OPEN_API) {
-      this.logger.error('API key is not set in environment variables.');
+      this.logger.error('API ker가 없습니다.');
       return;
     }
 
@@ -35,29 +35,24 @@ export class BookListSeeder implements Seeder {
             params: {
               ttbkey: process.env.OPEN_API,
               QueryType: queryType,
-              MaxResults: 1000,
+              MaxResults: 10000,
               start: 1,
               SearchTarget: searchTarget,
               output: 'js',
               Version: '20131101',
             },
           });
-
+          
           if (response.data && Array.isArray(response.data.item)) {
             const books = response.data.item;
-
             for (const book of books) {
               const { itemId, isbn13 } = book;
               const existingBook = await bookRepository.findOne({
                 where: { isbn13 },
               });
-
+              
               if (!existingBook) {
                 const bookDetails = await this.fetchBookDetails(itemId, isbn13);
-
-                if (!bookDetails.description || bookDetails.description.trim() === '') {
-                  continue;
-                }
 
                 const bookEntity = bookRepository.create({
                   ...bookDetails,
