@@ -6,7 +6,7 @@ import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { LogInDto } from './dto/log-in.dto';
 import { JwtRefreshGuards } from './jwt-strategy';
-import { RequestRefreshTokenByHttp } from '../../decorator/jwt-http-request';
+import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -31,9 +31,7 @@ export class AuthController {
    */
   @Post('validation-AuthCode')
   async phoneNumberValidator(@Body() verifyCodeDto: VerifyCodeDto) {
-    await this.authService.phoneNumberValidator( 
-      verifyCodeDto
-    );
+    await this.authService.phoneNumberValidator(verifyCodeDto);
     return { message: '인증코드가 일치합니다.' };
   }
 
@@ -48,21 +46,21 @@ export class AuthController {
     return { message: '사용 가능한 아이디입니다.' };
   }
 
-    /**
+  /**
    * 닉네임 중복 확인
-   * @param loginId
+   * @param nickname
    * @returns
    */
-    @Get('check-external-id/:externalId')
-    async checkNickName(@Param('nickname') nickname: string) {
-      await this.authService.checkNickName(nickname);
-      return { message: '사용 가능한 닉네임입니다.' };
-    }
+  @Get('check-nickname/:nickname')
+  async checkNickName(@Param('nickname') nickname: string) {
+    await this.authService.checkNickName(nickname);
+    return { message: '사용 가능한 닉네임입니다.' };
+  }
 
   /**
    * 회원가입
-   * @param createUserDto 
-   * @returns 
+   * @param createUserDto
+   * @returns
    */
   @Post('sign-up')
   async userCreate(@Body() createUserDto: CreateUserDto) {
@@ -88,7 +86,7 @@ export class AuthController {
   @Post('refresh-token')
   @UseGuards(JwtRefreshGuards)
   async refreshToken(
-    @RequestRefreshTokenByHttp() { userId, refreshToken }: { userId: number; refreshToken: string },
+    @RequestTokensByHttp() { userId, refreshToken }: { userId: number; refreshToken: string },
   ) {
     {
       return this.authService.refreshToken(userId, refreshToken);

@@ -43,7 +43,7 @@ export class UsersEntity {
   nickname: string;
 
   /**
-   * @example bookPang12345
+   * @example bookpang12345
    */
   @Column({ nullable: true })
   password: string;

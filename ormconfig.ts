@@ -14,6 +14,7 @@ import { CartsEntity } from "./src/entities/carts.entity";
 import { BooksEntity } from "./src/entities/books.entity";
 import { BooksCategoryEntity } from "./src/entities/books-category.entity";
 import { TermsOfServiceEntity } from "./src/entities/terms_of_service.entity";
+import { WishlistEntity } from "./src/entities/wishlist.entity";
 
 export const config = new DataSource({
   type: "mysql",
@@ -32,7 +33,8 @@ export const config = new DataSource({
     CartsEntity,
     BooksEntity,
     BooksCategoryEntity,
-    TermsOfServiceEntity
+    TermsOfServiceEntity,
+    WishlistEntity
   ],
   synchronize: true,
   logging: true,

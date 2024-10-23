@@ -1,21 +1,14 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export const RequestAccessTokenByHttp = createParamDecorator(
+export const RequestTokensByHttp = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     const user = request.user;
     const authorization = request.headers['authorization'];
     const token = authorization ? authorization.replace('Bearer ', '') : null;
-    return { user, token };
-  },
-);
-
-export const RequestRefreshTokenByHttp = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
-    const authorization = request.headers['authorization'];
-    const refreshToken = authorization ? authorization.replace('Bearer ', '') : null;
-    return { user, refreshToken };
+    
+    const refreshToken = request.body?.refreshToken || request.cookies?.refreshToken || null;
+    console.log(user)
+    return { user, token, refreshToken };
   },
 );
