@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { BookListSeeder } from '../database/seeds/01.book.seed';
+import { BookListSeeder } from '../../database/seeds/01.book.seed';
 import { Repository } from 'typeorm';
-import { BooksEntity } from '../entities/books.entity';
-import { BookSearchService } from '../modules/book-search/book-search.service';
+import { BooksEntity } from '../../entities/books.entity';
+import { BookSearchService } from '../book-search/book-search.service';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()

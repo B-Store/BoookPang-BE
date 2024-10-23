@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { RequestAccessTokenByHttp } from '../../decorator/jwt-http-request';
+import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuards } from '../auth/jwt-strategy';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -21,7 +21,7 @@ export class CardsController {
   @UseGuards(JwtAccessGuards)
   async createBookCrat(
     @Body() createCartDto: CreateCartDto,
-    @RequestAccessTokenByHttp() { user: { userId } }: { user: { userId: number } },
+    @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
     return this.cartsService.createBookCrat(userId, createCartDto);
   }
@@ -34,7 +34,7 @@ export class CardsController {
   @Get()
   @UseGuards(JwtAccessGuards)
   async findBookCrat(
-    @RequestAccessTokenByHttp() { user: { userId } }: { user: { userId: number } },
+    @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
     return this.cartsService.findBookCrat(userId);
   }
@@ -50,7 +50,7 @@ export class CardsController {
   async updateBookCart(
     @Param('cartId') cartId: number,
     @Body() updateCartDto: UpdateCartDto,
-    @RequestAccessTokenByHttp() { user: { userId } }: { user: { userId: number } },
+    @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
     return this.cartsService.updateBookCart(userId, cartId, updateCartDto);
   }
@@ -65,7 +65,7 @@ export class CardsController {
   @UseGuards(JwtAccessGuards)
   async deleteBookCart(
     @Param('cartId') cartId: number,
-    @RequestAccessTokenByHttp() { user: { userId } }: { user: { userId: number } },
+    @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
     return this.cartsService.deleteBookCart(userId, cartId);
   }

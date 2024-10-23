@@ -79,7 +79,7 @@ export class BookListSeeder implements Seeder {
             }
           }
         } catch (error) {
-          this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
+          // this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
         }
       }
     }

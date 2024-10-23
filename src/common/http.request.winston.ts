@@ -5,7 +5,7 @@ export const winstonConfig = {
   level: 'info',
   transports: [
     new winston.transports.DailyRotateFile({
-      filename: 'log/%DATE%/http-%DATE%.log',
+      filename: 'logs/http-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
       maxSize: '20m',

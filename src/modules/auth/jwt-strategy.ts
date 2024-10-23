@@ -17,6 +17,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'accessToken
     });
   }
   async validate(payload: JwtPayload) {
+    console.log(payload)
     const { userId } = payload;
     const user = await this.authService.checkUserForAuth({ id: userId });
     if (!user) throw new UnauthorizedException('인증 정보가 유효하지 않습니다.');

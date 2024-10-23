@@ -9,10 +9,12 @@ import { BooksModule } from './modules/books/books.module';
 import { BookSearchModule } from './modules/book-search/book-search.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CartsModule } from './modules/carts/carts.module';
-import { BookSchedulerModule } from './schedule/book-scheduler.module';
+import { BookSchedulerModule } from './modules/schedule/book-scheduler.module';
 import { BooksMainModule } from './modules/books-main/books-main.module';
 import { BooksListModule } from './modules/books-list/books-list.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { WishlistsModule } from './modules/wishlists/wishlists.module';
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
     BookSchedulerModule,
     BooksMainModule,
     BooksListModule,
+    WishlistsModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

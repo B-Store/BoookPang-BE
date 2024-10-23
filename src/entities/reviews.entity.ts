@@ -1,4 +1,3 @@
-import { ReviewRating } from '../enums/enum-review';
 import {
   Entity,
   Column,
@@ -29,8 +28,8 @@ export class ReviewEntity {
   @Column()
   comment: string;
 
-  @Column({ type: 'enum', enum: ReviewRating, default: ReviewRating.ZERO_STAR })
-  stars: ReviewRating;
+  @Column()
+  stars: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
