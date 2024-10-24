@@ -5,9 +5,13 @@ import { BooksMainController } from './books-main.controller';
 import { BooksEntity } from '../../entities/books.entity';
 import { CategoryEntity } from '../../entities/category.entity';
 import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { OrderModule } from '../order/order.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BooksEntity, CategoryEntity, BooksCategoryEntity])],
+  imports: [
+    OrderModule,
+    TypeOrmModule.forFeature([BooksEntity, CategoryEntity, BooksCategoryEntity]),
+  ],
   controllers: [BooksMainController],
   providers: [BooksMainService],
 })

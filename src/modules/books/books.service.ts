@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BooksEntity } from '../../entities/books.entity';
 import { In, Repository } from 'typeorm';
 import { ReviewEntity } from '../../entities/reviews.entity';
-import { BooksCategoryEntity } from 'src/entities/books-category.entity';
-import { CategoryEntity } from 'src/entities/category.entity';
+import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { CategoryEntity } from '../../entities/category.entity';
 
 @Injectable()
 export class BooksService {
@@ -38,13 +38,9 @@ export class BooksService {
 
     const reviewStars = await this.reviewRepository.find({ where: { bookId } });
 
-    if (reviewStars.length === 0) {
-      return 0;
-    }
-
     const totalStars = reviewStars.reduce((sum: number, review) => sum + review.stars, 0);
     const averageRating = totalStars / reviewStars.length;
-    const averageRatingForFrontend = averageRating * 2;
+    const averageRatingForFrontend = Math.round(averageRating * 2 * 10) / 10;
 
     const bookCategories = await this.booksCategoryRepository.find({ where: { bookId: book.id } });
     const categoryIds = bookCategories.map((bookCategory) => bookCategory.categoryId);

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,9 +12,9 @@ import { CartsModule } from './modules/carts/carts.module';
 import { BookSchedulerModule } from './modules/schedule/book-scheduler.module';
 import { BooksMainModule } from './modules/books-main/books-main.module';
 import { BooksListModule } from './modules/books-list/books-list.module';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
 import { ReviewModule } from './modules/review/review.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -38,6 +38,7 @@ import { ReviewModule } from './modules/review/review.module';
     BooksListModule,
     WishlistsModule,
     ReviewModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

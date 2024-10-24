@@ -6,6 +6,7 @@ import { BooksEntity } from '../../entities/books.entity';
 import { CategoryEntity } from '../../entities/category.entity';
 import { Between, In, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
+import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class BooksMainService {
@@ -16,10 +17,11 @@ export class BooksMainService {
     private readonly categoryRepository: Repository<CategoryEntity>,
     @InjectRepository(BooksCategoryEntity)
     private readonly bookCategoryRepository: Repository<BooksCategoryEntity>,
-    @Inject(CACHE_MANAGER) 
+    @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private orderService: OrderService,
   ) {}
-  
+
   public async findRecommendedBooks(page: number, limit: number, category: string) {
     const skip = (page - 1) * limit;
     const cacheKey = `recommendedBooks:${page}:${limit}:${category}`;
@@ -159,7 +161,6 @@ export class BooksMainService {
   }
 
   public async findBestsellers(page: number, limit: number) {
-    const skip = (page - 1) * limit;
     const cacheKey = `bestsellers:${page}:${limit}`;
 
     const cachedData = await this.cacheManager.get(cacheKey);
@@ -167,35 +168,35 @@ export class BooksMainService {
       return cachedData;
     }
 
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
+    const bestsellingBooks = await this.bookRepository.find({
+      where: { sourceType: 'Bestseller' },
+    });
 
-    const now = new Date();
+    const aggregatedData = await this.orderService.getTotalSalesForBooks(
+      bestsellingBooks.map((book) => book.id),
+    );
 
-    const [books, total] = await this.bookRepository
-      .createQueryBuilder('book')
-      .select([
-        'book.id',
-        'book.title',
-        'book.cover',
-        'book.author',
-        'book.publisher',
-        'book.createdAt',
-      ])
-      .where({
-        sourceType: 'Bestseller',
-        createdAt: Between(startOfMonth, now),
-      })
-      .orderBy('RAND()')
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+    const bookIds = aggregatedData.map((data) => data.bookId);
+    const booksData = await this.bookRepository.find({
+      where: { id: In(bookIds) },
+    });
+
+    const resultData = aggregatedData.map((aggData) => {
+      const book = booksData.find((b) => b.id === aggData.bookId);
+      return {
+        ...book,
+        totalQuantity: aggData.totalQuantity,
+      };
+    });
+
+    const total = resultData.length;
+    const paginatedData = resultData.slice((page - 1) * limit, page * limit);
 
     const result = {
-      data: books,
       total,
       page,
       limit,
+      data: paginatedData,
     };
 
     await this.cacheManager.set(cacheKey, result, 300000);
@@ -225,7 +226,7 @@ export class BooksMainService {
     return this.bookRepository.find({
       select: ['id', 'cover'],
       where: { sourceType: 'ItemNewSpecial' },
-      take: limit
+      take: limit,
     });
   }
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RevirewCreateDto } from './dto/create.review.dto';
-import { RequestTokensByHttp } from 'src/decorator/jwt-http-request';
+import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { JwtAccessGuards } from '../auth/jwt-strategy';
 import { UsersEntity } from '../../entities/users.entity';
 

@@ -29,6 +29,13 @@ export class OrderEntity {
   @Column()
   quantity: number;
 
+  @Column({
+    type: 'enum',
+    enum: ['pending', 'paid', 'shipped', 'completed', 'cancelled'],
+    default: 'pending',
+  })
+  status: string;
+  
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
