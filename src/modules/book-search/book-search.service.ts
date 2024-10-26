@@ -1,3 +1,4 @@
+import { BooksService } from './../books/books.service';
 import {
   Injectable,
   NotFoundException,
@@ -7,20 +8,18 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BooksEntity } from '../../entities/books.entity';
-import { Like, Repository } from 'typeorm';
-import { ReviewEntity } from '../../entities/reviews.entity';
+import { Repository } from 'typeorm';
 import { WishlistEntity } from '../../entities/wishlist.entity';
+import { ReviewService } from '../review/review.service';
 
 @Injectable()
 export class BookSearchService implements OnModuleInit {
   constructor(
-    @InjectRepository(BooksEntity)
-    private booksRepository: Repository<BooksEntity>,
-    @InjectRepository(ReviewEntity)
-    private reviewsRepository: Repository<ReviewEntity>,
     @InjectRepository(WishlistEntity)
     private wishlistRepository: Repository<WishlistEntity>,
     private elasticsearchService: ElasticsearchService,
+    private reviewService : ReviewService,
+    private booksService: BooksService
   ) {}
 
   public async onModuleInit() {
@@ -79,20 +78,7 @@ export class BookSearchService implements OnModuleInit {
   }
 
   public async indexAllBooks() {
-    const books = await this.booksRepository.find({
-      select: [
-        'id',
-        'title',
-        'author',
-        'publisher',
-        'regularPrice',
-        'salePrice',
-        'cover',
-        'averageRating',
-        'description',
-        'createdAt'
-      ],
-    });
+    const books = await this.booksService.findAllBooks();
 
     const processedBooks = await Promise.all(
       books.map(async (book) => {
@@ -101,7 +87,7 @@ export class BookSearchService implements OnModuleInit {
             ? Math.round(((book.regularPrice - book.salePrice) / book.regularPrice) * 100)
             : 0;
 
-        const reviewCount = await this.reviewsRepository.count({ where: { bookId: book.id } });
+        const reviewCount = await this.reviewService.findReviewCount(book.id)
         const scrapCount = await this.wishlistRepository.count({ where: { book: { id: book.id } } });
         const priceDifference = book.regularPrice - book.salePrice;
 
@@ -151,28 +137,6 @@ export class BookSearchService implements OnModuleInit {
     console.log(`${books.length} books indexed in ${indexName}.`);
   }
 
-  // public async searchBooks(query: string, indexName: string): Promise<any[]> {
-  //   try {
-  //     const response: SearchResponse<any> = await this.elasticsearchService.search({
-  //       index: indexName,
-  //       body: {
-  //         query: {
-  //           match: { title: query },
-  //         },
-  //       },
-  //     });
-
-  //     if (response.hits.hits.length === 0) {
-  //       throw new NotFoundException('도서를 찾을 수 없습니다.');
-  //     }
-
-  //     return response.hits.hits.map((hit) => hit._source);
-  //   } catch (error) {
-  //     console.error(`Error searching books in index ${indexName}:`, error);
-  //     throw new InternalServerErrorException('Failed to search books.');
-  //   }
-  // }
-
   public async search(query: object) {
     const response: SearchResponse<any> = await this.elasticsearchService.search({
       index: 'books-main',
@@ -181,19 +145,6 @@ export class BookSearchService implements OnModuleInit {
     if (response.hits.hits.length === 0) {
       throw new NotFoundException('도서를 찾을 수 없습니다.');
     }
-    console.log(response.hits.hits);
     return response.hits.hits.map((hit) => hit._source);
-  }
-
-  public async findBooks(title: string) {
-    const books = await this.booksRepository.find({
-      where: {
-        title: Like(`%${title}%`),
-      },
-    });
-    if (books.length === 0) {
-      throw new NotFoundException('도서를 찾을 수 없습니다.');
-    }
-    return books;
   }
 }

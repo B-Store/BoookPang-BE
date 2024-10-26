@@ -12,16 +12,16 @@ export class OrderSeeder implements Seeder {
 
     const data = [];
 
-    for (let i = 0; i < 5000; i++) {
+    for (let i = 0; i < 500; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)]; // 랜덤 유저 선택
       const randomBook = books[Math.floor(Math.random() * books.length)]; // 랜덤 책 선택
 
       if (randomBook.stockQuantity > 0) {
         let status: string;
 
-        if (i < 4000) {
+        if (i < 400) {
           status = 'completed'
-        } else if (i < 4500) {
+        } else if (i < 450) {
           status = 'paid';
         } else {
           status = 'pending';

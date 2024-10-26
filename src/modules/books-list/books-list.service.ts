@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BooksCategoryEntity } from 'src/entities/books-category.entity';
-import { BooksEntity } from 'src/entities/books.entity';
-import { CategoryEntity } from 'src/entities/category.entity';
+import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { BooksEntity } from '../../entities/books.entity';
+import { CategoryEntity } from '../../entities/category.entity';
 import { In, Repository } from 'typeorm';
 
 @Injectable()

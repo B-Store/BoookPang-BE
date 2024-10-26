@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReviewEntity } from 'src/entities/reviews.entity';
+import { ReviewEntity } from '../../entities/reviews.entity';
 import { Repository } from 'typeorm';
 import { RevirewCreateDto } from './dto/create.review.dto';
 import { BooksService } from '../books/books.service';
@@ -40,5 +40,9 @@ export class ReviewService {
     }
 
     return this.reviewRepository.find({ where: { bookId } });
+  }
+
+  public async findReviewCount(bookId: number) {
+    return this.reviewRepository.count({ where: { bookId } });
   }
 }

@@ -7,10 +7,14 @@ import { BooksEntity } from '../../entities/books.entity';
 import { ReviewEntity } from '../../entities/reviews.entity';
 import { ConfigService } from '@nestjs/config';
 import { WishlistEntity } from '../../entities/wishlist.entity';
+import { ReviewModule } from '../review/review.module';
+import { BooksModule } from '../books/books.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BooksEntity, ReviewEntity, WishlistEntity]),
+    ReviewModule,
+    BooksModule,
+    TypeOrmModule.forFeature([WishlistEntity]),
     ElasticsearchModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         node: configService.get<string>('ELASTICSEARCH_NODE'),

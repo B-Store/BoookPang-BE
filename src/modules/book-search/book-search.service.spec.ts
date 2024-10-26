@@ -4,13 +4,17 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BooksEntity } from '../../entities/books.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { BooksService } from '../books/books.service';
+import { WishlistEntity } from '../../entities/wishlist.entity';
+import { ReviewService } from '../review/review.service';
 
 describe('BookSearchService', () => {
   let service: BookSearchService;
   let elasticsearchService: ElasticsearchService;
-  let booksRepository: Repository<BooksEntity>;
-
+  let mockBooksService: BooksService;
+  let mockWishlistRepository: Partial<Repository<WishlistEntity>>
+  let mockReviewService: ReviewService;
+  
   const mockBooksRepository = {
     find: jest.fn(),
   };
@@ -30,19 +34,22 @@ describe('BookSearchService', () => {
       providers: [
         BookSearchService,
         {
-          provide: getRepositoryToken(BooksEntity),
-          useValue: mockBooksRepository,
+          provide: BooksService,
+          useValue: mockBooksService,
         },
         {
           provide: ElasticsearchService,
           useValue: mockElasticsearchService,
         },
+        {provide: ReviewService, useValue: mockReviewService},
+        {provide: getRepositoryToken(WishlistEntity), 
+          useValue: mockWishlistRepository
+        }
       ],
     }).compile();
 
     service = module.get<BookSearchService>(BookSearchService);
     elasticsearchService = module.get<ElasticsearchService>(ElasticsearchService);
-    booksRepository = module.get<Repository<BooksEntity>>(getRepositoryToken(BooksEntity));
   });
 
   // 테스트 케이스 추가

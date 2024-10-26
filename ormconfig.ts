@@ -38,5 +38,4 @@ export const config = new DataSource({
   ],
   synchronize: true,
   logging: true,
-  connectTimeout: 30000, // 30초로 설정
 });

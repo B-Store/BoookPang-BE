@@ -7,12 +7,14 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { ReviewEntity } from '../../entities/reviews.entity';
 
 describe('BooksService', () => {
   let service: BooksService;
   let mockBooksRepository: Partial<Repository<BooksEntity>>;
   let mockCategoryRepository: Partial<Repository<CategoryEntity>>;
   let mockBooksCategoryRepository: Partial<Repository<BooksCategoryEntity>>;
+  let mockReviewRepository: Partial<Repository<ReviewEntity>>;
   let mockCacheManager: Partial<Cache>;
 
   beforeEach(async () => {
@@ -39,6 +41,7 @@ describe('BooksService', () => {
           provide: getRepositoryToken(BooksCategoryEntity),
           useValue: mockBooksCategoryRepository,
         },
+        { provide: getRepositoryToken(ReviewEntity), useValue: mockReviewRepository },
         {
           provide: CACHE_MANAGER,
           useValue: mockCacheManager,

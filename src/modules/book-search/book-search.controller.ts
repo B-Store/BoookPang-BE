@@ -26,14 +26,4 @@ export class BookSearchController {
     };
     return this.searchService.search(query);
   }
-
-  /**
-   * 도서 검색 라이크
-   * @returns
-   * @param title
-   */
-  @Get('find-book')
-  async findBooks(@Query('title') title: string) {
-    return this.searchService.findBooks(title);
-  }
 }

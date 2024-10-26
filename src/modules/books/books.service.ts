@@ -60,4 +60,21 @@ export class BooksService {
   public async findBook(bookId: number) {
     return this.bookRepository.findOne({ where: { id: bookId } });
   }
+
+  public async findAllBooks(){
+    return this.bookRepository.find({
+      select: [
+        'id',
+        'title',
+        'author',
+        'publisher',
+        'regularPrice',
+        'salePrice',
+        'cover',
+        'averageRating',
+        'description',
+        'createdAt'
+      ],
+    });
+  }
 }
