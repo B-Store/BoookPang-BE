@@ -3,7 +3,7 @@ import { CartsService } from './carts.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuards } from '../auth/jwt-strategy';
+import { JwtAccessGuards } from '../jwt/jwt-strategy';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @ApiTags('장바구니')

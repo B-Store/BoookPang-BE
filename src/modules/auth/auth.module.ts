@@ -10,7 +10,6 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { UsersEntity } from '../../entities/users.entity';
 import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { AccessTokenStrategy, RefreshTokenStrategy } from './jwt-strategy';
 import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
 
 @Module({
@@ -31,8 +30,6 @@ import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
   controllers: [AuthController],
   providers: [
     AuthService,
-    AccessTokenStrategy,
-    RefreshTokenStrategy,
     {
       provide: Vonage,
       useFactory: (configService: ConfigService) => {
@@ -45,6 +42,6 @@ import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
       inject: [ConfigService],
     },
   ],
-  exports: [AuthService, AccessTokenStrategy, RefreshTokenStrategy, Vonage],
+  exports: [AuthService, Vonage],
 })
 export class AuthModule {}

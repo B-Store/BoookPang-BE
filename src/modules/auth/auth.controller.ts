@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { LogInDto } from './dto/log-in.dto';
-import { JwtRefreshGuards } from './jwt-strategy';
+import { JwtRefreshGuards } from '../jwt/jwt-strategy';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 
 @ApiTags('인증')

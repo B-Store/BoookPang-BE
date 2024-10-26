@@ -15,6 +15,7 @@ import { BooksListModule } from './modules/books-list/books-list.module';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
 import { ReviewModule } from './modules/review/review.module';
 import { OrderModule } from './modules/order/order.module';
+import { JwtModule } from './modules/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { OrderModule } from './modules/order/order.module';
     WishlistsModule,
     ReviewModule,
     OrderModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [AppService],

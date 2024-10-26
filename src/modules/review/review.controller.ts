@@ -3,7 +3,7 @@ import { ReviewService } from './review.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RevirewCreateDto } from './dto/create.review.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
-import { JwtAccessGuards } from '../auth/jwt-strategy';
+import { JwtAccessGuards } from '../jwt/jwt-strategy';
 import { UsersEntity } from '../../entities/users.entity';
 
 @ApiTags('리뷰')

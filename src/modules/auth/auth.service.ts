@@ -5,29 +5,29 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import * as bcrypt from 'bcrypt';
 import { Vonage } from '@vonage/server-sdk';
-import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UsersEntity } from '../../entities/users.entity';
 import { AUTH_CONSTANT } from '../../common/auth.constant';
-import { LogInDto } from './dto/log-in.dto';
+import { UsersEntity } from '../../entities/users.entity';
 import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { PhoneDto } from './dto/phone-number-dto';
 import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
+import { LogInDto } from './dto/log-in.dto';
+import { PhoneDto } from './dto/phone-number-dto';
 
 const userAuthStates = {};
-
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) 
+    private cacheManager: Cache,
     @InjectRepository(UsersEntity)
     private userRepository: Repository<UsersEntity>,
     @InjectRepository(RefreshTokensEntity)
