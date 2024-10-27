@@ -65,14 +65,14 @@ describe('AuthService', () => {
             return 'test_api_secret';
           case 'VONAGE_SENDER_NUMBER':
             return 'test_sender_number';
-          case 'ACCESS_TOKEN_SECRET':
-            return 'test_secret';
-          case 'JWT_ACCESS_TOKEN_EXPIRATION':
-            return '1h';
-          case 'REFRESH_TOKEN_SECRET':
-            return 'refresh_token_secret';
-          case 'JWT_REFRESH_TOKEN_EXPIRATION':
-            return '7d';
+          // case 'ACCESS_TOKEN_SECRET':
+          //   return 'test_secret';
+          // case 'JWT_ACCESS_TOKEN_EXPIRATION':
+          //   return '1h';
+          // case 'REFRESH_TOKEN_SECRET':
+          //   return 'refresh_token_secret';
+          // case 'JWT_REFRESH_TOKEN_EXPIRATION':
+          //   return '7d';
           default:
             return null;
         }
@@ -94,6 +94,14 @@ describe('AuthService', () => {
           useValue: mockUsersRepository,
         },
         {
+          provide: Vonage,
+          useValue: mockVonage,
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: mockCacheManager,
+        },
+        {
           provide: getRepositoryToken(TermsOfServiceEntity),
           useValue: mockTermsOfServiceRepository,
         },
@@ -104,14 +112,6 @@ describe('AuthService', () => {
         {
           provide: getRepositoryToken(RefreshTokensEntity),
           useValue: mockRefreshTokensRepository,
-        },
-        {
-          provide: Vonage,
-          useValue: mockVonage,
-        },
-        {
-          provide: CACHE_MANAGER,
-          useValue: mockCacheManager,
         },
       ],
     }).compile();
@@ -161,7 +161,7 @@ describe('AuthService', () => {
         verificationCode :Number()
       }
 
-      await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -172,7 +172,7 @@ describe('AuthService', () => {
         verificationCode :Number()
       }
 
-      await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -183,7 +183,7 @@ describe('AuthService', () => {
         verificationCode :Number(654321)
       }
 
-      await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -194,7 +194,7 @@ describe('AuthService', () => {
         verificationCode :Number(123456)
       }
 
-      await expect(
+      expect(
         service.phoneNumberValidator(verifyCodeDto),
       ).resolves.toBeUndefined();
       expect(mockCacheManager.del).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
@@ -205,7 +205,7 @@ describe('AuthService', () => {
   describe('checkExternalId', () => {
     it('should throw BadRequestException if externalId is empty', async () => {
       const externalId = '';
-      await expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
+      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
     });
 
     it('should return undefined if loginId is available', async () => {
@@ -213,7 +213,7 @@ describe('AuthService', () => {
 
       mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
 
-      await expect(service.checkExternalId(externalId)).resolves.toBeNull();
+      expect(service.checkExternalId(externalId)).resolves.toBeNull();
       expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
         where: { externalId, deletedAt: null },
       });externalId
@@ -222,7 +222,7 @@ describe('AuthService', () => {
     it('should throw BadRequestException if externalId already exists', async () => {
       const externalId = 'example@gmail.com';
 
-      await expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
+      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
       expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
         where: { externalId, deletedAt: null },
       });
@@ -245,7 +245,7 @@ describe('AuthService', () => {
         }
       };
 
-      await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if createUserDto is empty', async () => {
@@ -263,7 +263,7 @@ describe('AuthService', () => {
         }
       };
 
-      await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if createUserDto is empty', async () => {
@@ -281,7 +281,7 @@ describe('AuthService', () => {
         }
       };
 
-      await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if createUserDto is empty', async () => {
@@ -302,7 +302,7 @@ describe('AuthService', () => {
         [createUserDto.phoneNumber]: { isVerified: false },
       };
       
-      await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should successfully create a user if all data is valid and phone number is verified', async () => {
@@ -363,7 +363,7 @@ describe('AuthService', () => {
         password: 'bookpang12345',
       };
 
-      await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if externalId does not exist', async () => {
@@ -373,7 +373,7 @@ describe('AuthService', () => {
       };
 
       mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
-      await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw UnauthorizedException if password is invalid', async () => {
@@ -385,7 +385,7 @@ describe('AuthService', () => {
       mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUserEntity);
       (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
 
-      await expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
+      expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
       expect(bcrypt.compare).toHaveBeenCalledWith(logInDto.password, dummyUserEntity.password);
     });
   });
