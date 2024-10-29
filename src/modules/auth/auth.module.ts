@@ -9,15 +9,16 @@ import { Auth } from '@vonage/auth';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { UsersEntity } from '../../entities/users.entity';
-import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { AccessTokenStrategy, RefreshTokenStrategy } from './jwt-strategy';
-import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
+import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
+import { TermsOfServiceModule } from '../terms-of-service/terms-of-service.module';
 
 @Module({
   imports: [
+    RefreshTokenModule,
+    TermsOfServiceModule,
     CacheModule.register(),
     PassportModule,
-    TypeOrmModule.forFeature([UsersEntity, RefreshTokensEntity, TermsOfServiceEntity]),
+    TypeOrmModule.forFeature([UsersEntity]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
@@ -27,12 +28,12 @@ import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
       }),
       inject: [ConfigService],
     }),
+    TermsOfServiceModule,
+    RefreshTokenModule,
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    AccessTokenStrategy,
-    RefreshTokenStrategy,
     {
       provide: Vonage,
       useFactory: (configService: ConfigService) => {
@@ -45,6 +46,6 @@ import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
       inject: [ConfigService],
     },
   ],
-  exports: [AuthService, AccessTokenStrategy, RefreshTokenStrategy, Vonage],
+  exports: [AuthService, Vonage],
 })
 export class AuthModule {}

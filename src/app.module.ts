@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,9 +12,14 @@ import { CartsModule } from './modules/carts/carts.module';
 import { BookSchedulerModule } from './modules/schedule/book-scheduler.module';
 import { BooksMainModule } from './modules/books-main/books-main.module';
 import { BooksListModule } from './modules/books-list/books-list.module';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
 import { ReviewModule } from './modules/review/review.module';
+import { OrderModule } from './modules/order/order.module';
+import { JwtModule } from './modules/jwt/jwt.module';
+import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module';
+import { TermsOfServiceModule } from './modules/terms-of-service/terms-of-service.module';
+import { CategoryModule } from './modules/category/category.module';
+import { BooksCategoryModule } from './modules/books-category/books-category.module';
 
 @Module({
   imports: [
@@ -32,12 +37,18 @@ import { ReviewModule } from './modules/review/review.module';
     AuthModule,
     BooksModule,
     BookSearchModule,
-    CartsModule,
-    BookSchedulerModule,
     BooksMainModule,
     BooksListModule,
+    BooksCategoryModule,
+    CartsModule,
+    BookSchedulerModule,
     WishlistsModule,
     ReviewModule,
+    OrderModule,
+    JwtModule,
+    RefreshTokenModule,
+    TermsOfServiceModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

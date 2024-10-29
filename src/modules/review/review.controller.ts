@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RevirewCreateDto } from './dto/create.review.dto';
-import { RequestTokensByHttp } from 'src/decorator/jwt-http-request';
-import { JwtAccessGuards } from '../auth/jwt-strategy';
+import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
+import { JwtAccessGuards } from '../jwt/jwt-strategy';
 import { UsersEntity } from '../../entities/users.entity';
 
 @ApiTags('리뷰')
@@ -32,6 +32,6 @@ export class ReviewController {
    */
   @Get('/:bookId')
   findReview(@Param('bookId') bookId: number) {
-    return this.reviewService.findReview(bookId);
+    return this.reviewService.findBookReview(bookId);
   }
 }

@@ -7,24 +7,18 @@ import { Vonage } from '@vonage/server-sdk';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Auth } from '@vonage/auth';
 import { AuthService } from './auth.service';
 import { UsersEntity } from '../../entities/users.entity';
 import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { AccessTokenStrategy, RefreshTokenStrategy } from './jwt-strategy';
-import * as bcrypt from 'bcrypt';
 import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
-
-const createMockVonage = (mockConfigService: Partial<ConfigService>) => {
-  const credentials = new Auth({
-    apiKey: mockConfigService.get<string>('VONAGE_API_KEY'),
-    apiSecret: mockConfigService.get<string>('VONAGE_API_SECRET'),
-  });
-  return new Vonage(credentials);
-};
+import * as bcrypt from 'bcrypt';
+import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
+import { TermsOfServiceModule } from '../terms-of-service/terms-of-service.module';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { TermsOfServiceService } from '../terms-of-service/terms-of-service.service';
 
 const dummyUserEntity = {
-  loginId: 'example@gmail.com',
+  loginId: 'bookPang@bookpang.com',
   nickname: 'bookPang',
   password: '$2b$10$owOYi78x/7h5w28OWMKAAuCgNH6GEFkQL53l.UX0eXXTymyh8okCW',
   phoneNumber: '010111111111',
@@ -38,29 +32,36 @@ const dummyUserEntity = {
 
 describe('AuthService', () => {
   let service: AuthService;
-  let mockUsersRepository: Partial<Repository<UsersEntity>>;
-  let mockRefreshTokensRepository: Partial<Repository<RefreshTokensEntity>>;
-  let mockTermsOfServiceRepository: Partial<Repository<TermsOfServiceEntity>>;
-
-  let mockConfigService: Partial<ConfigService>;
-  let mockCacheManager: Partial<Cache>;
+  let vonage: Vonage;
+  let mockUsersRepository: jest.Mocked<Repository<UsersEntity>>;
+  let mockRefreshTokensService: jest.Mocked<RefreshTokenService>;
+  let mockTermsOfServiceService: jest.Mocked<TermsOfServiceService>;
+  let mockConfigService: jest.Mocked<ConfigService>;
+  let mockCacheManager: jest.Mocked<Cache>;
+  let mockJwtService: jest.Mocked<JwtService>;
 
   beforeEach(async () => {
     mockUsersRepository = {
       find: jest.fn(),
       findOne: jest.fn().mockResolvedValue(dummyUserEntity),
       save: jest.fn(),
-    };
+    } as unknown as jest.Mocked<Repository<UsersEntity>>;
 
-    mockRefreshTokensRepository = {
+    mockRefreshTokensService = {
+      save: jest.fn(),
+    } as unknown as jest.Mocked<RefreshTokenService>;
+
+    mockTermsOfServiceService = {
       upsert: jest.fn(),
-    };
+    } as unknown as jest.Mocked<TermsOfServiceService>;
 
     mockCacheManager = {
       get: jest.fn().mockResolvedValue(123456),
       set: jest.fn(),
       del: jest.fn(),
-    };
+    } as unknown as jest.Mocked<Cache>;
+
+    mockJwtService = {} as unknown as jest.Mocked<JwtService>;
 
     mockConfigService = {
       get: jest.fn((key: string) => {
@@ -71,248 +72,332 @@ describe('AuthService', () => {
             return 'test_api_secret';
           case 'VONAGE_SENDER_NUMBER':
             return 'test_sender_number';
-          case 'ACCESS_TOKEN_SECRET':
-            return 'test_secret';
-          case 'JWT_ACCESS_TOKEN_EXPIRATION':
-            return '1h';
-          case 'REFRESH_TOKEN_SECRET':
-            return 'refresh_token_secret';
-          case 'JWT_REFRESH_TOKEN_EXPIRATION':
-            return '7d';
+          // case 'ACCESS_TOKEN_SECRET':
+          //   return 'test_secret';
+          // case 'JWT_ACCESS_TOKEN_EXPIRATION':
+          //   return '1h';
+          // case 'REFRESH_TOKEN_SECRET':
+          //   return 'refresh_token_secret';
+          // case 'JWT_REFRESH_TOKEN_EXPIRATION':
+          //   return '7d';
           default:
             return null;
         }
       }),
+    } as unknown as jest.Mocked<ConfigService>;
+
+    const mockVonage = {
+      sms: {
+        send: jest.fn(),
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        JwtService,
         {
           provide: getRepositoryToken(UsersEntity),
           useValue: mockUsersRepository,
         },
         {
-          provide: getRepositoryToken(TermsOfServiceEntity),
-          useValue: mockTermsOfServiceRepository,
-        },
-        {
-          provide: ConfigService,
-          useValue: mockConfigService,
-        },
-        JwtService,
-        AccessTokenStrategy,
-        RefreshTokenStrategy,
-        {
-          provide: getRepositoryToken(RefreshTokensEntity),
-          useValue: mockRefreshTokensRepository,
-        },
-        {
           provide: Vonage,
-          useValue: createMockVonage(mockConfigService),
+          useValue: mockVonage,
         },
         {
           provide: CACHE_MANAGER,
           useValue: mockCacheManager,
         },
+        {
+          provide: TermsOfServiceService,
+          useValue: mockTermsOfServiceService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
+        {
+          provide: RefreshTokenService,
+          useValue: mockRefreshTokensService,
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    service['userAuthStates'] = {};
+    vonage = module.get<Vonage>(Vonage);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('sendVerificationCode', () => {
+    it('should throw NotFoundException if phoneNumber is empty', async () => {
+      const phoneDto = { phoneNumber: '' };
+
+      expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException if phoneNumber does not start with 010', async () => {
+      const phoneDto = { phoneNumber: '010123' };
+
+      expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if phoneNumber does not start with 011', async () => {
+      const phoneDto = { phoneNumber: '01112345678' };
+
+      expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should send a verification code', async () => {
+      const phoneDto = { phoneNumber: '01012345678' };
+      const verificationCode = 123456;
+
+      jest.spyOn(Math, 'random').mockReturnValue(0.123456);
+      jest.spyOn(mockCacheManager, 'set').mockResolvedValue(undefined);
+      mockCacheManager.set(phoneDto.phoneNumber, verificationCode, 300000);
+
+      await service.sendVerificationCode(phoneDto);
+
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        phoneDto.phoneNumber,
+        verificationCode,
+        300000,
+      );
+      expect(vonage.sms.send).toHaveBeenCalled();
+    });
   });
 
-  // describe('sendVerificationCode', () => {
-  //   it('should throw NotFoundException if phoneNumber is empty', async () => {
-  //     const phoneDto = {phoneNumber : ''};
-  //     await expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(NotFoundException);
-  //   });
+  describe('phoneNumberValidator', () => {
+    it('should throw BadRequestException for empty phone number', async () => {
+      const verifyCodeDto = {
+        phoneNumber: '',
+        verificationCode: Number(),
+      };
 
-  //   it('should throw BadRequestException if phoneNumber does not start with 010', async () => {
-  //     const phoneDto = {phoneNumber : '010123'};
-  //     await expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(BadRequestException);
-  //   });
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //   it('should throw BadRequestException if phoneNumber does not start with 011', async () => {
-  //     const phoneDto = {phoneNumber : '01112345678'};
-  //     await expect(service.sendVerificationCode(phoneDto)).rejects.toThrow(BadRequestException);
-  //   });
-  // });
+    it('should throw BadRequestException for phone number that does not start with 010 or 011', async () => {
+      const verifyCodeDto = {
+        phoneNumber: '01012345678',
+        verificationCode: Number(),
+      };
 
-  // describe('phoneNumberValidator', () => {
-  //   it('should throw BadRequestException for empty phone number', async () => {
-  //     const verifyCodeDto = {
-  //       phoneNumber : '',
-  //       verificationCode :Number()
-  //     }
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //     await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
-  //       BadRequestException,
-  //     );
-  //   });
+    it('should throw BadRequestException for incorrect verification code', async () => {
+      const verifyCodeDto = {
+        phoneNumber: '01012345678',
+        verificationCode: Number(654321),
+      };
 
-  //   it('should throw BadRequestException for invalid phone number format', async () => {
-  //     const verifyCodeDto = {
-  //       phoneNumber : '01012345678',
-  //       verificationCode :Number()
-  //     }
+      expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //     await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
-  //       BadRequestException,
-  //     );
-  //   });
+    it('should validate phone number and verification code successfully', async () => {
+      const verifyCodeDto = {
+        phoneNumber: '01012345678',
+        verificationCode: Number(123456),
+      };
+    
+      service['userAuthStates'][verifyCodeDto.phoneNumber] = { isVerified: false };
+    
+      await service.phoneNumberValidator(verifyCodeDto);
+    
+      expect(mockCacheManager.get).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
+      expect(mockCacheManager.del).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
+      expect(service['userAuthStates'][verifyCodeDto.phoneNumber].isVerified).toBe(true);
+    });
+  });
 
-  //   it('should throw BadRequestException for incorrect verification code', async () => {
-  //     const verifyCodeDto = {
-  //       phoneNumber : '01012345678',
-  //       verificationCode :Number(654321)
-  //     }
+  describe('checkExternalId', () => {
+    it('should throw BadRequestException if externalId is empty', async () => {
+      const externalId = '';
+      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
+    });
 
-  //     await expect(service.phoneNumberValidator(verifyCodeDto)).rejects.toThrow(
-  //       BadRequestException,
-  //     );
-  //   });
+    it('should return undefined if loginId is available', async () => {
+      const externalId = 'bookPang@naver.com';
 
-  //   it('should validate phone number and verification code successfully', async () => {
-  //     const verifyCodeDto = {
-  //       phoneNumber : '01012345678',
-  //       verificationCode :Number(123456)
-  //     }
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
 
-  //     await expect(
-  //       service.phoneNumberValidator(verifyCodeDto),
-  //     ).resolves.toBeUndefined();
-  //     expect(mockCacheManager.del).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
-  //     expect(mockCacheManager.get).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
-  //   });
-  // });
+      expect(service.checkExternalId(externalId)).resolves.toBeNull();
+      expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
+        where: { externalId, deletedAt: null },
+      });externalId
+    });
 
-  // describe('checkLoginIdAvailability', () => {
-  //   it('should throw BadRequestException if loginId is empty', async () => {
-  //     const externalId = '';
-  //     await expect(service.checkLoginIdAvailability(externalId)).rejects.toThrow(BadRequestException);
-  //   });
+    it('should throw BadRequestException if externalId already exists', async () => {
+      const externalId = 'example@gmail.com';
 
-  //   it('should return undefined if loginId is available', async () => {
-  //     const externalId = 'bookPang@naver.com';
+      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
+      expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
+        where: { externalId, deletedAt: null },
+      });
+    });
+  });
 
-  //     mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
+  describe('userCreate', () => {
+    it('should throw BadRequestException if createUserDto is empty', async () => {
+      const createUserDto = {
+        externalId: '',
+        nickname: '',
+        password: '',
+        phoneNumber: '',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms:true
+        }
+      };
 
-  //     await expect(service.checkLoginIdAvailability(externalId)).resolves.toBeNull();
-  //     expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
-  //       where: { externalId, deletedAt: null },
-  //     });externalId
-  //   });
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //   it('should throw BadRequestException if loginId is empty', async () => {
-  //     const externalId = 'example@gmail.com';
+    it('should throw BadRequestException if createUserDto is empty', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: '',
+        password: '',
+        phoneNumber: '',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms:true
+        }
+      };
 
-  //     await expect(service.checkLoginIdAvailability(externalId)).rejects.toThrow(BadRequestException);
-  //     expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
-  //       where: { externalId, deletedAt: null },
-  //     });
-  //   });
-  // });
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
 
-  // describe('userCreate', () => {
-  //   it('should throw BadRequestException if createUserDto is empty', async () => {
-  //     const createUserDto = {
-  //       externalId: '',
-  //       nickname: '',
-  //       password: '',
-  //       phoneNumber: '',
-  //     };
+    it('should throw BadRequestException if createUserDto is empty', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: '',
+        phoneNumber: '',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms:true
+        }
+      };
 
-  //     await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
-  //   });
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //   it('should throw BadRequestException if createUserDto is empty', async () => {
-  //     const createUserDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       nickname: '',
-  //       password: '',
-  //       phoneNumber: '',
-  //     };
+    it('should throw BadRequestException if createUserDto is empty', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: '',
+        phoneNumber: '',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms:true
+        }
+      };
+      service['userAuthStates'] = {
+        [createUserDto.phoneNumber]: { isVerified: false },
+      };
 
-  //     await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
-  //   });
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //   it('should throw BadRequestException if createUserDto is empty', async () => {
-  //     const createUserDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       nickname: 'bookPang',
-  //       password: '',
-  //       phoneNumber: '',
-  //     };
+    it('should successfully create a user if all data is valid and phone number is verified', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: 'bookpang12345',
+        phoneNumber: '01012345678',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms:true
+        }
+      };
 
-  //     await expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
-  //   });
+      service['userAuthStates'] = {
+        [createUserDto.phoneNumber]: { isVerified: false },
+      };
 
-  //   it('should throw BadRequestException if createUserDto is empty', async () => {
-  //     const createUserDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       nickname: 'bookPang',
-  //       password: 'password',
-  //       phoneNumber: '01012345678',
-  //     };
-  //     service['checkLoginIdAvailability'] = jest.fn().mockResolvedValue(null);
-  //     mockUsersRepository.save = jest.fn().mockResolvedValue(dummyUserEntity);
-  //     await expect(service.userCreate(createUserDto)).resolves.toEqual(dummyUserEntity);
-  //   });
-  // });
+      service['userAuthStates'][createUserDto.phoneNumber].isVerified = true;
 
-  // describe('login', () => {
-  //   it('should throw BadRequestException if loginId, password is empty', async () => {
-  //     const logInDto = {
-  //       externalId: '',
-  //       password: '',
-  //     };
+      service.checkExternalId = jest.fn().mockResolvedValue(null);
+      mockUsersRepository.save = jest.fn().mockResolvedValue(dummyUserEntity);
+      mockTermsOfServiceService.saveTermsOfService = jest.fn().mockResolvedValue(undefined);
 
-  //     await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
-  //   });
+      const result = await service.userCreate(createUserDto);
 
-  //   it('should throw BadRequestException if password is empty', async () => {
-  //     const logInDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       password: '',
-  //     };
+      expect(result).toEqual(dummyUserEntity);
+      expect(mockUsersRepository.save).toHaveBeenCalled();
+    });
+  });
 
-  //     await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
-  //   });
+  describe('login', () => {
+    it('should throw BadRequestException if both externalId and password are empty', async () => {
+      const logInDto = {
+        externalId: '',
+        password: '',
+      };
 
-  //   it('should throw BadRequestException if loginId is empty', async () => {
-  //     const logInDto = {
-  //       externalId: '',
-  //       password: 'password',
-  //     };
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException)
+    });
 
-  //     await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
-  //   });
+    it('should throw BadRequestException if password is empty', async () => {
+      const logInDto = {
+        externalId: 'bookpang@bookpang.com',
+        password: '',
+      };
 
-  //   it('should throw BadRequestException if loginId is empty', async () => {
-  //     const logInDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       password: 'password',
-  //     };
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //     mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
-  //     await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
-  //   });
+    it('should throw BadRequestException if externalId is empty', async () => {
+      const logInDto = {
+        externalId: '',
+        password: 'bookpang12345',
+      };
 
-  //   it('should throw BadRequestException if password is invalid', async () => {
-  //     const logInDto = {
-  //       externalId: 'bookPang@naver.com',
-  //       password: 'password',
-  //     };
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
+    });
 
-  //     mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUserEntity);
-  //     (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
+    it('should throw BadRequestException if externalId does not exist', async () => {
+      const logInDto = {
+        externalId: 'bookPang@naver.com',
+        password: 'bookpang12345',
+      };
 
-  //     await expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
-  //     expect(bcrypt.compare).toHaveBeenCalledWith(logInDto.password, dummyUserEntity.password);
-  //   });
-  // });
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw UnauthorizedException if password is invalid', async () => {
+      const logInDto = {
+        externalId: 'bookPang@naver.com',
+        password: 'bookpang12345',
+      };
+
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUserEntity);
+      (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
+
+      expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
+      // expect(bcrypt.compare).toHaveBeenCalled();
+    });
+  });
 });

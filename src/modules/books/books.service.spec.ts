@@ -1,28 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { BooksEntity } from '../../entities/books.entity';
-import { CategoryEntity } from '../../entities/category.entity';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { CategoryService } from '../category/category.service';
+import { BooksCategoryService } from '../books-category/books-category.service';
+import { ReviewService } from '../review/review.service';
 
 describe('BooksService', () => {
   let service: BooksService;
-  let mockBooksRepository: Partial<Repository<BooksEntity>>;
-  let mockCategoryRepository: Partial<Repository<CategoryEntity>>;
-  let mockBooksCategoryRepository: Partial<Repository<BooksCategoryEntity>>;
-  let mockCacheManager: Partial<Cache>;
+  let mockBooksRepository: jest.Mocked<Repository<BooksEntity>>;
+  let mockCategoryService: jest.Mocked<CategoryService>;
+  let mockBooksCategoryService: jest.Mocked<BooksCategoryService>;
+  let mockReviewService: jest.Mocked<ReviewService>;
 
   beforeEach(async () => {
     mockBooksRepository = {
       find: jest.fn(),
-    };
+    } as unknown as jest.Mocked<Repository<BooksEntity>>;
 
-    mockCategoryRepository = {};
+    mockCategoryService = {
+    } as unknown as jest.Mocked<CategoryService>;
 
-    mockBooksCategoryRepository = {};
+    mockBooksCategoryService = {
+    } as unknown as jest.Mocked<BooksCategoryService>;
+
+    mockReviewService = {
+    } as unknown as jest.Mocked<ReviewService>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -32,16 +36,16 @@ describe('BooksService', () => {
           useValue: mockBooksRepository,
         },
         {
-          provide: getRepositoryToken(CategoryEntity),
-          useValue: mockCategoryRepository,
+          provide: CategoryService,
+          useValue: mockCategoryService,
         },
         {
-          provide: getRepositoryToken(BooksCategoryEntity),
-          useValue: mockBooksCategoryRepository,
+          provide: BooksCategoryService,
+          useValue: mockBooksCategoryService,
         },
         {
-          provide: CACHE_MANAGER,
-          useValue: mockCacheManager,
+          provide: ReviewService,
+          useValue: mockReviewService,
         },
       ],
     }).compile();

@@ -38,7 +38,7 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api/v1');
   app.enableCors();
-  
+    
   try {
     await app.listen(port);
     console.log(`Server is running on: ${port}, Great to see you! 😊`);

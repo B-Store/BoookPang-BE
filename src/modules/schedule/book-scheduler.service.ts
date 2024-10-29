@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { BooksEntity } from '../../entities/books.entity';
 import { BookSearchService } from '../book-search/book-search.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OrderSeeder } from '../../database/seeds/04.order.faker';
+import { ReviewSeeder } from '../../database/seeds/05.review.faker';
 
 @Injectable()
 export class BookSchedulerService {
@@ -26,6 +28,17 @@ export class BookSchedulerService {
     this.logger.log('모든 도서가 재인덱싱되었습니다.');
   }
 
+  @Cron('0 * * * *') // 매 1시간마다
+  public async seedOrdersAndReviews() {
+    const orderSeeder = new OrderSeeder();
+    const reviewSeeder = new ReviewSeeder();
+
+    await orderSeeder.run(this.bookRepository.manager.connection, null);
+    await reviewSeeder.run(this.bookRepository.manager.connection, null);
+
+    this.logger.log('주문 및 리뷰 시딩이 완료되었습니다.');
+  }
+  
   private async updateBookStock() {
     const result = await this.bookRepository
       .createQueryBuilder()
