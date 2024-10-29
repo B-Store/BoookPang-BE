@@ -6,8 +6,12 @@ import { Repository } from 'typeorm';
 
 describe('OrderService', () => {
   let service: OrderService;
-  let mockOrderRepository: Partial<Repository<OrderEntity>>;
+  let mockOrderRepository: jest.Mocked<Repository<OrderEntity>>;
+
   beforeEach(async () => {
+    mockOrderRepository = {
+    } as unknown as jest.Mocked<Repository<OrderEntity>>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OrderService,

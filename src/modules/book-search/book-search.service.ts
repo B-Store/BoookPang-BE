@@ -6,17 +6,13 @@ import {
 } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BooksEntity } from '../../entities/books.entity';
-import { Repository } from 'typeorm';
-import { WishlistEntity } from '../../entities/wishlist.entity';
 import { ReviewService } from '../review/review.service';
+import { WishlistsService } from '../wishlists/wishlists.service';
 
 @Injectable()
 export class BookSearchService implements OnModuleInit {
   constructor(
-    @InjectRepository(WishlistEntity)
-    private wishlistRepository: Repository<WishlistEntity>,
+    private wishlistService: WishlistsService,
     private elasticsearchService: ElasticsearchService,
     private reviewService : ReviewService,
     private booksService: BooksService
@@ -88,7 +84,7 @@ export class BookSearchService implements OnModuleInit {
             : 0;
 
         const reviewCount = await this.reviewService.findReviewCount(book.id)
-        const scrapCount = await this.wishlistRepository.count({ where: { book: { id: book.id } } });
+        const scrapCount = await this.wishlistService.findCountWishlist(book.id);
         const priceDifference = book.regularPrice - book.salePrice;
 
         return {

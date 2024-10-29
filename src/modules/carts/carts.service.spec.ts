@@ -4,21 +4,24 @@ import { CartsEntity } from '../../entities/carts.entity';
 import { BooksEntity } from '../../entities/books.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 describe('CartsService', () => {
   let service: CartsService;
-  let mockCartsRepository: Partial<Repository<CartsEntity>>;
-  let mockBooksRepository: Partial<Repository<BooksEntity>>;
+  let mockCartsRepository: jest.Mocked<Repository<CartsEntity>>;
+  let mockBooksRepository: jest.Mocked<Repository<BooksEntity>>;
 
   beforeEach(async () => {
     mockCartsRepository = {
-      // 필요한 메서드를 추가하세요
-    };
+      save: jest.fn(),
+      find: jest.fn(),
+      findOne: jest.fn(),
+      remove: jest.fn(),
+    } as unknown as jest.Mocked<Repository<CartsEntity>>;
 
     mockBooksRepository = {
-      // 필요한 메서드를 추가하세요
-    };
+      find: jest.fn(),
+      findOne: jest.fn(),
+    } as unknown as jest.Mocked<Repository<BooksEntity>>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -41,5 +44,5 @@ describe('CartsService', () => {
     expect(service).toBeDefined();
   });
 
-  // 추가 테스트 케이스를 작성하세요.
+  // 추가 테스트 케이스를 여기에 작성하세요.
 });

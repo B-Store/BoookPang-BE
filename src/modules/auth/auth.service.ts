@@ -17,23 +17,21 @@ import { VerifyCodeDto } from './dto/verify-code.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AUTH_CONSTANT } from '../../common/auth.constant';
 import { UsersEntity } from '../../entities/users.entity';
-import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { LogInDto } from './dto/log-in.dto';
 import { PhoneDto } from './dto/phone-number-dto';
+import { TermsOfServiceService } from '../terms-of-service/terms-of-service.service';
 
-const userAuthStates = {};
 @Injectable()
 export class AuthService {
+  private userAuthStates: {}
   constructor(
-    @Inject(CACHE_MANAGER) 
-    private cacheManager: Cache,
     @InjectRepository(UsersEntity)
     private userRepository: Repository<UsersEntity>,
-    @InjectRepository(RefreshTokensEntity)
-    private refreshTokenRepository: Repository<RefreshTokensEntity>,
-    @InjectRepository(TermsOfServiceEntity)
-    private termsOfServiceRepository: Repository<TermsOfServiceEntity>,
+    @Inject(CACHE_MANAGER) 
+    private cacheManager: Cache,
+    private refreshTokenService: RefreshTokenService,
+    private termsOfServiceService: TermsOfServiceService,
     private configService: ConfigService,
     private jwtService: JwtService,
     private vonage: Vonage,
@@ -50,7 +48,7 @@ export class AuthService {
     const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber);
     await this.cacheManager.set(phoneNumber, verificationCode, 300000);
 
-    userAuthStates[phoneNumber] = { isVerified: false };
+    this.userAuthStates[phoneNumber] = { isVerified: false };
     this.vonage.sms.send({
       to: formattedPhoneNumber,
       from: this.configService.get<string>('VONAGE_SENDER_NUMBER'),
@@ -69,7 +67,7 @@ export class AuthService {
     if (cacheKey !== verificationCode) {
       throw new BadRequestException('인증코드가 일치하지 않습니다.');
     }
-    userAuthStates[phoneNumber].isVerified = true;
+    this.userAuthStates[phoneNumber].isVerified = true;
     await this.cacheManager.del(phoneNumber);
   }
 
@@ -111,7 +109,7 @@ export class AuthService {
       );
     }
 
-    const userState = userAuthStates[phoneNumber];
+    const userState = this.userAuthStates[phoneNumber];
     if (!userState || !userState.isVerified) {
       throw new BadRequestException("이메일 인증이 필요합니다.");
     }
@@ -134,7 +132,7 @@ export class AuthService {
       phoneNumber,
     });
 
-    await this.termsOfServiceRepository.save({
+    await this.termsOfServiceService.saveTermsOfService({
       userId: userCreateData.id,
       serviceTerms: createUserDto.termsOfService.serviceTerms,
       privacyPolicy: createUserDto.termsOfService.privacyPolicy,
@@ -142,7 +140,7 @@ export class AuthService {
       identificationInfoPolicy: createUserDto.termsOfService.identificationInfoPolicy,
       verificationServiceTerms: createUserDto.termsOfService.verificationServiceTerms
     })
-    delete userAuthStates[phoneNumber];
+    delete this.userAuthStates[phoneNumber];
 
     return userCreateData
   }
@@ -179,22 +177,13 @@ export class AuthService {
     });
 
     const hashRefreshToken = await bcrypt.hash(refreshToken, AUTH_CONSTANT.HASH_SALT_ROUNDS);
-    await this.refreshTokenRepository.upsert(
-      {
-        userId: user.id,
-        refreshToken: hashRefreshToken,
-      },
-      {
-        conflictPaths: ['userId'],
-        skipUpdateIfNoValuesChanged: true,
-      },
-    );
+    await this.refreshTokenService.findRefreshToken(user.id, hashRefreshToken)
 
     return { accessToken, refreshToken };
   }
 
   public async refreshToken(userId: number, refreshToken: string) {
-    const user = await this.refreshTokenRepository.findOne({ where: { userId } });
+    const user = await this.refreshTokenService.findUserRefreshToken(userId)
     if (!user) {
       throw new NotFoundException('유저를 찾을 수 없습니다.');
     }

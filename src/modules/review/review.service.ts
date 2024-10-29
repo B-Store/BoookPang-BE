@@ -1,16 +1,14 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewEntity } from '../../entities/reviews.entity';
 import { Repository } from 'typeorm';
 import { RevirewCreateDto } from './dto/create.review.dto';
-import { BooksService } from '../books/books.service';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectRepository(ReviewEntity)
     private reviewRepository: Repository<ReviewEntity>,
-    private booksService: BooksService,
   ) {}
 
   async createReview(userId: number, reviewCreateDto: RevirewCreateDto) {
@@ -33,16 +31,15 @@ export class ReviewService {
     return this.reviewRepository.save(review);
   }
 
-  async findReview(bookId: number) {
-    const bookData = await this.booksService.findBook(bookId);
-    if (!bookData) {
-      throw new NotFoundException('book 정보를 찾을 수 없습니다.');
-    }
-
+  async findBookReview(bookId: number) {
     return this.reviewRepository.find({ where: { bookId } });
   }
 
   public async findReviewCount(bookId: number) {
     return this.reviewRepository.count({ where: { bookId } });
+  }
+
+  public async findBooksreiew(bookId: number) {
+    return this.reviewRepository.find({ where: { bookId } });
   }
 }

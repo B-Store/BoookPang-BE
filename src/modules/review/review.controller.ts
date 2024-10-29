@@ -32,6 +32,6 @@ export class ReviewController {
    */
   @Get('/:bookId')
   findReview(@Param('bookId') bookId: number) {
-    return this.reviewService.findReview(bookId);
+    return this.reviewService.findBookReview(bookId);
   }
 }
