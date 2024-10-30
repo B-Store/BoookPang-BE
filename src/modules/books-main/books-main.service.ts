@@ -203,8 +203,8 @@ export class BooksMainService {
   }
 
   public async findCategories(category: string) {
-    const data = await this.categoryService.findCategoryID(category)
-
+    const data = await this.categoryService.findCategoryDepth1(category)
+    console.log(data)
     // id와 depth1을 기준으로 고유한 카테고리 목록 생성
     const uniqueCategories = data.reduce((acc, item) => {
       const exists = acc.find((cat) => cat.depth1 === item.depth1);

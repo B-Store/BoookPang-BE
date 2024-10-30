@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CategoryEntity } from '../../entities/category.entity';
@@ -29,5 +29,9 @@ export class CategoryService {
     }
 
     return this.categoryRepository.find({ where: { mall: koreanCategory } });
+  }
+
+  public async findCategoryDepth1(category:string){
+    return this.categoryRepository.find({where: {mall: category}})
   }
 }
