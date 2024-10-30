@@ -7,18 +7,18 @@ import { CategoryEntity } from '../../entities/category.entity';
 import { Between, In, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { OrderService } from '../order/order.service';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class BooksMainService {
   constructor(
     @InjectRepository(BooksEntity)
     private readonly bookRepository: Repository<BooksEntity>,
-    @InjectRepository(CategoryEntity)
-    private readonly categoryRepository: Repository<CategoryEntity>,
     @InjectRepository(BooksCategoryEntity)
     private readonly bookCategoryRepository: Repository<BooksCategoryEntity>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private categoryService: CategoryService,
     private orderService: OrderService,
   ) {}
 
@@ -52,14 +52,12 @@ export class BooksMainService {
         .take(limit)
         .getManyAndCount();
     } else {
-      const categoryEntity = await this.categoryRepository.find({
-        select: ['id'],
-        where: { mall: category },
-      });
-
+      const categoryEntity = await this.categoryService.findCategoryID(category)
+      console.log(categoryEntity)
       if (!categoryEntity) {
         throw new BadRequestException('category 값을 확인해 주세요.');
       }
+
       const categoryIds = categoryEntity.map((entity) => entity.id);
 
       const booksCategoryData = await this.bookCategoryRepository.find({
@@ -205,10 +203,7 @@ export class BooksMainService {
   }
 
   public async findCategories(category: string) {
-    const data = await this.categoryRepository.find({
-      select: ['id', 'depth1'],
-      where: { mall: category },
-    });
+    const data = await this.categoryService.findCategoryID(category)
 
     // id와 depth1을 기준으로 고유한 카테고리 목록 생성
     const uniqueCategories = data.reduce((acc, item) => {

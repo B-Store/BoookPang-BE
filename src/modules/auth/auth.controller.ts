@@ -86,10 +86,10 @@ export class AuthController {
   @Post('refresh-token')
   @UseGuards(JwtRefreshGuards)
   async refreshToken(
-    @RequestTokensByHttp() { userId, refreshToken }: { userId: number; refreshToken: string },
+    @RequestTokensByHttp() { userId, token }: { userId: number; token: string },
   ) {
     {
-      return this.authService.refreshToken(userId, refreshToken);
+      return this.authService.refreshToken(userId, token);
     }
   }
 }

@@ -191,7 +191,6 @@ export class AuthService {
     if (!user.refreshToken) {
       throw new NotFoundException('저장된 리프레시 토큰이 없습니다.');
     }
-
     const userToken = await bcrypt.compare(refreshToken, user.refreshToken);
     if (!userToken) {
       throw new NotFoundException('인증 정보가 유효하지 않습니다.');

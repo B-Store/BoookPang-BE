@@ -1,21 +1,19 @@
+import { BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Vonage } from '@vonage/server-sdk';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersEntity } from '../../entities/users.entity';
-import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
-import { TermsOfServiceEntity } from '../../entities/terms_of_service.entity';
-import * as bcrypt from 'bcrypt';
-import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
-import { TermsOfServiceModule } from '../terms-of-service/terms-of-service.module';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { TermsOfServiceService } from '../terms-of-service/terms-of-service.service';
+import { UsersEntity } from '../../entities/users.entity';
+import { LogInDto } from './dto/log-in.dto';
+import { AUTH_CONSTANT } from '../../common/auth.constant';
+import * as bcrypt from 'bcrypt';
 
 const dummyUserEntity = {
   loginId: 'bookPang@bookpang.com',
@@ -48,7 +46,8 @@ describe('AuthService', () => {
     } as unknown as jest.Mocked<Repository<UsersEntity>>;
 
     mockRefreshTokensService = {
-      save: jest.fn(),
+      findRefreshToken: jest.fn(),
+      findUserRefreshToken: jest.fn(),
     } as unknown as jest.Mocked<RefreshTokenService>;
 
     mockTermsOfServiceService = {
@@ -61,29 +60,12 @@ describe('AuthService', () => {
       del: jest.fn(),
     } as unknown as jest.Mocked<Cache>;
 
-    mockJwtService = {} as unknown as jest.Mocked<JwtService>;
+    mockJwtService = {
+      sign: jest.fn(),
+    } as unknown as jest.Mocked<JwtService>;
 
     mockConfigService = {
-      get: jest.fn((key: string) => {
-        switch (key) {
-          case 'VONAGE_API_KEY':
-            return 'test_api_key';
-          case 'VONAGE_API_SECRET':
-            return 'test_api_secret';
-          case 'VONAGE_SENDER_NUMBER':
-            return 'test_sender_number';
-          // case 'ACCESS_TOKEN_SECRET':
-          //   return 'test_secret';
-          // case 'JWT_ACCESS_TOKEN_EXPIRATION':
-          //   return '1h';
-          // case 'REFRESH_TOKEN_SECRET':
-          //   return 'refresh_token_secret';
-          // case 'JWT_REFRESH_TOKEN_EXPIRATION':
-          //   return '7d';
-          default:
-            return null;
-        }
-      }),
+      get: jest.fn(),
     } as unknown as jest.Mocked<ConfigService>;
 
     const mockVonage = {
@@ -203,11 +185,11 @@ describe('AuthService', () => {
         phoneNumber: '01012345678',
         verificationCode: Number(123456),
       };
-    
+
       service['userAuthStates'][verifyCodeDto.phoneNumber] = { isVerified: false };
-    
+
       await service.phoneNumberValidator(verifyCodeDto);
-    
+
       expect(mockCacheManager.get).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
       expect(mockCacheManager.del).toHaveBeenCalledWith(verifyCodeDto.phoneNumber);
       expect(service['userAuthStates'][verifyCodeDto.phoneNumber].isVerified).toBe(true);
@@ -228,7 +210,8 @@ describe('AuthService', () => {
       expect(service.checkExternalId(externalId)).resolves.toBeNull();
       expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
         where: { externalId, deletedAt: null },
-      });externalId
+      });
+      externalId;
     });
 
     it('should throw BadRequestException if externalId already exists', async () => {
@@ -238,6 +221,32 @@ describe('AuthService', () => {
       expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
         where: { externalId, deletedAt: null },
       });
+    });
+  });
+
+  describe('checkNickName', () => {
+    it('should throw BadRequestException if nickname already exists', async () => {
+      const nickname = '';
+
+      expect(service.checkNickName(nickname)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if user already exists', async () => {
+      const nickname = 'bookPang';
+
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUserEntity);
+
+      expect(service.checkNickName(nickname)).rejects.toThrow(BadRequestException);
+      expect(mockUsersRepository.findOne).toHaveBeenCalled();
+    });
+
+    it('should return null if nickname does not exist', async () => {
+      const nickname = 'bookPang';
+
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
+
+      expect(service.checkNickName(nickname)).resolves.toBeNull();
+      expect(mockUsersRepository.findOne).toHaveBeenCalled();
     });
   });
 
@@ -253,8 +262,8 @@ describe('AuthService', () => {
           privacyPolicy: true,
           carrierTerms: true,
           identificationInfoPolicy: true,
-          verificationServiceTerms:true
-        }
+          verificationServiceTerms: true,
+        },
       };
 
       expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
@@ -271,8 +280,8 @@ describe('AuthService', () => {
           privacyPolicy: true,
           carrierTerms: true,
           identificationInfoPolicy: true,
-          verificationServiceTerms:true
-        }
+          verificationServiceTerms: true,
+        },
       };
 
       expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
@@ -289,8 +298,8 @@ describe('AuthService', () => {
           privacyPolicy: true,
           carrierTerms: true,
           identificationInfoPolicy: true,
-          verificationServiceTerms:true
-        }
+          verificationServiceTerms: true,
+        },
       };
 
       expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
@@ -307,12 +316,55 @@ describe('AuthService', () => {
           privacyPolicy: true,
           carrierTerms: true,
           identificationInfoPolicy: true,
-          verificationServiceTerms:true
-        }
+          verificationServiceTerms: true,
+        },
       };
       service['userAuthStates'] = {
         [createUserDto.phoneNumber]: { isVerified: false },
       };
+
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if userState is empty', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: 'bookpang12345',
+        phoneNumber: '01012345678',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms: true,
+        },
+      };
+
+      service['userAuthStates'] = {};
+
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if password test is empty', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: 'bookPang12345',
+        phoneNumber: '01012345678',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms: true,
+        },
+      };
+
+      service['userAuthStates'] = {
+        [createUserDto.phoneNumber]: { isVerified: false },
+      };
+      service['userAuthStates'][createUserDto.phoneNumber].isVerified = true;
 
       expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
@@ -328,8 +380,8 @@ describe('AuthService', () => {
           privacyPolicy: true,
           carrierTerms: true,
           identificationInfoPolicy: true,
-          verificationServiceTerms:true
-        }
+          verificationServiceTerms: true,
+        },
       };
 
       service['userAuthStates'] = {
@@ -356,7 +408,7 @@ describe('AuthService', () => {
         password: '',
       };
 
-      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException)
+      expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if password is empty', async () => {
@@ -397,7 +449,111 @@ describe('AuthService', () => {
       (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
 
       expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
-      // expect(bcrypt.compare).toHaveBeenCalled();
+    });
+
+    it('should return access and refresh tokens when login is successful', async () => {
+      const logInDto: LogInDto = {
+        externalId: 'validExternalId',
+        password: 'validPassword',
+      };
+
+      const hashedPassword = await bcrypt.hash(logInDto.password, AUTH_CONSTANT.HASH_SALT_ROUNDS);
+
+      const dummyUser = {
+        id: 1,
+        externalId: logInDto.externalId,
+        password: hashedPassword,
+        deletedAt: null,
+      };
+
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUser);
+      (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(true);
+
+      jest.spyOn(mockJwtService, 'sign')
+      .mockReturnValueOnce('mockedAccessToken') 
+      .mockReturnValueOnce('mockedRefreshToken');
+  
+      mockRefreshTokensService.findRefreshToken = jest.fn().mockResolvedValue(undefined);
+
+      const result = await service.logIn(logInDto);
+
+      expect(result).toEqual({
+        accessToken: 'mockedAccessToken',
+        refreshToken: 'mockedRefreshToken',
+      });
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should throw NotFoundException if user is not Found', async () => {
+      const userId = 1;
+      const refreshToken = 'dummeyToekn';
+      mockRefreshTokensService.findUserRefreshToken = jest.fn().mockResolvedValue(null);
+
+      expect(service.refreshToken(userId, refreshToken)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw NotFoundException if user.refreshToken is not Found', async () => {
+      const userId = 1;
+      const refreshToken = 'dummeyToekn';
+      const dummyUserToken = {
+        id: 1,
+        userId: 1,
+        refreshToken: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockRefreshTokensService.findUserRefreshToken = jest.fn().mockResolvedValue(dummyUserToken);
+
+      expect(service.refreshToken(userId, refreshToken)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw NotFoundException if refreshToken does not match stored refreshToken', async () => {
+      const userId = 1;
+      const refreshToken = 'invalidToken';
+      const dummyUserToken = {
+        id: 1,
+        userId: 1,
+        refreshToken: 'hashedValidToken',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockRefreshTokensService.findUserRefreshToken = jest.fn().mockResolvedValue(dummyUserToken);
+      (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
+
+      expect(service.refreshToken(userId, refreshToken)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should return a new access token when refresh token is valid', async () => {
+      const userId = 1;
+      const refreshToken = 'validToken';
+      const hashedToken = await bcrypt.hash(refreshToken, AUTH_CONSTANT.HASH_SALT_ROUNDS);
+
+      const dummyUserToken = {
+        id: 1,
+        userId: 1,
+        refreshToken: hashedToken,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockRefreshTokensService.findUserRefreshToken = jest.fn().mockResolvedValue(dummyUserToken);
+      (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(true);
+      mockJwtService.sign = jest.fn().mockReturnValue('newAccessToken');
+
+      const result = await service.refreshToken(userId, refreshToken);
+
+      expect(result).toEqual({ accessToken: 'newAccessToken' });
+    });
+  });
+
+  describe('checkUserForAuth', () => {
+    it('should successfully checkUserForAuth is verified', async () => {
+      const id = 1;
+      mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUserEntity);
+
+      expect(service.checkUserForAuth({ id })).resolves.toEqual(dummyUserEntity);
     });
   });
 });

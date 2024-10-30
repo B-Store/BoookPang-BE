@@ -6,11 +6,13 @@ import { BooksEntity } from '../../entities/books.entity';
 import { CategoryEntity } from '../../entities/category.entity';
 import { BooksCategoryEntity } from '../../entities/books-category.entity';
 import { OrderModule } from '../order/order.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
     OrderModule,
-    TypeOrmModule.forFeature([BooksEntity, CategoryEntity, BooksCategoryEntity]),
+    CategoryModule,
+    TypeOrmModule.forFeature([BooksEntity, BooksCategoryEntity]),
   ],
   controllers: [BooksMainController],
   providers: [BooksMainService],
