@@ -16,7 +16,7 @@ import { Cache } from 'cache-manager';
 import { VerifyCodeDto } from './dto/verify-code.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AUTH_CONSTANT } from '../../common/auth.constant';
-import { UsersEntity } from '../../entities/users.entity';
+import { UsersEntity } from './entities/users.entity';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { LogInDto } from './dto/log-in.dto';
 import { PhoneDto } from './dto/phone-number-dto';

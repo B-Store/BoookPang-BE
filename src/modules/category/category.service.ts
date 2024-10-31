@@ -1,7 +1,7 @@
 import { BadRequestException, ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { CategoryEntity } from '../../entities/category.entity';
+import { CategoryEntity } from './entities/category.entity';
 
 @Injectable()
 export class CategoryService {
@@ -34,4 +34,8 @@ export class CategoryService {
   public async findCategoryDepth1(category:string){
     return this.categoryRepository.find({where: {mall: category}})
   }
+  
+  // public async findIdCategory(categoryId: number){
+  //   return this.
+  // }
 }

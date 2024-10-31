@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { RevirewCreateDto } from './dto/create.review.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { JwtAccessGuards } from '../jwt/jwt-strategy';
-import { UsersEntity } from '../../entities/users.entity';
+import { UsersEntity } from '../auth/entities/users.entity';
 
 @ApiTags('리뷰')
 @Controller('review')

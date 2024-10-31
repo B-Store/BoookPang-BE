@@ -1,8 +1,8 @@
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
-import { BooksEntity } from '../../entities/books.entity';
-import { CategoryEntity } from '../../entities/category.entity';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { BooksEntity } from '../../modules/books/entities/books.entity';
+import { CategoryEntity } from '../../modules/category/entities/category.entity';
+import { BooksCategoryEntity } from '../../modules/books-category/entities/books-category.entity';
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
 

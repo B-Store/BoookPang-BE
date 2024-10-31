@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { UsersEntity } from '../../entities/users.entity';
+import { UsersEntity } from '../../modules/auth/entities/users.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import * as bcrypt from 'bcrypt';

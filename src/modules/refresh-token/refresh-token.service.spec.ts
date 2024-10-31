@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RefreshTokenService } from './refresh-token.service';
-import { RefreshTokensEntity } from '../../entities/refresh-tokens.entity';
+import { RefreshTokensEntity } from './entities/refresh-tokens.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 

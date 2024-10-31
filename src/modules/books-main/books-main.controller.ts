@@ -8,7 +8,7 @@ export class BooksMainController {
   constructor(private readonly booksMainService: BooksMainService) {}
 
     /**
-   * 북팡에서 꾸준히 사랑받는 리스트
+   * 편집장 Pick
    * @param page
    * @param limit
    * @param category
@@ -52,8 +52,8 @@ export class BooksMainController {
      */
     @Get('bestsellers')
     @ApiQuery({ name: 'page', required: true, description: '페이지 번호', example: 1 })
-    @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 15 })
-    findBestsellers(@Query('page') page: number = 1, @Query('limit') limit: number = 15) {
+    @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 24 })
+    findBestsellers(@Query('page') page: number = 1, @Query('limit') limit: number = 24) {
       return this.booksMainService.findBestsellers(page, limit);
     }
   

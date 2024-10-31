@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookSchedulerService } from './book-scheduler.service';
-import { BooksEntity } from '../../entities/books.entity';
+import { BooksEntity } from '../books/entities/books.entity';
 import { BookSearchModule } from '../book-search/book-search.module';
 
 @Module({

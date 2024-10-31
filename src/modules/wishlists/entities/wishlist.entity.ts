@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
-import { UsersEntity } from './users.entity';
-import { BooksEntity } from './books.entity';
+import { UsersEntity } from '../../../modules/auth/entities/users.entity';
+import { BooksEntity } from '../../../modules/books/entities/books.entity';
 
 @Entity('wishlists')
 export class WishlistEntity {

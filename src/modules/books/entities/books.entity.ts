@@ -7,12 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ReviewEntity } from './reviews.entity';
-import { OrderEntity } from './orders.entity';
-import { LikesEntity } from './likes.entity';
-import { BooksCategoryEntity } from './books-category.entity';
-import { CartsEntity } from './carts.entity';
-import { WishlistEntity } from './wishlist.entity';
+import { ReviewEntity } from '../../review/entities/reviews.entity';
+import { OrderEntity } from '../../order/entities/orders.entity';
+import { BooksCategoryEntity } from '../../books-category/entities/books-category.entity';
+import { CartsEntity } from '../../carts/entities/carts.entity';
+import { WishlistEntity } from '../../wishlists/entities/wishlist.entity';
 
 @Entity('books')
 export class BooksEntity {
@@ -84,9 +83,6 @@ export class BooksEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.book)
   order: OrderEntity[];
-
-  @OneToMany(() => LikesEntity, (likes) => likes.book)
-  likes: LikesEntity[];
 
   @OneToMany(() => BooksCategoryEntity, (booksCategory) => booksCategory.book)
   booksCategory: BooksCategoryEntity[];

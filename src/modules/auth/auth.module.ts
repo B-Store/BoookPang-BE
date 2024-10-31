@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Auth } from '@vonage/auth';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
-import { UsersEntity } from '../../entities/users.entity';
+import { UsersEntity } from './entities/users.entity';
 import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
 import { TermsOfServiceModule } from '../terms-of-service/terms-of-service.module';
 

@@ -1,9 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BooksEntity } from '../../entities/books.entity';
+import { BooksEntity } from './entities/books.entity';
 import { Repository } from 'typeorm';
-import { ReviewEntity } from '../../entities/reviews.entity';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
 import { CategoryService } from '../category/category.service';
 import { BooksCategoryService } from '../books-category/books-category.service';
 import { ReviewService } from '../review/review.service';

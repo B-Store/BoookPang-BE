@@ -2,18 +2,17 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  ManyToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
-import { UsersEntity } from './users.entity';
-import { BooksEntity } from './books.entity';
+import { UsersEntity } from '../../../modules/auth/entities/users.entity';
+import { BooksEntity } from '../../../modules/books/entities/books.entity';
 
-@Entity('likes')
-export class LikesEntity {
+@Entity('review')
+export class ReviewEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,6 +21,15 @@ export class LikesEntity {
 
   @Column({ name: 'book_id' })
   bookId: number;
+
+  @Column({ nullable: true })
+  title: string;
+
+  @Column()
+  comment: string;
+
+  @Column()
+  stars: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -32,11 +40,11 @@ export class LikesEntity {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  @ManyToOne(() => UsersEntity, (user) => user.likes)
+  @ManyToOne(() => UsersEntity, (user) => user.review)
   @JoinColumn({ name: 'user_id' })
-  user: UsersEntity[];
+  user: UsersEntity;
 
-  @ManyToOne(() => BooksEntity, (book) => book.likes)
+  @ManyToOne(() => BooksEntity, (book) => book.review)
   @JoinColumn({ name: 'book_id' })
-  book: BooksEntity[];
+  book: BooksEntity;
 }

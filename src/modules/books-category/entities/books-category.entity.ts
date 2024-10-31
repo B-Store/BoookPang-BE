@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BooksEntity } from './books.entity';
-import { CategoryEntity } from './category.entity';
+import { BooksEntity } from '../../books/entities/books.entity';
+import { CategoryEntity } from '../../category/entities/category.entity';
 
 @Entity('books_category')
 export class BooksCategoryEntity {

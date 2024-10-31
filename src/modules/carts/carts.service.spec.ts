@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CartsService } from './carts.service';
-import { CartsEntity } from '../../entities/carts.entity';
-import { BooksEntity } from '../../entities/books.entity';
+import { CartsEntity } from './entities/carts.entity';
+import { BooksEntity } from '../books/entities/books.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 

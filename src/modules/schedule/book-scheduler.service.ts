@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { BookListSeeder } from '../../database/seeds/01.book.seed';
 import { Repository } from 'typeorm';
-import { BooksEntity } from '../../entities/books.entity';
+import { BooksEntity } from '../books/entities/books.entity';
 import { BookSearchService } from '../book-search/book-search.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderSeeder } from '../../database/seeds/04.order.faker';
@@ -28,7 +28,7 @@ export class BookSchedulerService {
     this.logger.log('모든 도서가 재인덱싱되었습니다.');
   }
 
-  @Cron('0 * * * *') // 매 1시간마다
+  @Cron('0 */6 * * *') // 매 6시간마다
   public async seedOrdersAndReviews() {
     const orderSeeder = new OrderSeeder();
     const reviewSeeder = new ReviewSeeder();

@@ -1,9 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CartsEntity } from '../../entities/carts.entity';
+import { CartsEntity } from './entities/carts.entity';
 import { In, Repository } from 'typeorm';
-import { BooksEntity } from '../../entities/books.entity';
+import { BooksEntity } from '../books/entities/books.entity';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @Injectable()

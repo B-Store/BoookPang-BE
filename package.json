@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./ormconfig.ts",
     "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./ormconfig.ts",
-    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./ormconfig.ts"
+    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./ormconfig.ts",
+    "docker:restart": "docker stop BookPang-BE || true && docker rm BookPang-BE || true && docker build -t bookpang-backend . && docker run -d -p 9000:9000 --name BookPang-BE bookpang-backend"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.15.0",

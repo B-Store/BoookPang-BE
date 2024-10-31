@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookSearchService } from './book-search.service';
 import { BookSearchController } from './book-search.controller';
 import { ConfigService } from '@nestjs/config';
-import { WishlistEntity } from '../../entities/wishlist.entity';
+import { WishlistEntity } from '../../modules/wishlists/entities/wishlist.entity';
 import { ReviewModule } from '../review/review.module';
 import { BooksModule } from '../books/books.module';
 import { WishlistsModule } from '../wishlists/wishlists.module';

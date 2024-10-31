@@ -10,7 +10,7 @@ import { Cache } from 'cache-manager';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { TermsOfServiceService } from '../terms-of-service/terms-of-service.service';
-import { UsersEntity } from '../../entities/users.entity';
+import { UsersEntity } from './entities/users.entity';
 import { LogInDto } from './dto/log-in.dto';
 import { AUTH_CONSTANT } from '../../common/auth.constant';
 import * as bcrypt from 'bcrypt';

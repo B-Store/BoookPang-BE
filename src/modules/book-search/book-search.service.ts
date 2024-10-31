@@ -43,8 +43,8 @@ export class BookSearchService implements OnModuleInit {
           index: indexName,
           body: {
             settings: {
-              number_of_shards: 1,
-              number_of_replicas: 1,
+              number_of_shards: 5,
+              number_of_replicas: 5,
             },
             mappings: {
               properties: {
@@ -59,7 +59,8 @@ export class BookSearchService implements OnModuleInit {
                 discountRate: { type: 'integer' },
                 reviewCount: { type: 'integer' },
                 scrapCount: {type: 'integer'},
-                createdAt: {type: 'date'}
+                createdAt: {type: 'date'},
+                suggest: { type: 'completion' }
               },
             },
           },
@@ -75,7 +76,6 @@ export class BookSearchService implements OnModuleInit {
 
   public async indexAllBooks() {
     const books = await this.booksService.findAllBooks();
-
     const processedBooks = await Promise.all(
       books.map(async (book) => {
         const discountRate =
@@ -123,7 +123,13 @@ export class BookSearchService implements OnModuleInit {
           await this.elasticsearchService.index({
             index: indexName,
             id: book.id.toString(),
-            body: book,
+            body: {
+              ...book,
+              suggest: {
+                input: [book.title],
+                weight: 1
+              },
+            },
           });
         }
       } catch (error) {

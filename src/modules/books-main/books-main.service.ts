@@ -1,9 +1,8 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
-import { BooksEntity } from '../../entities/books.entity';
-import { CategoryEntity } from '../../entities/category.entity';
+import { BooksCategoryEntity } from '../books-category/entities/books-category.entity';
+import { BooksEntity } from '../books/entities/books.entity';
 import { Between, In, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { OrderService } from '../order/order.service';
@@ -53,7 +52,7 @@ export class BooksMainService {
         .getManyAndCount();
     } else {
       const categoryEntity = await this.categoryService.findCategoryID(category)
-      console.log(categoryEntity)
+
       if (!categoryEntity) {
         throw new BadRequestException('category 값을 확인해 주세요.');
       }
@@ -204,8 +203,7 @@ export class BooksMainService {
 
   public async findCategories(category: string) {
     const data = await this.categoryService.findCategoryDepth1(category)
-    console.log(data)
-    // id와 depth1을 기준으로 고유한 카테고리 목록 생성
+
     const uniqueCategories = data.reduce((acc, item) => {
       const exists = acc.find((cat) => cat.depth1 === item.depth1);
       if (item.depth1 && item.depth1.trim() !== '' && !exists) {

@@ -8,7 +8,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { UsersEntity } from './users.entity';
+import { UsersEntity } from '../../../modules/auth/entities/users.entity';
 
 @Entity('terms_of_service')
 export class TermsOfServiceEntity {

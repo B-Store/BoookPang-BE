@@ -1,4 +1,4 @@
-import { SocialProviders } from '../enums/enum-social-providers';
+import { SocialProviders } from '../../../common/enum-social-providers';
 import {
   Entity,
   Column,
@@ -9,15 +9,12 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { ReviewEntity } from './reviews.entity';
-import { OrderEntity } from './orders.entity';
-import { RefreshTokensEntity } from './refresh-tokens.entity';
-import { LikesEntity } from './likes.entity';
-import { ChatsEntity } from './chats.entity';
-import { ChatRoomUsersEntity } from './chat-rooms-users.entity';
-import { CartsEntity } from './carts.entity';
-import { TermsOfServiceEntity } from './terms_of_service.entity';
-import { WishlistEntity } from './wishlist.entity';
+import { OrderEntity } from '../../order/entities/orders.entity';
+import { CartsEntity } from '../../carts/entities/carts.entity';
+import { WishlistEntity } from '../../wishlists/entities/wishlist.entity';
+import { RefreshTokensEntity } from '../../../modules/refresh-token/entities/refresh-tokens.entity';
+import { TermsOfServiceEntity } from '../../../modules/terms-of-service/entities/terms_of_service.entity';
+import { ReviewEntity } from '../../../modules/review/entities/reviews.entity';
 
 @Entity('users')
 export class UsersEntity {
@@ -72,15 +69,6 @@ export class UsersEntity {
 
   @OneToOne(() => RefreshTokensEntity, (refreshToken) => refreshToken.user)
   refreshToken: RefreshTokensEntity;
-
-  @OneToMany(() => LikesEntity, (likes) => likes.user)
-  likes: LikesEntity[];
-
-  @OneToMany(() => ChatRoomUsersEntity, (chatRoom) => chatRoom.user)
-  chatRoom: ChatRoomUsersEntity[];
-
-  @OneToMany(() => ChatsEntity, (chat) => chat.user)
-  chat: ChatsEntity[];
 
   @OneToMany(() => CartsEntity, (cart) => cart.user, { cascade: true })
   cart: CartsEntity[];

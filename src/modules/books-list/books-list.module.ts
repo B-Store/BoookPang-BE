@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksListService } from './books-list.service';
 import { BooksListController } from './books-list.controller';
-import { BooksEntity } from '../../entities/books.entity';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
-import { CategoryEntity } from '../../entities/category.entity';
+import { BooksEntity } from '../books/entities/books.entity';
+import { CategoryEntity } from '../category/entities/category.entity';
+import { BooksCategoryEntity } from '../books-category/entities/books-category.entity';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigService } from '@nestjs/config';
 

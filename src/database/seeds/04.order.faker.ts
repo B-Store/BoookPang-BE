@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { UsersEntity } from "../../entities/users.entity";
-import { BooksEntity } from "../../entities/books.entity"; 
+import { UsersEntity } from "../../modules/auth/entities/users.entity";
+import { BooksEntity } from "../../modules/books/entities/books.entity"; 
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-import { OrderEntity } from "../../entities/orders.entity";
+import { OrderEntity } from "../../modules/order/entities/orders.entity";
 
 export class OrderSeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
@@ -12,16 +12,16 @@ export class OrderSeeder implements Seeder {
 
     const data = [];
 
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 100; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)]; // 랜덤 유저 선택
       const randomBook = books[Math.floor(Math.random() * books.length)]; // 랜덤 책 선택
 
       if (randomBook.stockQuantity > 0) {
         let status: string;
 
-        if (i < 400) {
+        if (i < 80) {
           status = 'completed'
-        } else if (i < 450) {
+        } else if (i < 90) {
           status = 'paid';
         } else {
           status = 'pending';
