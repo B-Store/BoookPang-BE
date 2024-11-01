@@ -2,15 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import * as winston from 'winston';
-import * as morgan from 'morgan';
-import { winstonConfig } from './common/http.request.winston';
+import morgan from 'morgan';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const port = configService.get<number>('SERVER_PORT') || 3000;
-  const logger = winston.createLogger(winstonConfig);
 
   const config = new DocumentBuilder()
     .setTitle('북팡')
@@ -32,7 +29,7 @@ async function bootstrap() {
   app.use(
     morgan('combined', {
       stream: {
-        write: (message) => logger.info(message.trim()),
+        write: (message) => console.log(message.trim()),
       },
     }),
   );

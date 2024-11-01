@@ -12,7 +12,7 @@ import { UsersEntity } from '../../auth/entities/users.entity';
 import { BooksEntity } from '../../books/entities/books.entity';
 
 @Entity('carts')
-export class CartsEntity {
+export class ShoppingCartEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,11 +34,11 @@ export class CartsEntity {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true})
   deletedAt: Date;
 
-  @ManyToOne(() => UsersEntity, (users) => users.cart, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UsersEntity, (users) => users.shoppingCart, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: UsersEntity;
 
-  @ManyToOne(() => BooksEntity, (books) => books.cart, { onDelete: 'CASCADE' })
+  @ManyToOne(() => BooksEntity, (books) => books.shoppingCart, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'book_id' })
   book: BooksEntity;
 }

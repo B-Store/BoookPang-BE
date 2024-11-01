@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { UsersEntity } from '../../modules/auth/entities/users.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { OrderEntity } from '../../modules/order/entities/orders.entity';
 import { ReviewEntity } from '../../modules/review/entities/reviews.entity';
+import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class ReviewSeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {

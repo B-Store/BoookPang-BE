@@ -35,7 +35,10 @@ export class CategoryService {
     return this.categoryRepository.find({where: {mall: category}})
   }
   
-  // public async findIdCategory(categoryId: number){
-  //   return this.
-  // }
+  public async findCategoryIdsByMall(category: string){
+    return this.categoryRepository.find({
+      select: ['id'],
+      where: { mall: category },
+    });
+  }
 }

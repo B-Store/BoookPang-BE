@@ -56,40 +56,4 @@ export class AuthController {
     await this.authService.checkNickName(nickname);
     return { message: '사용 가능한 닉네임입니다.' };
   }
-
-  /**
-   * 회원가입
-   * @param createUserDto
-   * @returns
-   */
-  @Post('sign-up')
-  async userCreate(@Body() createUserDto: CreateUserDto) {
-    await this.authService.userCreate(createUserDto);
-    return { message: '회원가입 성공하였습니다.' };
-  }
-
-  /**
-   * 로그인
-   * @param logInDto
-   * @returns
-   */
-  @Post('login')
-  async logIn(@Body() logInDto: LogInDto) {
-    return this.authService.logIn(logInDto);
-  }
-
-  /**
-   * 리프레시토큰 검증 후 새 액세스 토큰 발급
-   * @param param0
-   * @returns
-   */
-  @Post('refresh-token')
-  @UseGuards(JwtRefreshGuards)
-  async refreshToken(
-    @RequestTokensByHttp() { userId, token }: { userId: number; token: string },
-  ) {
-    {
-      return this.authService.refreshToken(userId, token);
-    }
-  }
 }

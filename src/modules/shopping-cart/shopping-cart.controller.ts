@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { CartsService } from './carts.service';
+import { ShoppingCartService } from './shopping-cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
@@ -7,9 +7,9 @@ import { JwtAccessGuards } from '../jwt/jwt-strategy';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @ApiTags('장바구니')
-@Controller('cart')
-export class CardsController {
-  constructor(private readonly cartsService: CartsService) {}
+@Controller('ShoppingCart')
+export class ShoppingCartController {
+  constructor(private readonly shoppingCartService: ShoppingCartService) {}
 
   /**
    * 장바구니 담기
@@ -23,7 +23,7 @@ export class CardsController {
     @Body() createCartDto: CreateCartDto,
     @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
-    return this.cartsService.createBookCrat(userId, createCartDto);
+    return this.shoppingCartService.createBookCrat(userId, createCartDto);
   }
 
   /**
@@ -36,7 +36,7 @@ export class CardsController {
   async findBookCrat(
     @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
-    return this.cartsService.findBookCrat(userId);
+    return this.shoppingCartService.findBookCrat(userId);
   }
 
   /**
@@ -45,14 +45,14 @@ export class CardsController {
    * @param param
    * @returns
    */
-  @Patch(':cartId')
+  @Patch(':ShoppingCartId')
   @UseGuards(JwtAccessGuards)
   async updateBookCart(
     @Param('cartId') cartId: number,
     @Body() updateCartDto: UpdateCartDto,
     @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
-    return this.cartsService.updateBookCart(userId, cartId, updateCartDto);
+    return this.shoppingCartService.updateBookCart(userId, cartId, updateCartDto);
   }
 
   /**
@@ -61,12 +61,12 @@ export class CardsController {
    * @param param
    * @returns
    */
-  @Delete(':cartId')
+  @Delete(':ShoppingCartId')
   @UseGuards(JwtAccessGuards)
   async deleteBookCart(
     @Param('cartId') cartId: number,
     @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
-    return this.cartsService.deleteBookCart(userId, cartId);
+    return this.shoppingCartService.deleteBookCart(userId, cartId);
   }
 }

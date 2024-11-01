@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as csv from 'csv-parser';
+import fs from 'fs';
+import csv from 'csv-parser';
 import { DataSource } from 'typeorm';
 import { CategoryEntity } from '../../modules/category/entities/category.entity';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import * as path from 'path';
+import path from 'path';
 
 export class CategorySeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CartsService } from './carts.service';
-import { CartsEntity } from './entities/carts.entity';
+import { ShoppingCartService } from './shopping-cart.service';
+import { CartsEntity } from './entities/shopping-cart.entity';
 import { BooksEntity } from '../books/entities/books.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 describe('CartsService', () => {
-  let service: CartsService;
+  let service: ShoppingCartService;
   let mockCartsRepository: jest.Mocked<Repository<CartsEntity>>;
   let mockBooksRepository: jest.Mocked<Repository<BooksEntity>>;
 
@@ -25,7 +25,7 @@ describe('CartsService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CartsService,
+        ShoppingCartService,
         {
           provide: getRepositoryToken(CartsEntity),
           useValue: mockCartsRepository,
@@ -37,7 +37,7 @@ describe('CartsService', () => {
       ],
     }).compile();
 
-    service = module.get<CartsService>(CartsService);
+    service = module.get<ShoppingCartService>(ShoppingCartService);
   });
 
   it('should be defined', () => {

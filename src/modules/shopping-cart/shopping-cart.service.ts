@@ -1,16 +1,16 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CartsEntity } from './entities/carts.entity';
+import { ShoppingCartEntity } from './entities/shopping-cart.entity';
 import { In, Repository } from 'typeorm';
 import { BooksEntity } from '../books/entities/books.entity';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @Injectable()
-export class CartsService {
+export class ShoppingCartService {
   constructor(
-    @InjectRepository(CartsEntity)
-    private cartRepository: Repository<CartsEntity>,
+    @InjectRepository(ShoppingCartEntity)
+    private cartRepository: Repository<ShoppingCartEntity>,
     @InjectRepository(BooksEntity)
     private bookRepository: Repository<BooksEntity>,
   ) {}

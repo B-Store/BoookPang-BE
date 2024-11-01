@@ -10,7 +10,7 @@ import {
 import { ReviewEntity } from '../../review/entities/reviews.entity';
 import { OrderEntity } from '../../order/entities/orders.entity';
 import { BooksCategoryEntity } from '../../books-category/entities/books-category.entity';
-import { CartsEntity } from '../../carts/entities/carts.entity';
+import { ShoppingCartEntity } from '../../shopping-cart/entities/shopping-cart.entity';
 import { WishlistEntity } from '../../wishlists/entities/wishlist.entity';
 
 @Entity('books')
@@ -87,8 +87,8 @@ export class BooksEntity {
   @OneToMany(() => BooksCategoryEntity, (booksCategory) => booksCategory.book)
   booksCategory: BooksCategoryEntity[];
 
-  @OneToMany(() => CartsEntity, (cart) => cart.book, { cascade: true })
-  cart: CartsEntity[];
+  @OneToMany(() => ShoppingCartEntity, (cart) => cart.book, { cascade: true })
+  shoppingCart: ShoppingCartEntity[];
 
   @OneToMany(()=> WishlistEntity, (wishlists) => wishlists.book)
   wishlists: WishlistEntity[];

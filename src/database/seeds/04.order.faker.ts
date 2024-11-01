@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { UsersEntity } from "../../modules/auth/entities/users.entity";
-import { BooksEntity } from "../../modules/books/entities/books.entity"; 
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
+import { BooksEntity } from "../../modules/books/entities/books.entity"; 
 import { OrderEntity } from "../../modules/order/entities/orders.entity";
+import { UsersEntity } from "../../modules/auth/entities/users.entity";
 
 export class OrderSeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {

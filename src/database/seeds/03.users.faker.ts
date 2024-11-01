@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { UsersEntity } from '../../modules/auth/entities/users.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import * as bcrypt from 'bcrypt';
+import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class UserSeeder implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {

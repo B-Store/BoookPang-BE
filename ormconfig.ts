@@ -2,7 +2,7 @@ import "dotenv/config";
 import { UsersEntity } from "./src/modules/auth/entities/users.entity";
 import { BooksCategoryEntity } from "./src/modules/books-category/entities/books-category.entity";
 import { BooksEntity } from "./src/modules/books/entities/books.entity";
-import { CartsEntity } from "./src/modules/carts/entities/carts.entity";
+import { ShoppingCartEntity } from "./src/modules/shopping-cart/entities/shopping-cart.entity";
 import { CategoryEntity } from "./src/modules/category/entities/category.entity";
 import { OrderEntity } from "./src/modules/order/entities/orders.entity";
 import { RefreshTokensEntity } from "./src/modules/refresh-token/entities/refresh-tokens.entity";
@@ -20,7 +20,7 @@ export const config = new DataSource({
     ReviewEntity,
     OrderEntity,
     CategoryEntity,
-    CartsEntity,
+    ShoppingCartEntity,
     BooksEntity,
     BooksCategoryEntity,
     TermsOfServiceEntity,

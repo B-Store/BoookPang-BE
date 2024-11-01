@@ -1,23 +1,19 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BooksCategoryEntity } from '../books-category/entities/books-category.entity';
-import { BooksEntity } from '../books/entities/books.entity';
-import { Between, In, Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
-import { OrderService } from '../order/order.service';
-import { CategoryService } from '../category/category.service';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BooksCategoryService } from '../../modules/books-category/books-category.service';
+import { BooksService } from '../../modules/books/books.service';
+import { CategoryService } from '../../modules/category/category.service';
+import { OrderService } from '../../modules/order/order.service';
 
 @Injectable()
-export class BooksMainService {
+export class BookListService {
   constructor(
-    @InjectRepository(BooksEntity)
-    private readonly bookRepository: Repository<BooksEntity>,
-    @InjectRepository(BooksCategoryEntity)
-    private readonly bookCategoryRepository: Repository<BooksCategoryEntity>,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
+    private booksService: BooksService,
     private categoryService: CategoryService,
+    private bookCategoryService: BooksCategoryService,
     private orderService: OrderService,
   ) {}
 
@@ -33,25 +29,9 @@ export class BooksMainService {
     let books: any[], total: any;
 
     if (category === 'ItemEditorChoice') {
-      [books, total] = await this.bookRepository
-        .createQueryBuilder('book')
-        .select([
-          'book.id',
-          'book.title',
-          'book.cover',
-          'book.author',
-          'book.publisher',
-          'book.description',
-          'book.salePrice',
-          'book.regularPrice',
-        ])
-        .orderBy('RAND()')
-        .where({ sourceType: category })
-        .skip(skip)
-        .take(limit)
-        .getManyAndCount();
+      [books, total] = await this.booksService.findBooksByCategory({ category, skip, limit });
     } else {
-      const categoryEntity = await this.categoryService.findCategoryID(category)
+      const categoryEntity = await this.categoryService.findCategoryID(category);
 
       if (!categoryEntity) {
         throw new BadRequestException('category 값을 확인해 주세요.');
@@ -59,10 +39,7 @@ export class BooksMainService {
 
       const categoryIds = categoryEntity.map((entity) => entity.id);
 
-      const booksCategoryData = await this.bookCategoryRepository.find({
-        select: ['bookId'],
-        where: { categoryId: In(categoryIds) },
-      });
+      const booksCategoryData = await this.bookCategoryService.findBooksByCategoryIds(categoryIds);
 
       const bookIds = booksCategoryData.map((data) => data.bookId);
 
@@ -71,23 +48,7 @@ export class BooksMainService {
       }
 
       // bookIds 배열로 book 테이블 조회
-      [books, total] = await this.bookRepository
-        .createQueryBuilder('book')
-        .select([
-          'book.id',
-          'book.title',
-          'book.cover',
-          'book.author',
-          'book.publisher',
-          'book.description',
-          'book.salePrice',
-          'book.regularPrice',
-        ])
-        .whereInIds(bookIds)
-        .orderBy('RAND()')
-        .skip(skip)
-        .take(limit)
-        .getManyAndCount();
+      [books, total] = await this.booksService.findRandomBooksByIds({ bookIds, skip, limit });
     }
 
     const processedBooks = books.map((book) => {
@@ -121,29 +82,7 @@ export class BooksMainService {
       return cachedData;
     }
 
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-
-    const now = new Date();
-
-    const [books, total] = await this.bookRepository
-      .createQueryBuilder('book')
-      .select([
-        'book.id',
-        'book.title',
-        'book.cover',
-        'book.author',
-        'book.publisher',
-        'book.createdAt',
-      ])
-      .where({
-        sourceType: 'ItemNewAll',
-        createdAt: Between(startOfMonth, now),
-      })
-      .orderBy('RAND()')
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+    const { books, total } = await this.booksService.findRandomBooksBySourceAndDate(skip, limit);
 
     const result = {
       data: books,
@@ -165,18 +104,14 @@ export class BooksMainService {
       return cachedData;
     }
 
-    const bestsellingBooks = await this.bookRepository.find({
-      where: { sourceType: 'Bestseller' },
-    });
+    const bestsellingBooks = await this.booksService.bestsellingBooks();
 
     const aggregatedData = await this.orderService.getTotalSalesForBooks(
       bestsellingBooks.map((book) => book.id),
     );
 
     const bookIds = aggregatedData.map((data) => data.bookId);
-    const booksData = await this.bookRepository.find({
-      where: { id: In(bookIds) },
-    });
+    const booksData = await this.booksService.findBooksIds(bookIds);
 
     const resultData = aggregatedData.map((aggData) => {
       const book = booksData.find((b) => b.id === aggData.bookId);
@@ -202,7 +137,7 @@ export class BooksMainService {
   }
 
   public async findCategories(category: string) {
-    const data = await this.categoryService.findCategoryDepth1(category)
+    const data = await this.categoryService.findCategoryDepth1(category);
 
     const uniqueCategories = data.reduce((acc, item) => {
       const exists = acc.find((cat) => cat.depth1 === item.depth1);
@@ -216,10 +151,22 @@ export class BooksMainService {
   }
 
   public async findItemNewSpecial(limit: number) {
-    return this.bookRepository.find({
-      select: ['id', 'cover'],
-      where: { sourceType: 'ItemNewSpecial' },
-      take: limit,
-    });
+    const items = await this.booksService.findItemNewSpecial(limit);
+    const uniqueItems = Array.from(new Set(items.map(item => item.id)))
+      .map(id => items.find(item => item.id === id));
+  
+    return uniqueItems.slice(0, limit);
+  }
+  
+
+  public async findBookCategoryList(category: string) {
+    const data = await this.categoryService.findCategoryIdsByMall(category);
+
+    const categoryIds = data.map((cat) => cat.id);
+
+    const bookCategories = await this.bookCategoryService.findBooksByCategoryIds(categoryIds);
+
+    const uniqueBookIds = [...new Set(bookCategories.map((item) => item.bookId))];
+    return this.booksService.findBooksByIds(uniqueBookIds);
   }
 }

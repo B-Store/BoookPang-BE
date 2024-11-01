@@ -10,7 +10,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { OrderEntity } from '../../order/entities/orders.entity';
-import { CartsEntity } from '../../carts/entities/carts.entity';
+import { ShoppingCartEntity } from '../../shopping-cart/entities/shopping-cart.entity';
 import { WishlistEntity } from '../../wishlists/entities/wishlist.entity';
 import { RefreshTokensEntity } from '../../../modules/refresh-token/entities/refresh-tokens.entity';
 import { TermsOfServiceEntity } from '../../../modules/terms-of-service/entities/terms_of_service.entity';
@@ -70,8 +70,8 @@ export class UsersEntity {
   @OneToOne(() => RefreshTokensEntity, (refreshToken) => refreshToken.user)
   refreshToken: RefreshTokensEntity;
 
-  @OneToMany(() => CartsEntity, (cart) => cart.user, { cascade: true })
-  cart: CartsEntity[];
+  @OneToMany(() => ShoppingCartEntity, (cart) => cart.user, { cascade: true })
+  shoppingCart: ShoppingCartEntity[];
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   order: OrderEntity[];
