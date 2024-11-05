@@ -27,7 +27,7 @@ export class AccountModuleController {
    * @param logInDto
    * @returns
    */
-  @Post('login')
+  @Post('sign-in')
   async logIn(@Body() logInDto: LogInDto) {
     return this.accountModuleService.logIn(logInDto);
   }
@@ -37,7 +37,7 @@ export class AccountModuleController {
    * @param param0
    * @returns
    */
-  @Post('refresh-token')
+  @Post('tokens/refresh')
   @UseGuards(JwtRefreshGuards)
   async refreshToken(@RequestTokensByHttp() { userId, token }: { userId: number; token: string }) {
     {

@@ -12,7 +12,7 @@ export class BookDetailController {
    * @param bookId
    * @returns
    */
-  @Get('book-Detall/:bookId')
+  @Get(':bookId')
   @ApiParam({ name: 'bookId', required: true, description: '책 ID', example: 1 })
   async findBookDetall(@Param('bookId') bookId: number) {
     return this.bookDetailService.findBookDetall(bookId);

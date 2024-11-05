@@ -79,7 +79,7 @@ export class BookListController {
    * @param limit
    * @returns
    */
-  @Get('ItemNewSpecial')
+  @Get('new-special-items')
   @ApiQuery({
     name: 'limit',
     required: true,
