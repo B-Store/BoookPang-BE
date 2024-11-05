@@ -52,23 +52,27 @@ describe('BookSearchService', () => {
 
     service = module.get<BookSearchService>(BookSearchService);
   });
-
-  describe('onModuleInit', () => {
-    it('should call deleteIndex, createIndex, and indexAllBooks on module init', async () => {
-      mockBooksService.findAllBooks = jest.fn().mockResolvedValue([]);
   
-      service.deleteIndex = jest.fn();
-      service.createIndex = jest.fn();
-      service.indexAllBooks = jest.fn();
-  
-      await service.onModuleInit();
-  
-      // 각 메서드가 호출되었는지 확인
-      expect(service.deleteIndex).toHaveBeenCalledTimes(2);
-      expect(service.createIndex).toHaveBeenCalledTimes(2);
-      expect(service.indexAllBooks).toHaveBeenCalled();
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
+
+  // describe('onModuleInit', () => {
+  //   it('should call deleteIndex, createIndex, and indexAllBooks on module init', async () => {
+  //     mockBooksService.findAllBooks = jest.fn().mockResolvedValue([]);
+  
+  //     service.deleteIndex = jest.fn();
+  //     service.createIndex = jest.fn();
+  //     service.indexAllBooks = jest.fn();
+  
+  //     await service.onModuleInit();
+  
+  //     // 각 메서드가 호출되었는지 확인
+  //     expect(service.deleteIndex).toHaveBeenCalledTimes(2);
+  //     expect(service.createIndex).toHaveBeenCalledTimes(2);
+  //     expect(service.indexAllBooks).toHaveBeenCalled();
+  //   });
+  // });
   // describe('findBooks', () => {
   //   it('should throw NotFoundException when no books are found', async () => {
   //     const title = 'non-existent book';

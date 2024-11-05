@@ -3,8 +3,8 @@ import { ShoppingCartService } from './shopping-cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAccessGuards } from '../jwt/jwt-strategy';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { JwtAccessGuards } from '../../common/jwt-strategy';
 
 @ApiTags('장바구니')
 @Controller('ShoppingCart')
@@ -24,19 +24,6 @@ export class ShoppingCartController {
     @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
   ) {
     return this.shoppingCartService.createBookCrat(userId, createCartDto);
-  }
-
-  /**
-   * 장바구니 조회
-   * @param param
-   * @returns
-   */
-  @Get()
-  @UseGuards(JwtAccessGuards)
-  async findBookCrat(
-    @RequestTokensByHttp() { user: { userId } }: { user: { userId: number } },
-  ) {
-    return this.shoppingCartService.findBookCrat(userId);
   }
 
   /**

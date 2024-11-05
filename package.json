@@ -9,6 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:local": "NODE_ENV=local ts-node-dev --respawn --watch src src/main.ts",
+    "start:production": "NODE_ENV=production node dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -84,6 +86,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },

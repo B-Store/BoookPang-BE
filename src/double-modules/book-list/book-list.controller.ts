@@ -21,7 +21,7 @@ export class BookListController {
     name: 'category',
     required: true,
     description:
-      '카테고리: 편집장 추천(ItemEditorChoice), 국내도서(book), 외국도서(Foreign), 전자책(eBook)',
+      '카테고리: 편집장 추천(ItemEditorChoice)',
     example: 'ItemEditorChoice',
   })
   findRecommendedBooks(

@@ -26,30 +26,7 @@ export class BookListService {
       return cachedData;
     }
 
-    let books: any[], total: any;
-
-    if (category === 'ItemEditorChoice') {
-      [books, total] = await this.booksService.findBooksByCategory({ category, skip, limit });
-    } else {
-      const categoryEntity = await this.categoryService.findCategoryID(category);
-
-      if (!categoryEntity) {
-        throw new BadRequestException('category 값을 확인해 주세요.');
-      }
-
-      const categoryIds = categoryEntity.map((entity) => entity.id);
-
-      const booksCategoryData = await this.bookCategoryService.findBooksByCategoryIds(categoryIds);
-
-      const bookIds = booksCategoryData.map((data) => data.bookId);
-
-      if (bookIds.length === 0) {
-        throw new NotFoundException('해당 카테고리에 속하는 책이 없습니다.');
-      }
-
-      // bookIds 배열로 book 테이블 조회
-      [books, total] = await this.booksService.findRandomBooksByIds({ bookIds, skip, limit });
-    }
+    const [books, total] = await this.booksService.findBooksByCategory({ category, skip, limit });
 
     const processedBooks = books.map((book) => {
       const discountRate = book.regularPrice

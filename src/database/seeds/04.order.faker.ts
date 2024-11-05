@@ -1,14 +1,16 @@
-import { faker } from "@faker-js/faker";
-import { DataSource } from "typeorm";
-import { Seeder, SeederFactoryManager } from "typeorm-extension";
-import { BooksEntity } from "../../modules/books/entities/books.entity"; 
-import { OrderEntity } from "../../modules/order/entities/orders.entity";
-import { UsersEntity } from "../../modules/auth/entities/users.entity";
+import { faker } from '@faker-js/faker';
+import { DataSource } from 'typeorm';
+import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { BooksEntity } from '../../modules/books/entities/books.entity';
+import { OrderEntity } from '../../modules/order/entities/orders.entity';
+import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class OrderSeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
-    const users = await dataSource.getRepository(UsersEntity).find();
-    const books = await dataSource.getRepository(BooksEntity).find();
+  constructor(private readonly dataSource: DataSource) {}
+
+  public async run(): Promise<void> {
+    const users = await this.dataSource.getRepository(UsersEntity).find();
+    const books = await this.dataSource.getRepository(BooksEntity).find();
 
     const data = [];
 
@@ -20,7 +22,7 @@ export class OrderSeeder implements Seeder {
         let status: string;
 
         if (i < 80) {
-          status = 'completed'
+          status = 'completed';
         } else if (i < 90) {
           status = 'paid';
         } else {
@@ -39,7 +41,7 @@ export class OrderSeeder implements Seeder {
       }
     }
     if (data.length > 0) {
-      await dataSource.createQueryBuilder().insert().into(OrderEntity).values(data).execute();
+      await this.dataSource.createQueryBuilder().insert().into(OrderEntity).values(data).execute();
     }
   }
 }

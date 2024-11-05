@@ -5,7 +5,9 @@ import * as bcrypt from 'bcrypt';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class UserSeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
+  constructor(private readonly dataSource: DataSource) {}
+
+  public async run(): Promise<void> {
     const data = [];
     const hashedAdminPassword = await bcrypt.hash('qwer1234', 10);
 
@@ -27,7 +29,7 @@ export class UserSeeder implements Seeder {
       });
     }
 
-    await dataSource.createQueryBuilder().insert().into(UsersEntity).values(data).execute();
+    await this.dataSource.createQueryBuilder().insert().into(UsersEntity).values(data).execute();
   }
 
   private generateRandomPhoneNumber(): string {

@@ -27,31 +27,6 @@ export class ShoppingCartService {
     return this.cartRepository.save(cart);
   }
 
-  public async findBookCrat(userId: number) {
-    const cartItems = await this.cartRepository.find({ where: { userId } });
-    const bookIds = cartItems.map((item) => item.bookId);
-
-    const books = await this.bookRepository.find({
-      select: [
-        'id',
-        'title',
-        'author',
-        'publisher',
-        'description',
-        'regularPrice',
-        'salePrice',
-        'mileage',
-        'cover',
-      ],
-      where: { id: In(bookIds), deletedAt: null },
-    });
-
-    return cartItems.map((item) => ({
-      ...item,
-      book: books.find((book) => book.id === item.bookId),
-    }));
-  }
-
   public async updateBookCart(userId: number, cartId: number, updateCartDto: UpdateCartDto) {
     const { quantity } = updateCartDto;
 
@@ -75,5 +50,9 @@ export class ShoppingCartService {
     cartItem.deletedAt = new Date();
 
     return this.cartRepository.save(cartItem);
+  }
+
+  public async findCart(userId: number) {
+    return this.cartRepository.find({ where: { userId } });
   }
 }

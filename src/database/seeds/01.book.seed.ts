@@ -1,18 +1,22 @@
+import { Injectable, Logger } from '@nestjs/common';
 import { DataSource, DeepPartial } from 'typeorm';
-import { Seeder } from 'typeorm-extension';
 import { BooksEntity } from '../../modules/books/entities/books.entity';
 import { CategoryEntity } from '../../modules/category/entities/category.entity';
 import { BooksCategoryEntity } from '../../modules/books-category/entities/books-category.entity';
-import { Logger } from '@nestjs/common';
 import axios from 'axios';
 
-export class BookListSeeder implements Seeder {
+@Injectable()
+export class BookListSeeder {
   private readonly logger = new Logger(BookListSeeder.name);
 
-  public async run(dataSource: DataSource, p0: null): Promise<void> {
-    const bookRepository = dataSource.getRepository(BooksEntity);
-    const categoryRepository = dataSource.getRepository(CategoryEntity);
-    const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
+  constructor(
+    private readonly dataSource: DataSource,
+  ) {}
+
+  public async run(): Promise<void> {
+    const bookRepository = this.dataSource.getRepository(BooksEntity);
+    const categoryRepository = this.dataSource.getRepository(CategoryEntity);
+    const booksCategoryRepository = this.dataSource.getRepository(BooksCategoryEntity);
 
     const queryTypes = [
       'ItemNewAll', // 신간 전체 리스트
@@ -24,7 +28,7 @@ export class BookListSeeder implements Seeder {
     const searchTargets = ['Book', 'Foreign', 'eBook'];
 
     if (!process.env.OPEN_API) {
-      this.logger.error('API ker가 없습니다.');
+      this.logger.error('API 키가 없습니다.');
       return;
     }
 
@@ -42,7 +46,7 @@ export class BookListSeeder implements Seeder {
               Version: '20131101',
             },
           });
-          
+
           if (response.data && Array.isArray(response.data.item)) {
             const books = response.data.item;
             for (const book of books) {
@@ -50,7 +54,7 @@ export class BookListSeeder implements Seeder {
               const existingBook = await bookRepository.findOne({
                 where: { isbn13 },
               });
-              
+
               if (!existingBook) {
                 const bookDetails = await this.fetchBookDetails(itemId, isbn13);
 
@@ -79,7 +83,7 @@ export class BookListSeeder implements Seeder {
             }
           }
         } catch (error) {
-          // this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
+          this.logger.error(`Error processing ${queryType} - ${searchTarget}:`, error);
         }
       }
     }
@@ -129,6 +133,7 @@ export class BookListSeeder implements Seeder {
         description: bookDetails.description,
       };
     } catch (error) {
+      this.logger.error('Error fetching book details:', error);
       return {};
     }
   }

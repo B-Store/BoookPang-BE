@@ -1,12 +1,8 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
-import { LogInDto } from './dto/log-in.dto';
-import { JwtRefreshGuards } from '../jwt/jwt-strategy';
-import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 
 @ApiTags('인증')
 @Controller('auth')

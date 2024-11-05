@@ -7,15 +7,18 @@ import { BooksService } from '../books/books.service';
 
 describe('ReviewService', () => {
   let service: ReviewService;
-  let mockReviewRepository: Partial<Repository<ReviewEntity>>;
-  let mockBooksService: BooksService;
+  let mockReviewRepository: jest.Mocked<ReviewEntity>;
 
   beforeEach(async () => {
+
+    mockReviewRepository = {
+
+    } as unknown as jest.Mocked<ReviewEntity>
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReviewService,
         { provide: getRepositoryToken(ReviewEntity), useValue: mockReviewRepository },
-        { provide: BooksService, useValue: mockBooksService },
       ],
     }).compile();
 

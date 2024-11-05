@@ -8,11 +8,10 @@ import { BooksModule } from './modules/books/books.module';
 import { BookSearchModule } from './modules/book-search/book-search.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ShoppingCartModule } from './modules/shopping-cart/shopping-cart.module';
-import { BookSchedulerModule } from './modules/schedule/book-scheduler.module';
+import { BookSchedulerModule } from './double-modules/schedule/book-scheduler.module';
 import { WishlistsModule } from './modules/wishlists/wishlists.module';
 import { ReviewModule } from './modules/review/review.module';
 import { OrderModule } from './modules/order/order.module';
-import { JwtModule } from './modules/jwt/jwt.module';
 import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module';
 import { TermsOfServiceModule } from './modules/terms-of-service/terms-of-service.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -22,6 +21,7 @@ import { ElasticIndexModuleModule } from './double-modules/elastic-index-module/
 import { AuthModule } from './modules/auth/auth.module';
 import { BookDetailModule } from './double-modules/book-detail/book-detail.module';
 import { BookListModule } from './double-modules/book-list/book-list.module';
+import { CartBooksModule } from './double-modules/cart-books/cart-books.module';
 
 @Module({
   imports: [
@@ -50,10 +50,10 @@ import { BookListModule } from './double-modules/book-list/book-list.module';
     WishlistsModule,
     ReviewModule,
     OrderModule,
-    JwtModule,
     RefreshTokenModule,
     TermsOfServiceModule,
     CategoryModule,
+    CartBooksModule,
     // modules
   ],
   controllers: [AppController],

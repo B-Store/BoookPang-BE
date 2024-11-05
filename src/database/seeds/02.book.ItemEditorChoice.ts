@@ -9,10 +9,14 @@ import axios from 'axios';
 export class BookEditorRecommendedDomesticBooksSeeder implements Seeder {
   private readonly logger = new Logger(BookEditorRecommendedDomesticBooksSeeder.name);
 
-  public async run(dataSource: DataSource, p0: null): Promise<void> {
-    const bookRepository = dataSource.getRepository(BooksEntity);
-    const categoryRepository = dataSource.getRepository(CategoryEntity);
-    const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
+  constructor(
+    private readonly dataSource: DataSource,
+  ) {}
+
+  public async run(): Promise<void> {
+    const bookRepository = this.dataSource.getRepository(BooksEntity);
+    const categoryRepository = this.dataSource.getRepository(CategoryEntity);
+    const booksCategoryRepository = this.dataSource.getRepository(BooksCategoryEntity);
   
     if (!process.env.OPEN_API) {
       this.logger.error('API key가 없습니다.');
@@ -134,7 +138,6 @@ export class BookEditorRecommendedDomesticBooksSeeder implements Seeder {
         searchTarget: 'Book'
       };
     } catch (error) {
-      // this.logger.error(`Error fetching book details for ISBN ${isbn13}:`, error);
       return {};
     }
   }

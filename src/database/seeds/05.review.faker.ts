@@ -6,11 +6,15 @@ import { ReviewEntity } from '../../modules/review/entities/reviews.entity';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class ReviewSeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
-    const orders = await dataSource
+  constructor(
+    private readonly dataSource: DataSource,
+  ) {}
+
+  public async run(): Promise<void> {
+    const orders = await this.dataSource
       .getRepository(OrderEntity)
       .find({ where: { status: 'completed' } });
-    const users = await dataSource.getRepository(UsersEntity).find();
+    const users = await this.dataSource.getRepository(UsersEntity).find();
 
     const reviewTitles = [
       '아주 유용한 책입니다!',
@@ -115,7 +119,7 @@ export class ReviewSeeder implements Seeder {
     }
 
     if (data.length > 0) {
-      await dataSource.createQueryBuilder().insert().into(ReviewEntity).values(data).execute();
+      await this.dataSource.createQueryBuilder().insert().into(ReviewEntity).values(data).execute();
     }
   }
 }
