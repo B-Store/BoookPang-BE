@@ -129,12 +129,12 @@ export class BookListService {
 
   public async findItemNewSpecial(limit: number) {
     const items = await this.booksService.findItemNewSpecial(limit);
-    const uniqueItems = Array.from(new Set(items.map(item => item.id)))
-      .map(id => items.find(item => item.id === id));
-  
+    const uniqueItems = Array.from(new Set(items.map((item) => item.id))).map((id) =>
+      items.find((item) => item.id === id),
+    );
+
     return uniqueItems.slice(0, limit);
   }
-  
 
   public async findBookCategoryList(category: string) {
     const data = await this.categoryService.findCategoryIdsByMall(category);
@@ -145,5 +145,23 @@ export class BookListService {
 
     const uniqueBookIds = [...new Set(bookCategories.map((item) => item.bookId))];
     return this.booksService.findBooksByIds(uniqueBookIds);
+  }
+
+  public async findBooksCategoryId({ categoryId, page, limit }) {
+    const booksCategoryData = await this.bookCategoryService.findCategoryId(categoryId);
+    const booksIds = booksCategoryData.map((book) => book.bookId);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + parseInt(limit);
+
+    const allBooks = await this.booksService.findBooksIds(booksIds);
+    const paginatedBooks = allBooks.slice(startIndex, endIndex);
+
+    return {
+      total: allBooks.length,
+      page,
+      limit,
+      books: paginatedBooks,
+    };
   }
 }

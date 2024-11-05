@@ -20,4 +20,8 @@ export class BooksCategoryService {
   public async findBooksByCategoryId(bookId: number) {
     return this.booksCategoryRepository.find({ where: { bookId: bookId } });
   }
+
+  public async findCategoryId(categoryId: number){
+    return this.booksCategoryRepository.find({where: {categoryId}})
+  }
 }

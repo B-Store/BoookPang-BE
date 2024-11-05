@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { BookListService } from './book-list.service';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('도서 리스트')
 @Controller('book-list')
@@ -20,8 +20,7 @@ export class BookListController {
   @ApiQuery({
     name: 'category',
     required: true,
-    description:
-      '카테고리: 편집장 추천(ItemEditorChoice)',
+    description: '카테고리: 편집장 추천(ItemEditorChoice)',
     example: 'ItemEditorChoice',
   })
   findRecommendedBooks(
@@ -100,5 +99,22 @@ export class BookListController {
   @ApiQuery({ name: 'category', required: true, description: '카테고리', example: '국내도서' })
   findBookDetail(@Query('category') category: string) {
     return this.bookListService.findBookCategoryList(category);
+  }
+
+  /**
+   * 카테고리 ID에 따른 도서 리스트 조회
+   * @param categoryId
+   * @returns
+   */
+  @Get('category-books-list/:categoryId')
+  @ApiQuery({ name: 'page', required: true, description: '페이지 번호', example: 1 })
+  @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 15 })
+  @ApiParam({ name: 'categoryId', required: true, description: '카테고리 고유키', example: 1 })
+  async findBooksByCategoryId(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 15,
+    @Param('categoryId') categoryId: number,
+  ) {
+    return this.bookListService.findBooksCategoryId({ categoryId, page, limit });
   }
 }
