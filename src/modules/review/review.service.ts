@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReviewEntity } from '../../entities/reviews.entity';
+import { ReviewEntity } from './entities/reviews.entity';
 import { Repository } from 'typeorm';
 import { RevirewCreateDto } from './dto/create.review.dto';
 

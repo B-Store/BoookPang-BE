@@ -1,20 +1,15 @@
 import "dotenv/config";
+import { UsersEntity } from "./src/modules/auth/entities/users.entity";
+import { BooksCategoryEntity } from "./src/modules/books-category/entities/books-category.entity";
+import { BooksEntity } from "./src/modules/books/entities/books.entity";
+import { ShoppingCartEntity } from "./src/modules/shopping-cart/entities/shopping-cart.entity";
+import { CategoryEntity } from "./src/modules/category/entities/category.entity";
+import { OrderEntity } from "./src/modules/order/entities/orders.entity";
+import { RefreshTokensEntity } from "./src/modules/refresh-token/entities/refresh-tokens.entity";
+import { ReviewEntity } from "./src/modules/review/entities/reviews.entity";
+import { TermsOfServiceEntity } from "./src/modules/terms-of-service/entities/terms_of_service.entity";
+import { WishlistEntity } from "./src/modules/wishlists/entities/wishlist.entity";
 import { DataSource } from "typeorm";
-import { UsersEntity } from "./src/entities/users.entity";
-import { RefreshTokensEntity } from "./src/entities/refresh-tokens.entity";
-import { ReviewEntity } from "./src/entities/reviews.entity";
-import { OrderEntity } from "./src/entities/orders.entity";
-import { LocalCodesEntity } from "./src/entities/localcodes.entity";
-import { LikesEntity } from "./src/entities/likes.entity";
-import { ChatsEntity } from "./src/entities/chats.entity";
-import { ChatRoomUsersEntity } from "./src/entities/chat-rooms-users.entity";
-import { ChatRoomEntity } from "./src/entities/chat-rooms.entity";
-import { CategoryEntity } from "./src/entities/category.entity";
-import { CartsEntity } from "./src/entities/carts.entity";
-import { BooksEntity } from "./src/entities/books.entity";
-import { BooksCategoryEntity } from "./src/entities/books-category.entity";
-import { TermsOfServiceEntity } from "./src/entities/terms_of_service.entity";
-import { WishlistEntity } from "./src/entities/wishlist.entity";
 
 export const config = new DataSource({
   type: "mysql",
@@ -24,13 +19,8 @@ export const config = new DataSource({
     RefreshTokensEntity,
     ReviewEntity,
     OrderEntity,
-    LocalCodesEntity,
-    LikesEntity,
-    ChatsEntity,
-    ChatRoomUsersEntity,
-    ChatRoomEntity,
     CategoryEntity,
-    CartsEntity,
+    ShoppingCartEntity,
     BooksEntity,
     BooksCategoryEntity,
     TermsOfServiceEntity,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WishlistsService } from './wishlists.service';
 import { Repository } from 'typeorm';
-import { WishlistEntity } from '../../entities/wishlist.entity';
+import { WishlistEntity } from './entities/wishlist.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('WishlistsService', () => {

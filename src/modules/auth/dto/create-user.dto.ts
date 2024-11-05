@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
-import { UsersEntity } from '../../../entities/users.entity';
-import { TermsOfServiceEntity } from '../../../entities/terms_of_service.entity';
+import { UsersEntity } from '../entities/users.entity';
+import { TermsOfServiceEntity } from '../../../modules/terms-of-service/entities/terms_of_service.entity';
 
 class UserBaseDto extends PickType(UsersEntity, [
   'externalId',

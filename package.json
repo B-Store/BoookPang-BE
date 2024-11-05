@@ -9,6 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:local": "NODE_ENV=local nest start --watch",
+    "start:production": "NODE_ENV=production node dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -20,7 +22,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./ormconfig.ts",
     "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./ormconfig.ts",
-    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./ormconfig.ts"
+    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./ormconfig.ts",
+    "docker:restart": "docker build -t bookpang-backend . && docker stop BookPang-BE || true && docker rm BookPang-BE || true && docker run -d -p 9000:9000 --name BookPang-BE bookpang-backend"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.15.0",
@@ -45,6 +48,7 @@
     "class-validator": "^0.14.1",
     "csv-parser": "^3.0.0",
     "ioredis": "^5.4.1",
+    "lodash": "^4.17.15",
     "morgan": "^1.10.0",
     "mysql2": "^3.11.0",
     "passport": "^0.7.0",
@@ -52,10 +56,11 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
+    "triple-beam": "^1.4.1",
     "typeorm": "^0.3.20",
     "typeorm-extension": "^3.6.1",
-    "winston": "^3.14.2",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston": "^3.15.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -81,6 +86,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },

@@ -1,12 +1,8 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PhoneDto } from './dto/phone-number-dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
-import { LogInDto } from './dto/log-in.dto';
-import { JwtRefreshGuards } from '../jwt/jwt-strategy';
-import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 
 @ApiTags('인증')
 @Controller('auth')
@@ -55,41 +51,5 @@ export class AuthController {
   async checkNickName(@Param('nickname') nickname: string) {
     await this.authService.checkNickName(nickname);
     return { message: '사용 가능한 닉네임입니다.' };
-  }
-
-  /**
-   * 회원가입
-   * @param createUserDto
-   * @returns
-   */
-  @Post('sign-up')
-  async userCreate(@Body() createUserDto: CreateUserDto) {
-    await this.authService.userCreate(createUserDto);
-    return { message: '회원가입 성공하였습니다.' };
-  }
-
-  /**
-   * 로그인
-   * @param logInDto
-   * @returns
-   */
-  @Post('login')
-  async logIn(@Body() logInDto: LogInDto) {
-    return this.authService.logIn(logInDto);
-  }
-
-  /**
-   * 리프레시토큰 검증 후 새 액세스 토큰 발급
-   * @param param0
-   * @returns
-   */
-  @Post('refresh-token')
-  @UseGuards(JwtRefreshGuards)
-  async refreshToken(
-    @RequestTokensByHttp() { userId, refreshToken }: { userId: number; refreshToken: string },
-  ) {
-    {
-      return this.authService.refreshToken(userId, refreshToken);
-    }
   }
 }

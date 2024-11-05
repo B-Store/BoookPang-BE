@@ -8,7 +8,6 @@ export const RequestTokensByHttp = createParamDecorator(
     const token = authorization ? authorization.replace('Bearer ', '') : null;
     
     const refreshToken = request.body?.refreshToken || request.cookies?.refreshToken || null;
-    console.log(user)
     return { user, token, refreshToken };
   },
 );

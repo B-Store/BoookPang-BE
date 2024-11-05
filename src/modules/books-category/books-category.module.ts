@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BooksCategoryService } from './books-category.service';
 import { BooksCategoryController } from './books-category.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BooksCategoryEntity } from '../../entities/books-category.entity';
+import { BooksCategoryEntity } from '../books-category/entities/books-category.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BooksCategoryEntity])],

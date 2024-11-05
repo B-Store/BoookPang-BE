@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrderEntity } from '../../entities/orders.entity';
+import { OrderEntity } from './entities/orders.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([OrderEntity])],

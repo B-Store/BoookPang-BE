@@ -1,27 +1,29 @@
-import { faker } from "@faker-js/faker";
-import { UsersEntity } from "../../entities/users.entity";
-import { BooksEntity } from "../../entities/books.entity"; 
-import { DataSource } from "typeorm";
-import { Seeder, SeederFactoryManager } from "typeorm-extension";
-import { OrderEntity } from "../../entities/orders.entity";
+import { faker } from '@faker-js/faker';
+import { DataSource } from 'typeorm';
+import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { BooksEntity } from '../../modules/books/entities/books.entity';
+import { OrderEntity } from '../../modules/order/entities/orders.entity';
+import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class OrderSeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
-    const users = await dataSource.getRepository(UsersEntity).find();
-    const books = await dataSource.getRepository(BooksEntity).find();
+  constructor(private readonly dataSource: DataSource) {}
+
+  public async run(): Promise<void> {
+    const users = await this.dataSource.getRepository(UsersEntity).find();
+    const books = await this.dataSource.getRepository(BooksEntity).find();
 
     const data = [];
 
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 100; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)]; // 랜덤 유저 선택
       const randomBook = books[Math.floor(Math.random() * books.length)]; // 랜덤 책 선택
 
       if (randomBook.stockQuantity > 0) {
         let status: string;
 
-        if (i < 400) {
-          status = 'completed'
-        } else if (i < 450) {
+        if (i < 80) {
+          status = 'completed';
+        } else if (i < 90) {
           status = 'paid';
         } else {
           status = 'pending';
@@ -39,7 +41,7 @@ export class OrderSeeder implements Seeder {
       }
     }
     if (data.length > 0) {
-      await dataSource.createQueryBuilder().insert().into(OrderEntity).values(data).execute();
+      await this.dataSource.createQueryBuilder().insert().into(OrderEntity).values(data).execute();
     }
   }
 }

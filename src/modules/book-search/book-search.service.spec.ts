@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookSearchService } from './book-search.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { BooksService } from '../books/books.service';
-import { WishlistEntity } from '../../entities/wishlist.entity';
 import { ReviewService } from '../review/review.service';
 import { WishlistsService } from '../wishlists/wishlists.service';
 
@@ -16,6 +14,15 @@ describe('BookSearchService', () => {
 
   beforeEach(async () => {
     mockWishlistService = {} as unknown as jest.Mocked<WishlistsService>;
+
+    mockBooksService = {
+      findAllBooks: jest.fn(),
+
+    } as unknown as jest.Mocked<BooksService>;
+
+    mockReviewService = {
+      findReviewCount: jest.fn(),
+    } as unknown as jest.Mocked<ReviewService>;
 
     mockElasticsearchService = {
       search: jest.fn(),
@@ -45,12 +52,27 @@ describe('BookSearchService', () => {
 
     service = module.get<BookSearchService>(BookSearchService);
   });
-
-  // 테스트 케이스 추가
+  
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
+  // describe('onModuleInit', () => {
+  //   it('should call deleteIndex, createIndex, and indexAllBooks on module init', async () => {
+  //     mockBooksService.findAllBooks = jest.fn().mockResolvedValue([]);
+  
+  //     service.deleteIndex = jest.fn();
+  //     service.createIndex = jest.fn();
+  //     service.indexAllBooks = jest.fn();
+  
+  //     await service.onModuleInit();
+  
+  //     // 각 메서드가 호출되었는지 확인
+  //     expect(service.deleteIndex).toHaveBeenCalledTimes(2);
+  //     expect(service.createIndex).toHaveBeenCalledTimes(2);
+  //     expect(service.indexAllBooks).toHaveBeenCalled();
+  //   });
+  // });
   // describe('findBooks', () => {
   //   it('should throw NotFoundException when no books are found', async () => {
   //     const title = 'non-existent book';

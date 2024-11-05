@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
-import { CategoryEntity } from '../../entities/category.entity';
+import { CategoryEntity } from './entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('CategoryService', () => {

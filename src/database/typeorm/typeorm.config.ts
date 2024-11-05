@@ -12,7 +12,10 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
       url: this.configService.get<string>('MYSQL_URI'),
       logging: ['error', 'warn'],
       synchronize: true,
-      entities: [__dirname + '/../../entities/*.entity.{js,ts}'],
+      entities: [
+        __dirname + '/../../modules/**/entities/*.entity{.ts,.js}',
+
+      ],
     };
   }
 }
