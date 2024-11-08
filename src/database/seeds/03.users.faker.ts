@@ -1,13 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { DataSource } from 'typeorm';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { Seeder } from 'typeorm-extension';
 import * as bcrypt from 'bcrypt';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class UserSeeder implements Seeder {
-  constructor(private readonly dataSource: DataSource) {}
-
-  public async run(): Promise<void> {
+  public async run(dataSource: DataSource): Promise<void> {
+    const usersRepository = dataSource.getRepository(UsersEntity);
     const data = [];
     const hashedAdminPassword = await bcrypt.hash('qwer1234', 10);
 
@@ -18,22 +17,36 @@ export class UserSeeder implements Seeder {
       phoneNumber: '01096114518',
     });
 
+    const existingEmails = new Set<string>();
+
     for (let i = 1; i <= 99; i++) {
+      const email = this.generateUniqueEmail(existingEmails);
       const hashedPassword = await bcrypt.hash(faker.internet.password(), 10); // 패스워드 해싱
 
       data.push({
-        externalId: faker.internet.email(),
+        externalId: email,
         nickname: faker.internet.userName(),
         password: hashedPassword,
         phoneNumber: this.generateRandomPhoneNumber(),
       });
     }
 
-    await this.dataSource.createQueryBuilder().insert().into(UsersEntity).values(data).execute();
+    console.log(data);
+    await usersRepository.save(data);
   }
 
   private generateRandomPhoneNumber(): string {
     const randomNumber = faker.number.int({ min: 10000000, max: 99999999 }); // 8자리 랜덤 숫자 생성
     return `010${String(randomNumber)}`;
+  }
+
+  private generateUniqueEmail(existingEmails: Set<string>): string {
+    let email: string;
+    do {
+      email = faker.internet.email();
+    } while (existingEmails.has(email));
+
+    existingEmails.add(email);
+    return email;
   }
 }

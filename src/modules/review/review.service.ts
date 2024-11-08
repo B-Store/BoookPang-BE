@@ -11,16 +11,7 @@ export class ReviewService {
     private reviewRepository: Repository<ReviewEntity>,
   ) {}
 
-  async createReview(userId: number, reviewCreateDto: RevirewCreateDto) {
-    const { title, bookId, comment, stars } = reviewCreateDto;
-    if (!bookId || !title || !comment) {
-      throw new BadRequestException('bookId, title, comment 값을 확인해 주세요.');
-    }
-
-    if (stars < 1 || stars > 5) {
-      throw new BadRequestException('stars 값은 1에서 5 사이여야 합니다.');
-    }
-
+  async createReview({ userId, bookId, title, comment, stars }) {
     const review = this.reviewRepository.create({
       userId,
       bookId,
@@ -37,6 +28,19 @@ export class ReviewService {
 
   public async findReviewCount(bookId: number) {
     return this.reviewRepository.count({ where: { bookId } });
+  }
+
+  public async getReviewsAndCount(bookId: number) {
+    const [reviews, reviewCount] = await Promise.all([
+      this.reviewRepository.find({
+        where: { bookId },
+        order: { createdAt: 'DESC', stars: 'DESC' },
+        take: 1,
+      }),
+      this.reviewRepository.count({ where: { bookId } }),
+    ]);
+
+    return { reviews, reviewCount };
   }
 
   public async findBooksreiew(bookId: number) {

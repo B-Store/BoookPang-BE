@@ -28,7 +28,6 @@ export class BookDetailService {
     }
 
     const reviewCount = await this.reviewService.findReviewCount(book.id)
-
     const reviewStars = await this.reviewService.findBooksreiew(book.id)
 
     const totalStars = reviewStars.reduce((sum: number, review) => sum + review.stars, 0);

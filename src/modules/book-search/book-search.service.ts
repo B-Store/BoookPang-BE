@@ -13,7 +13,7 @@ export class BookSearchService {
 
   public async findBookSearchList(query: Object, page: number, limit: number) {
     const response = await this.elasticsearchService.search({
-      index: 'books-list',
+      index: 'books',
       body: query,
     });
   
@@ -38,10 +38,11 @@ export class BookSearchService {
     };
   }
   
-  public async search(query: object) {
+  public async findSearch(query: object) {
     const response: SearchResponse<any> = await this.elasticsearchService.search({
-      index: 'books-main',
+      index: 'books',
       body: query,
+      _source: ['id', 'title', 'author', 'publisher', 'cover', 'averageRating', 'suggest'],
     });
     if (response.hits.hits.length === 0) {
       throw new NotFoundException('도서를 찾을 수 없습니다.');

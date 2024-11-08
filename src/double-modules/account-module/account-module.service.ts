@@ -8,7 +8,9 @@ import { LogInDto } from '../../modules/auth/dto/log-in.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import getLogger from '../../common/logger';
 
+const logger = getLogger('accountModule')
 @Injectable()
 export class AccountModuleService {
   constructor(
@@ -27,25 +29,26 @@ export class AccountModuleService {
       );
     }
     await this.authService.checkExternalId(externalId);
-
+    logger.info('externalId', externalId)
     const userState = this.authService.userAuthStates[phoneNumber];
+    
+    logger.info('userState', userState)
     if (!userState || !userState.isVerified) {
       throw new BadRequestException('이메일 인증이 필요합니다.');
     }
     
-    delete this.authService.userAuthStates[phoneNumber];
-
     const userPhoneNumber = await this.authService.findUserPhoneNumber(phoneNumber)
     if(userPhoneNumber){
       throw new BadRequestException('이미 가입된 유저입니다.')
     }
-
+    
     const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,15}$/;
     if (!passwordRegex.test(password)) {
       throw new BadRequestException(
         '비밀번호는 8~15자 이내의 영문 소문자와 숫자가 혼합되어야 합니다.',
       );
     }
+    delete this.authService.userAuthStates[phoneNumber];
 
     const hashPassword = bcrypt.hashSync(password, AUTH_CONSTANT.HASH_SALT_ROUNDS);
 

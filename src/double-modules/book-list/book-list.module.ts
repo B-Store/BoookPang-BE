@@ -5,9 +5,10 @@ import { BookListService } from './book-list.service';
 import { BookListController } from './book-list.controller';
 import { OrderModule } from '../../modules/order/order.module';
 import { CategoryModule } from '../../modules/category/category.module';
+import { ReviewModule } from '../../modules/review/review.module';
 
 @Module({
-  imports: [BooksModule, BooksCategoryModule, OrderModule, CategoryModule],
+  imports: [ReviewModule, BooksModule, BooksCategoryModule, OrderModule, CategoryModule],
   controllers: [BookListController],
   providers: [BookListService],
   exports: [BookListService],

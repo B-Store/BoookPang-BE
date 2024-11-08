@@ -1,10 +1,11 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { BooksCategoryService } from '../../modules/books-category/books-category.service';
 import { BooksService } from '../../modules/books/books.service';
 import { CategoryService } from '../../modules/category/category.service';
 import { OrderService } from '../../modules/order/order.service';
+import { ReviewService } from '../../modules/review/review.service';
 
 @Injectable()
 export class BookListService {
@@ -15,6 +16,7 @@ export class BookListService {
     private categoryService: CategoryService,
     private bookCategoryService: BooksCategoryService,
     private orderService: OrderService,
+    private reviewsService: ReviewService
   ) {}
 
   public async findRecommendedBooks(page: number, limit: number, category: string) {
@@ -92,6 +94,7 @@ export class BookListService {
 
     const resultData = aggregatedData.map((aggData) => {
       const book = booksData.find((b) => b.id === aggData.bookId);
+      console.log(book.averageRating)
       return {
         ...book,
         totalQuantity: aggData.totalQuantity,
@@ -157,11 +160,20 @@ export class BookListService {
     const allBooks = await this.booksService.findBooksIds(booksIds);
     const paginatedBooks = allBooks.slice(startIndex, endIndex);
 
+    const booksWithReviewCount = await Promise.all(
+      paginatedBooks.map(async (book) => {
+        const reviewCount = await this.reviewsService.findReviewCount(book.id);
+        return {
+          ...book,
+          reviewCount,
+        };
+      }),
+    );
     return {
       total: allBooks.length,
       page,
       limit,
-      books: paginatedBooks,
+      books: booksWithReviewCount,
     };
   }
 }

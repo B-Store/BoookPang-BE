@@ -9,14 +9,10 @@ import axios from 'axios';
 export class BookListSeeder {
   private readonly logger = new Logger(BookListSeeder.name);
 
-  constructor(
-    private readonly dataSource: DataSource,
-  ) {}
-
-  public async run(): Promise<void> {
-    const bookRepository = this.dataSource.getRepository(BooksEntity);
-    const categoryRepository = this.dataSource.getRepository(CategoryEntity);
-    const booksCategoryRepository = this.dataSource.getRepository(BooksCategoryEntity);
+  public async run(dataSource: DataSource): Promise<void> {
+    const bookRepository = dataSource.getRepository(BooksEntity);
+    const categoryRepository = dataSource.getRepository(CategoryEntity);
+    const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
 
     const queryTypes = [
       'ItemNewAll', // 신간 전체 리스트

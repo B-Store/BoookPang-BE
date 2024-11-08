@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BooksEntity } from './entities/books.entity';
-import { Between, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import getLogger from '../../common/logger';
 
 const logger = getLogger('book-service')
@@ -118,5 +118,9 @@ export class BooksService {
       select: ['id', 'title', 'cover', 'author', 'publisher'],
       where: { id: In(uniqueBookIds) },
     });
+  }
+
+  public async updateBooksReview(bookId: number, averageRating: number){
+    return this.bookRepository.update({ id: bookId }, { averageRating });
   }
 }

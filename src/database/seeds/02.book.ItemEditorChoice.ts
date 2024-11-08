@@ -9,14 +9,10 @@ import axios from 'axios';
 export class BookEditorRecommendedDomesticBooksSeeder implements Seeder {
   private readonly logger = new Logger(BookEditorRecommendedDomesticBooksSeeder.name);
 
-  constructor(
-    private readonly dataSource: DataSource,
-  ) {}
-
-  public async run(): Promise<void> {
-    const bookRepository = this.dataSource.getRepository(BooksEntity);
-    const categoryRepository = this.dataSource.getRepository(CategoryEntity);
-    const booksCategoryRepository = this.dataSource.getRepository(BooksCategoryEntity);
+  public async run(dataSource: DataSource): Promise<void> {
+    const bookRepository = dataSource.getRepository(BooksEntity);
+    const categoryRepository = dataSource.getRepository(CategoryEntity);
+    const booksCategoryRepository = dataSource.getRepository(BooksCategoryEntity);
   
     if (!process.env.OPEN_API) {
       this.logger.error('API key가 없습니다.');

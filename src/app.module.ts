@@ -22,6 +22,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { BookDetailModule } from './double-modules/book-detail/book-detail.module';
 import { BookListModule } from './double-modules/book-list/book-list.module';
 import { CartBooksModule } from './double-modules/cart-books/cart-books.module';
+import { BookReviewModuleModule } from './double-modules/book-review-module/book-review-module.module';
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ import { CartBooksModule } from './double-modules/cart-books/cart-books.module';
     ElasticIndexModuleModule,
     BookDetailModule,
     BookListModule,
+    BookReviewModuleModule,
+    CartBooksModule,
     // double-modules
     AuthModule,
     BooksModule,
@@ -53,7 +56,6 @@ import { CartBooksModule } from './double-modules/cart-books/cart-books.module';
     RefreshTokenModule,
     TermsOfServiceModule,
     CategoryModule,
-    CartBooksModule,
     // modules
   ],
   controllers: [AppController],
