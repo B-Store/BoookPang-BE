@@ -27,7 +27,7 @@ export class ReviewService {
   }
 
   public async findReviewCount(bookId: number) {
-    return this.reviewRepository.find({ where: { bookId } });
+    return this.reviewRepository.count({ where: { bookId } });
   }
 
   public async getReviewsAndCount(bookId: number) {

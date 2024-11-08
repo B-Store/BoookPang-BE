@@ -29,6 +29,7 @@ export class BookSearchController {
         match_phrase_prefix: {
           title: {
             query: title,
+            analyzer: 'edge_ngram_analyzer',
           },
         },
       },
@@ -47,16 +48,15 @@ export class BookSearchController {
   async search(@Query('title') title: string) {
     const query = {
       query: {
-        match: {
+        match_phrase_prefix: {
           title: {
             query: title,
             analyzer: 'edge_ngram_analyzer',
-            fuzziness: 1,
           },
         },
       },
     };
-    return this.searchService.search(query);
+    return this.searchService.findSearch(query);
   }
   
 }

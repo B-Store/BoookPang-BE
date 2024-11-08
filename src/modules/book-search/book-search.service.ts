@@ -38,7 +38,7 @@ export class BookSearchService {
     };
   }
   
-  public async search(query: object) {
+  public async findSearch(query: object) {
     const response: SearchResponse<any> = await this.elasticsearchService.search({
       index: 'books',
       body: query,
