@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { ElasticIndexModuleService } from './elastic-index-module.service';
 
 @Controller('elastic-index-module')

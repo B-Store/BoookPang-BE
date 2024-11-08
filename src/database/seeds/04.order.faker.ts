@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { DataSource } from 'typeorm';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { Seeder } from 'typeorm-extension';
 import { BooksEntity } from '../../modules/books/entities/books.entity';
 import { OrderEntity } from '../../modules/order/entities/orders.entity';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
@@ -14,8 +14,8 @@ export class OrderSeeder implements Seeder {
     const data = [];
 
     for (let i = 0; i < 100; i++) {
-      const randomUser = users[Math.floor(Math.random() * users.length)]; // 랜덤 유저 선택
-      const randomBook = books[Math.floor(Math.random() * books.length)]; // 랜덤 책 선택
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const randomBook = books[Math.floor(Math.random() * books.length)];
 
       if (randomBook.stockQuantity > 0) {
         let status: string;
@@ -28,7 +28,7 @@ export class OrderSeeder implements Seeder {
           status = 'pending';
         }
 
-        const quantity = faker.number.int({ min: 1, max: Math.min(5, randomBook.stockQuantity) }); // 1~5 사이의 랜덤 수량, 재고 수량을 고려
+        const quantity = faker.number.int({ min: 1, max: Math.min(5, randomBook.stockQuantity) });
 
         data.push({
           userId: randomUser.id,

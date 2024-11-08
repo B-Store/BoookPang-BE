@@ -104,23 +104,22 @@ export class ReviewSeeder implements Seeder {
       if (user) {
         const randomComment = reviewComments[Math.floor(Math.random() * reviewComments.length)];
         const randomTitle = reviewTitles[Math.floor(Math.random() * reviewTitles.length)];
-        const randomStars = Math.floor(Math.random() * 5) + 1; // 1에서 5 사이의 랜덤 별점 생성
+        const randomStars = Math.floor(Math.random() * 5) + 1;
 
         const review = new ReviewEntity();
         review.title = randomTitle;
         review.comment = randomComment;
-        review.stars = randomStars; // 랜덤 별점 설정
-        review.userId = user.id; // 사용자 ID 설정
-        review.bookId = order.bookId; // 주문에 대한 책 ID 설정
+        review.stars = randomStars;
+        review.userId = user.id;
+        review.bookId = order.bookId;
 
-        data.push(review); // 리뷰 객체를 데이터 배열에 추가
+        data.push(review);
       }
     }
 
     if (data.length > 0) {
-      await review.save(data); // 리뷰 데이터를 데이터베이스에 저장
+      await review.save(data);
 
-      // 평균 평점 업데이트 (10점 기준으로 변환)
       for (const order of orders) {
         const bookId = order.bookId;
         const reviews = await review.find({ where: { bookId } });
@@ -128,7 +127,7 @@ export class ReviewSeeder implements Seeder {
         const averageRating =
           (reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length) * 2;
 
-        await books.update(bookId, { averageRating }); // 평균 평점 10점 기준으로 업데이트
+        await books.update(bookId, { averageRating });
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ShoppingCartService } from './shopping-cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';

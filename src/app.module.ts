@@ -41,6 +41,8 @@ import { BookReviewModuleModule } from './double-modules/book-review-module/book
     ElasticIndexModuleModule,
     BookDetailModule,
     BookListModule,
+    BookReviewModuleModule,
+    CartBooksModule,
     // double-modules
     AuthModule,
     BooksModule,
@@ -54,8 +56,6 @@ import { BookReviewModuleModule } from './double-modules/book-review-module/book
     RefreshTokenModule,
     TermsOfServiceModule,
     CategoryModule,
-    CartBooksModule,
-    BookReviewModuleModule,
     // modules
   ],
   controllers: [AppController],

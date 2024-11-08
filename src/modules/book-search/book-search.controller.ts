@@ -38,11 +38,11 @@ export class BookSearchController {
     };
     return this.searchService.findBookSearchList(query, page, limit);
   }
-  
+
   /**
-   * 도서 검색 서치
-   * @returns
+   * 검색 서치
    * @param title
+   * @returns
    */
   @Get()
   async search(@Query('title') title: string) {
@@ -58,5 +58,4 @@ export class BookSearchController {
     };
     return this.searchService.findSearch(query);
   }
-  
 }

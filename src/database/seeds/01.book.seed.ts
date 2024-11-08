@@ -9,10 +9,6 @@ import axios from 'axios';
 export class BookListSeeder {
   private readonly logger = new Logger(BookListSeeder.name);
 
-  // constructor(
-  //   private readonly dataSource: DataSource,
-  // ) {}
-
   public async run(dataSource: DataSource): Promise<void> {
     const bookRepository = dataSource.getRepository(BooksEntity);
     const categoryRepository = dataSource.getRepository(CategoryEntity);
