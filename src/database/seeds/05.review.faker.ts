@@ -1,21 +1,18 @@
-import { faker } from '@faker-js/faker';
 import { DataSource } from 'typeorm';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { Seeder } from 'typeorm-extension';
 import { OrderEntity } from '../../modules/order/entities/orders.entity';
 import { ReviewEntity } from '../../modules/review/entities/reviews.entity';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
+import { BooksEntity } from '../../modules/books/entities/books.entity';
 
 export class ReviewSeeder implements Seeder {
-  constructor(
-    private readonly dataSource: DataSource,
-  ) {}
-
-  public async run(): Promise<void> {
-    const orders = await this.dataSource
+  public async run(dataSource: DataSource): Promise<void> {
+    const orders = await dataSource
       .getRepository(OrderEntity)
       .find({ where: { status: 'completed' } });
-    const users = await this.dataSource.getRepository(UsersEntity).find();
-
+    const users = await dataSource.getRepository(UsersEntity).find();
+    const review = dataSource.getRepository(ReviewEntity);
+    const books = dataSource.getRepository(BooksEntity);
     const reviewTitles = [
       '아주 유용한 책입니다!',
       '매우 흥미로운 내용입니다.',
@@ -59,44 +56,44 @@ export class ReviewSeeder implements Seeder {
     ];
 
     const reviewComments = [
-      "이 책은 정말 유용했습니다! 여러 번 읽어도 매번 새롭게 느껴집니다.",
-      "내용이 풍부하고 흥미로웠습니다. 특히 실용적인 부분이 인상적이었어요.",
-      "이 책은 읽을 가치가 충분하다고 생각합니다. 추천하고 싶어요!",
-      "추천받아서 읽었는데 매우 만족스러운 경험이었습니다. 감사해요!",
-      "구성이 잘 되어있어서 이해하기 쉽고 재미있었습니다. 여러 번 읽을 거예요.",
-      "이런 책을 찾고 있었어요. 유익한 내용에 감사를 드립니다!",
-      "다시 읽고 싶은 책입니다. 매번 새로운 통찰을 주네요.",
-      "지식이 많이 쌓였습니다. 이 책 덕분에 많은 것을 배우고 있습니다!",
-      "가격 대비 품질이 뛰어나서 대단히 만족스러웠습니다. 강력 추천합니다.",
-      "한 번 읽고 나면 다시 읽고 싶어지는 책입니다. 너무 좋았어요!",
-      "읽으면서 많은 것을 배웠습니다. 특히 저자님께 감사의 인사를 드립니다.",
-      "읽기 쉽고 재미있는 책이에요. 시간을 잊고 몰입할 수 있었습니다.",
-      "이 책 덕분에 많은 영감을 얻었고, 제 삶에 긍정적인 영향을 주었어요.",
-      "모든 친구들에게 추천하고 싶어요. 정말 흥미진진한 책입니다.",
-      "편안한 마음으로 읽을 수 있는 책이어서 좋았습니다. 감사해요!",
-      "정말 기대 이상이었어요! 다음 책도 꼭 읽어봐야겠어요.",
-      "이런 내용은 처음이라 신선했습니다. 흥미롭게 읽었습니다.",
-      "역시 베스트셀러인 이유가 있네요. 많은 사람들이 공감할 것 같아요.",
-      "특히 마지막 장이 인상 깊었습니다. 여운이 남는 책입니다.",
-      "짧지만 굉장히 강렬한 메시지가 담겨 있었습니다. 꼭 읽어보세요.",
-      "주변에 꼭 추천할만한 책입니다. 많은 생각을 하게 해줍니다.",
-      "읽을수록 더 많은 것을 느끼고 있습니다. 대단히 좋았습니다.",
-      "이해하기 쉬운 예시가 많아서 좋았습니다. 배우기 좋은 책이에요.",
-      "이 책의 가치는 시간이 지나도 변하지 않을 것 같습니다. 명작입니다.",
-      "마음에 여유를 주는 책이네요. 읽으면서 힐링되었습니다.",
-      "이런 책은 항상 가지고 있어야 합니다. 소장할 가치가 충분해요.",
-      "책의 구성이 좋고 정리가 잘 되어 있어서 훌륭했습니다.",
-      "매일 한 페이지씩 읽고 있습니다. 조금씩 쌓이는 재미가 좋네요.",
-      "짧은 시간 안에 몰입할 수 있었던 책이었습니다. 추천합니다!",
-      "매우 만족스럽고 유익한 독서 시간이었습니다. 다시 읽을 거예요.",
-      "이 책이 내 인생을 바꿀 것 같습니다. 정말 좋은 경험이었습니다.",
-      "이런 주제를 다룬 책은 처음 접해봤어요. 많은 것을 배웠습니다.",
-      "글이 너무 매끄럽고 읽기가 편해서 정말 좋았습니다. 감동이에요.",
-      "이 책을 읽고 나서 제 가치관이 많이 바뀌었습니다. 고맙습니다!",
-      "기대했던 것 이상으로 훌륭한 책이었습니다. 추천하고 싶어요!",
-      "전문적인 지식이 잘 정리되어 있어 초보자도 쉽게 이해할 수 있었습니다.",
-      "읽으면서 계속 웃었습니다. 재미있고 감동적이었어요. 추천합니다!",
-      "구매하기 정말 잘했다는 생각이 드네요. 후회 없는 선택이었습니다."
+      '이 책은 정말 유용했습니다! 여러 번 읽어도 매번 새롭게 느껴집니다.',
+      '내용이 풍부하고 흥미로웠습니다. 특히 실용적인 부분이 인상적이었어요.',
+      '이 책은 읽을 가치가 충분하다고 생각합니다. 추천하고 싶어요!',
+      '추천받아서 읽었는데 매우 만족스러운 경험이었습니다. 감사해요!',
+      '구성이 잘 되어있어서 이해하기 쉽고 재미있었습니다. 여러 번 읽을 거예요.',
+      '이런 책을 찾고 있었어요. 유익한 내용에 감사를 드립니다!',
+      '다시 읽고 싶은 책입니다. 매번 새로운 통찰을 주네요.',
+      '지식이 많이 쌓였습니다. 이 책 덕분에 많은 것을 배우고 있습니다!',
+      '가격 대비 품질이 뛰어나서 대단히 만족스러웠습니다. 강력 추천합니다.',
+      '한 번 읽고 나면 다시 읽고 싶어지는 책입니다. 너무 좋았어요!',
+      '읽으면서 많은 것을 배웠습니다. 특히 저자님께 감사의 인사를 드립니다.',
+      '읽기 쉽고 재미있는 책이에요. 시간을 잊고 몰입할 수 있었습니다.',
+      '이 책 덕분에 많은 영감을 얻었고, 제 삶에 긍정적인 영향을 주었어요.',
+      '모든 친구들에게 추천하고 싶어요. 정말 흥미진진한 책입니다.',
+      '편안한 마음으로 읽을 수 있는 책이어서 좋았습니다. 감사해요!',
+      '정말 기대 이상이었어요! 다음 책도 꼭 읽어봐야겠어요.',
+      '이런 내용은 처음이라 신선했습니다. 흥미롭게 읽었습니다.',
+      '역시 베스트셀러인 이유가 있네요. 많은 사람들이 공감할 것 같아요.',
+      '특히 마지막 장이 인상 깊었습니다. 여운이 남는 책입니다.',
+      '짧지만 굉장히 강렬한 메시지가 담겨 있었습니다. 꼭 읽어보세요.',
+      '주변에 꼭 추천할만한 책입니다. 많은 생각을 하게 해줍니다.',
+      '읽을수록 더 많은 것을 느끼고 있습니다. 대단히 좋았습니다.',
+      '이해하기 쉬운 예시가 많아서 좋았습니다. 배우기 좋은 책이에요.',
+      '이 책의 가치는 시간이 지나도 변하지 않을 것 같습니다. 명작입니다.',
+      '마음에 여유를 주는 책이네요. 읽으면서 힐링되었습니다.',
+      '이런 책은 항상 가지고 있어야 합니다. 소장할 가치가 충분해요.',
+      '책의 구성이 좋고 정리가 잘 되어 있어서 훌륭했습니다.',
+      '매일 한 페이지씩 읽고 있습니다. 조금씩 쌓이는 재미가 좋네요.',
+      '짧은 시간 안에 몰입할 수 있었던 책이었습니다. 추천합니다!',
+      '매우 만족스럽고 유익한 독서 시간이었습니다. 다시 읽을 거예요.',
+      '이 책이 내 인생을 바꿀 것 같습니다. 정말 좋은 경험이었습니다.',
+      '이런 주제를 다룬 책은 처음 접해봤어요. 많은 것을 배웠습니다.',
+      '글이 너무 매끄럽고 읽기가 편해서 정말 좋았습니다. 감동이에요.',
+      '이 책을 읽고 나서 제 가치관이 많이 바뀌었습니다. 고맙습니다!',
+      '기대했던 것 이상으로 훌륭한 책이었습니다. 추천하고 싶어요!',
+      '전문적인 지식이 잘 정리되어 있어 초보자도 쉽게 이해할 수 있었습니다.',
+      '읽으면서 계속 웃었습니다. 재미있고 감동적이었어요. 추천합니다!',
+      '구매하기 정말 잘했다는 생각이 드네요. 후회 없는 선택이었습니다.',
     ];
 
     const data = [];
@@ -107,19 +104,32 @@ export class ReviewSeeder implements Seeder {
       if (user) {
         const randomComment = reviewComments[Math.floor(Math.random() * reviewComments.length)];
         const randomTitle = reviewTitles[Math.floor(Math.random() * reviewTitles.length)];
-        
-        data.push({
-          userId: user.id,
-          bookId: order.bookId,
-          stars: faker.number.int({ min: 1, max: 5 }),
-          comment: randomComment,
-          title: randomTitle,
-        });
+        const randomStars = Math.floor(Math.random() * 5) + 1; // 1에서 5 사이의 랜덤 별점 생성
+
+        const review = new ReviewEntity();
+        review.title = randomTitle;
+        review.comment = randomComment;
+        review.stars = randomStars; // 랜덤 별점 설정
+        review.userId = user.id; // 사용자 ID 설정
+        review.bookId = order.bookId; // 주문에 대한 책 ID 설정
+
+        data.push(review); // 리뷰 객체를 데이터 배열에 추가
       }
     }
 
     if (data.length > 0) {
-      await this.dataSource.createQueryBuilder().insert().into(ReviewEntity).values(data).execute();
+      await review.save(data); // 리뷰 데이터를 데이터베이스에 저장
+
+      // 평균 평점 업데이트 (10점 기준으로 변환)
+      for (const order of orders) {
+        const bookId = order.bookId;
+        const reviews = await review.find({ where: { bookId } });
+
+        const averageRating =
+          (reviews.reduce((sum, review) => sum + review.stars, 0) / reviews.length) * 2;
+
+        await books.update(bookId, { averageRating }); // 평균 평점 10점 기준으로 업데이트
+      }
     }
   }
 }

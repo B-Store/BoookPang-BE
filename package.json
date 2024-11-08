@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:local": "NODE_ENV=local nest start --watch",
-    "start:production": "NODE_ENV=production node dist/main.js",
+    "start:production": "NODE_ENV=production nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

@@ -6,12 +6,11 @@ import { OrderEntity } from '../../modules/order/entities/orders.entity';
 import { UsersEntity } from '../../modules/auth/entities/users.entity';
 
 export class OrderSeeder implements Seeder {
-  constructor(private readonly dataSource: DataSource) {}
 
-  public async run(): Promise<void> {
-    const users = await this.dataSource.getRepository(UsersEntity).find();
-    const books = await this.dataSource.getRepository(BooksEntity).find();
-
+  public async run(dataSource: DataSource): Promise<void> {
+    const users = await dataSource.getRepository(UsersEntity).find();
+    const books = await dataSource.getRepository(BooksEntity).find();
+    const orderRepository = dataSource.getRepository(OrderEntity)
     const data = [];
 
     for (let i = 0; i < 100; i++) {
@@ -41,7 +40,7 @@ export class OrderSeeder implements Seeder {
       }
     }
     if (data.length > 0) {
-      await this.dataSource.createQueryBuilder().insert().into(OrderEntity).values(data).execute();
+      await orderRepository.save(data)
     }
   }
 }

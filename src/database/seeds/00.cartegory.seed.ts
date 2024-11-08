@@ -1,12 +1,15 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import { DataSource } from 'typeorm';
-import { CategoryEntity } from '../../modules/category/entities/category.entity';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import path from 'path';
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { Seeder } from 'typeorm-extension';
+import { CategoryEntity } from '../../modules/category/entities/category.entity';
 
+@Injectable()
 export class CategorySeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
+
+  public async run(dataSource: DataSource): Promise<void> {
     const categoryRepository = dataSource.getRepository(CategoryEntity);
     const csvFilePath = path.join(__dirname, '../../../category.csv');
 

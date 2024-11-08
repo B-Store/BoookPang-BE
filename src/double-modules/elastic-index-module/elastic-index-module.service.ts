@@ -13,15 +13,24 @@ export class ElasticIndexModuleService implements OnModuleInit {
     private readonly reviewService: ReviewService,
   ) {}
 
+  async getAllBooks() {
+    const result = await this.elasticsearchService.search({
+      index: 'books',
+      body: {
+        query: {
+          match_all: {},
+        },
+      },
+    });
+    return result.hits.hits.map((hit) => hit._source);
+  }
+
   public async onModuleInit() {
-    await this.deleteAndCreateIndex('books-main');
-    await this.deleteAndCreateIndex('books-list');
+    await this.deleteAndCreateIndex('books');
     await this.indexAllBooks();
   }
 
   private async deleteAndCreateIndex(indexName: string) {
-    try {
-      // 인덱스가 존재하는 경우 삭제
       if (await this.elasticsearchService.indices.exists({ index: indexName })) {
         await this.elasticsearchService.indices.delete({ index: indexName });
         console.log(`Index deleted: ${indexName}`);
@@ -54,7 +63,7 @@ export class ElasticIndexModuleService implements OnModuleInit {
             properties: {
               title: {
                 type: 'text',
-                analyzer: 'edge_ngram_analyzer', // edge_ngram_analyzer 적용
+                analyzer: 'edge_ngram_analyzer',
                 search_analyzer: 'standard',
               },
               author: { type: 'text' },
@@ -68,29 +77,30 @@ export class ElasticIndexModuleService implements OnModuleInit {
               reviewCount: { type: 'integer' },
               scrapCount: { type: 'integer' },
               createdAt: { type: 'date' },
-              suggest: { type: 'completion' },
             },
           },
         },
       });
       console.log(`Index created with edge_ngram: ${indexName}`);
-    } catch (error) {
-      console.error(`Error creating index ${indexName} with edge_ngram:`, error);
-    }
   }  
 
   private async indexAllBooks() {
     const books = await this.booksService.findAllBooks();
     const processedBooks = await Promise.all(
       books.map(async (book) => {
+        const { reviews, reviewCount } = await this.reviewService.getReviewsAndCount(book.id);
+        const scrapCount = await this.wishlistService.findCountWishlist(book.id);
+        const priceDifference = book.regularPrice - book.salePrice;
         const discountRate =
           book.regularPrice && book.regularPrice > 0
             ? Math.round(((book.regularPrice - book.salePrice) / book.regularPrice) * 100)
             : 0;
-
-        const reviewCount = await this.reviewService.findReviewCount(book.id);
-        const scrapCount = await this.wishlistService.findCountWishlist(book.id);
-        const priceDifference = book.regularPrice - book.salePrice;
+  
+        const [reviewData] = reviews.map((review) => ({
+          title: review.title,
+          comment: review.comment,
+          stars: review.stars,
+        }));
 
         return {
           ...book,
@@ -98,38 +108,29 @@ export class ElasticIndexModuleService implements OnModuleInit {
           discountRate,
           reviewCount,
           scrapCount,
+          reviews: reviewData,
         };
       }),
     );
-
-    // books-main 인덱스와 books-list 인덱스에 각각 데이터를 인덱싱
-    await this.indexBooks(
-      processedBooks.map(({ id, title, author, publisher, cover, averageRating }) => ({
-        id,
-        title,
-        author,
-        publisher,
-        cover,
-        averageRating,
-      })),
-      'books-main',
-    );
-
-    await this.indexBooks(processedBooks, 'books-list');
+    await this.indexBooks(processedBooks, 'books');
   }
-
+  
   private async indexBooks(books: any[], indexName: string) {
     const bulkData = books.flatMap((book) => [
       { index: { _index: indexName, _id: book.id.toString() } },
-      { ...book, suggest: { input: [book.title], weight: 1 } },
+      {
+        ...book,
+        suggest: { input: [book.title], weight: 1 },
+        reviews: book.reviews,
+      },
     ]);
-
+  
     try {
       const { errors } = await this.elasticsearchService.bulk({
         body: bulkData,
         refresh: true,
       });
-
+  
       if (errors) {
         console.error(`Error bulk indexing books in ${indexName}`);
       } else {

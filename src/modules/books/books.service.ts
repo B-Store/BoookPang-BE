@@ -119,4 +119,8 @@ export class BooksService {
       where: { id: In(uniqueBookIds) },
     });
   }
+
+  public async updateBooksReview(bookId: number, averageRating: number){
+    return this.bookRepository.update({ id: bookId }, { averageRating });
+  }
 }
