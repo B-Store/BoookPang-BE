@@ -9,6 +9,7 @@ export class BookReviewModuleService {
     private readonly reviewService: ReviewService,
     private readonly booksService: BooksService,
   ) {}
+  
   async createReview(userId: number, reviewCreateDto: RevirewCreateDto) {
     const { title, bookId, comment, stars } = reviewCreateDto;
     if (!bookId || !title || !comment) {
@@ -26,7 +27,6 @@ export class BookReviewModuleService {
       comment,
       stars,
     });
-    // 책의 평균 별점 계산 및 업데이트
     await this.updateBookAverageRating(bookId);
 
     return review;

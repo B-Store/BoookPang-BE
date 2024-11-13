@@ -4,20 +4,13 @@ import { BooksEntity } from './entities/books.entity';
 import { In, Repository } from 'typeorm';
 import getLogger from '../../common/logger';
 
-const logger = getLogger('book-service')
+const logger = getLogger('book-service');
 @Injectable()
 export class BooksService {
   constructor(
     @InjectRepository(BooksEntity)
     private readonly bookRepository: Repository<BooksEntity>,
   ) {}
-
-  public async findBook(bookId: number) {
-    if (!bookId) {
-      throw new BadRequestException('bookId값을 확인해 주세요.');
-    }
-    return this.bookRepository.findOne({ where: { id: bookId } });
-  }
 
   public async findAllBooks() {
     return this.bookRepository.find();
@@ -30,23 +23,20 @@ export class BooksService {
 
     const [books, total] = await this.bookRepository
       .createQueryBuilder('book')
-      .select([
-        'book.id',
-        'book.title',
-        'book.cover',
-        'book.author',
-        'book.publisher',
-        'book.description',
-        'book.salePrice',
-        'book.regularPrice',
-      ])
       .where({ sourceType: category })
       .orderBy('RAND()')
       .skip(skip)
       .take(limit)
       .getManyAndCount();
 
-      return [books, total];
+    return [books, total];
+  }
+
+  public async findOneBookId(bookId: number) {
+    if (!bookId) {
+      throw new BadRequestException('bookId값을 확인해 주세요.');
+    }
+    return this.bookRepository.findOne({ where: { id: bookId } });
   }
 
   public async findRandomBooksByIds({ bookIds, skip, limit }): Promise<[BooksEntity[], number]> {
@@ -68,35 +58,7 @@ export class BooksService {
       .take(limit)
       .getManyAndCount();
 
-      return [books, total];
-  }
-
-  public async findRandomBooksBySourceAndDate(skip: number, limit: number) {
-    const [books, total] = await this.bookRepository
-      .createQueryBuilder('book')
-      .select([
-        'book.id',
-        'book.title',
-        'book.cover',
-        'book.author',
-        'book.publisher',
-        'book.createdAt',
-      ])
-      .where({
-        sourceType: 'ItemNewAll',
-      })
-      .orderBy('RAND()')
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
-
-    return { books, total };
-  }
-
-  public async bestsellingBooks() {
-    return this.bookRepository.find({
-      where: { sourceType: 'Bestseller' },
-    });
+    return [books, total];
   }
 
   public async findBooksIds(bookIds: number[]) {
@@ -120,7 +82,19 @@ export class BooksService {
     });
   }
 
-  public async updateBooksReview(bookId: number, averageRating: number){
+  public async updateBooksReview(bookId: number, averageRating: number) {
     return this.bookRepository.update({ id: bookId }, { averageRating });
+  }
+
+  public async findBooksIdSearch(books: BooksEntity[]) {
+    const bookIds = books.map((book) => book.id);
+  
+    const results = await this.bookRepository.find({
+      where: { id: In(bookIds) },
+    });
+  
+    const sortedResults = bookIds.map(id => results.find(book => book.id === id));
+  
+    return sortedResults;
   }
 }

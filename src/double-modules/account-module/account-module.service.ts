@@ -28,7 +28,10 @@ export class AccountModuleService {
         'externalId, nickname, password, phoneNumber 값들을 확인해 주세요.',
       );
     }
-    await this.authService.checkExternalId(externalId);
+    const userData = await this.authService.findExternalId(externalId);
+    if(userData){
+      throw new BadRequestException('사용중인 아이디입니다.');
+    }
     logger.info('externalId', externalId)
     const userState = this.authService.userAuthStates[phoneNumber];
     
@@ -75,7 +78,7 @@ export class AccountModuleService {
       throw new BadRequestException('loginId, password 값을 확인해 주세요.');
     }
 
-    const user = await this.authService.findOneUser(externalId)
+    const user = await this.authService.findExternalId(externalId)
     if (!user) {
       throw new BadRequestException('아이디를 찾을 수 없습니다.');
     }

@@ -40,8 +40,18 @@ export class BookListController {
   @Get('new-books')
   @ApiQuery({ name: 'page', required: true, description: '페이지 번호', example: 1 })
   @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 15 })
-  findNewBooks(@Query('page') page: number = 1, @Query('limit') limit: number = 15) {
-    return this.bookListService.findNewBooks(page, limit);
+  @ApiQuery({
+    name: 'category',
+    required: true,
+    description: '카테고리: 신간 리스트(ItemNewAll)',
+    example: 'ItemNewAll',
+  })
+  findNewBooks(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 15,
+    @Query('category') category: string = 'ItemNewAll',
+  ) {
+    return this.bookListService.findNewBooks({ page, limit, category });
   }
 
   /**
@@ -53,24 +63,16 @@ export class BookListController {
   @Get('bestsellers')
   @ApiQuery({ name: 'page', required: true, description: '페이지 번호', example: 1 })
   @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 24 })
-  findBestsellers(@Query('page') page: number = 1, @Query('limit') limit: number = 24) {
-    return this.bookListService.findBestsellers(page, limit);
-  }
-
-  /**
-   * 카테고리 리스트
-   * @param category
-   * @returns
-   */
-  @Get('categories')
   @ApiQuery({
     name: 'category',
     required: true,
-    description: '카테고리(국내도서, 외국도서, 전자책',
-    example: '국내도서',
+    description: '카테고리: 베스트셀러(Bestseller)',
+    example: 'Bestseller',
   })
-  findCategories(@Query('category') category: string) {
-    return this.bookListService.findCategories(category);
+  findBestsellers(@Query('page') page: number = 1, @Query('limit') limit: number = 24,
+  @Query('category') category: string = 'Bestseller',
+) {
+    return this.bookListService.findBestsellers({page, limit, category});
   }
 
   /**
@@ -89,6 +91,7 @@ export class BookListController {
     return this.bookListService.findItemNewSpecial(limit);
   }
 
+  // 추후에 수정
   /**
    *
    * 책 카테고리 전체 리스트 (국내도서 등)

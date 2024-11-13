@@ -16,7 +16,7 @@ export class BookListService {
     private categoryService: CategoryService,
     private bookCategoryService: BooksCategoryService,
     private orderService: OrderService,
-    private reviewsService: ReviewService
+    private reviewsService: ReviewService,
   ) {}
 
   public async findRecommendedBooks(page: number, limit: number, category: string) {
@@ -52,16 +52,16 @@ export class BookListService {
     return result;
   }
 
-  public async findNewBooks(page: number, limit: number) {
+  public async findNewBooks({ page, limit, category }) {
     const skip = (page - 1) * limit;
-    const cacheKey = `new-books:${page}:${limit}`;
+    const cacheKey = `new-books:${page}:${limit}:${category}`;
 
     const cachedData = await this.cacheManager.get(cacheKey);
     if (cachedData) {
       return cachedData;
     }
 
-    const { books, total } = await this.booksService.findRandomBooksBySourceAndDate(skip, limit);
+    const [books, total] = await this.booksService.findBooksByCategory({ skip, limit, category });
 
     const result = {
       data: books,
@@ -75,18 +75,19 @@ export class BookListService {
     return result;
   }
 
-  public async findBestsellers(page: number, limit: number) {
-    const cacheKey = `bestsellers:${page}:${limit}`;
+  public async findBestsellers({ page, limit, category }) {
+    const skip = (page - 1) * limit;
+    const cacheKey = `bestsellers:${page}:${limit}:${category}`;
 
     const cachedData = await this.cacheManager.get(cacheKey);
     if (cachedData) {
       return cachedData;
     }
 
-    const bestsellingBooks = await this.booksService.bestsellingBooks();
+    const [books] = await this.booksService.findBooksByCategory({ category, skip, limit });
 
     const aggregatedData = await this.orderService.getTotalSalesForBooks(
-      bestsellingBooks.map((book) => book.id),
+      books.map((book) => book.id),
     );
 
     const bookIds = aggregatedData.map((data) => data.bookId);
@@ -94,7 +95,6 @@ export class BookListService {
 
     const resultData = aggregatedData.map((aggData) => {
       const book = booksData.find((b) => b.id === aggData.bookId);
-      console.log(book.averageRating)
       return {
         ...book,
         totalQuantity: aggData.totalQuantity,
@@ -116,29 +116,11 @@ export class BookListService {
     return result;
   }
 
-  public async findCategories(category: string) {
-    const data = await this.categoryService.findCategoryDepth1(category);
-
-    const uniqueCategories = data.reduce((acc, item) => {
-      const exists = acc.find((cat) => cat.depth1 === item.depth1);
-      if (item.depth1 && item.depth1.trim() !== '' && !exists) {
-        acc.push({ id: item.id, depth1: item.depth1 });
-      }
-      return acc;
-    }, []);
-
-    return uniqueCategories;
-  }
-
   public async findItemNewSpecial(limit: number) {
-    const items = await this.booksService.findItemNewSpecial(limit);
-    const uniqueItems = Array.from(new Set(items.map((item) => item.id))).map((id) =>
-      items.find((item) => item.id === id),
-    );
-
-    return uniqueItems.slice(0, limit);
+    return this.booksService.findItemNewSpecial(limit);
   }
 
+  // 추후에 수정
   public async findBookCategoryList(category: string) {
     const data = await this.categoryService.findCategoryIdsByMall(category);
 
@@ -151,13 +133,14 @@ export class BookListService {
   }
 
   public async findBooksCategoryId({ categoryId, page, limit }) {
-    const booksCategoryData = await this.bookCategoryService.findCategoryId(categoryId);
-    const booksIds = booksCategoryData.map((book) => book.bookId);
-
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + parseInt(limit);
 
-    const allBooks = await this.booksService.findBooksIds(booksIds);
+    const booksCategoryData = await this.bookCategoryService.findCategoryId(categoryId);
+    const allBooks = await this.booksService.findBooksIds(
+      booksCategoryData.map((book) => book.bookId),
+    );
+
     const paginatedBooks = allBooks.slice(startIndex, endIndex);
 
     const booksWithReviewCount = await Promise.all(

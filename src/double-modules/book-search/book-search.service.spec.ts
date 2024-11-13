@@ -1,28 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookSearchService } from './book-search.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { BooksService } from '../books/books.service';
-import { ReviewService } from '../review/review.service';
-import { WishlistsService } from '../wishlists/wishlists.service';
+import { BooksService } from '../../modules/books/books.service';
 
 describe('BookSearchService', () => {
   let service: BookSearchService;
   let mockElasticsearchService: jest.Mocked<ElasticsearchService>;
   let mockBooksService: jest.Mocked<BooksService>;
-  let mockWishlistService: jest.Mocked<WishlistsService>;
-  let mockReviewService: jest.Mocked<ReviewService>;
 
   beforeEach(async () => {
-    mockWishlistService = {} as unknown as jest.Mocked<WishlistsService>;
 
     mockBooksService = {
       findAllBooks: jest.fn(),
 
     } as unknown as jest.Mocked<BooksService>;
-
-    mockReviewService = {
-      findReviewCount: jest.fn(),
-    } as unknown as jest.Mocked<ReviewService>;
 
     mockElasticsearchService = {
       search: jest.fn(),
@@ -44,9 +35,7 @@ describe('BookSearchService', () => {
         {
           provide: ElasticsearchService,
           useValue: mockElasticsearchService,
-        },
-        { provide: ReviewService, useValue: mockReviewService },
-        { provide: WishlistsService, useValue: mockWishlistService },
+        }
       ],
     }).compile();
 

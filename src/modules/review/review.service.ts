@@ -1,8 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewEntity } from './entities/reviews.entity';
 import { Repository } from 'typeorm';
-import { RevirewCreateDto } from './dto/create.review.dto';
 
 @Injectable()
 export class ReviewService {
@@ -30,20 +29,21 @@ export class ReviewService {
     return this.reviewRepository.count({ where: { bookId } });
   }
 
-  public async getReviewsAndCount(bookId: number) {
-    const [reviews, reviewCount] = await Promise.all([
-      this.reviewRepository.find({
-        where: { bookId },
-        order: { createdAt: 'DESC', stars: 'DESC' },
-        take: 1,
-      }),
-      this.reviewRepository.count({ where: { bookId } }),
-    ]);
-
-    return { reviews, reviewCount };
-  }
-
-  public async findBooksreiew(bookId: number) {
+  public async findBookIdReiew(bookId: number) {
     return this.reviewRepository.find({ where: { bookId } });
   }
+
+  // TODO 추후에 제거 예정
+  // public async getReviewsAndCount(bookId: number) {
+  //   const [reviews, reviewCount] = await Promise.all([
+  //     this.reviewRepository.find({
+  //       where: { bookId },
+  //       order: { createdAt: 'DESC', stars: 'DESC' },
+  //       take: 1,
+  //     }),
+  //     this.reviewRepository.count({ where: { bookId } }),
+  //   ]);
+
+  //   return { reviews, reviewCount };
+  // }
 }

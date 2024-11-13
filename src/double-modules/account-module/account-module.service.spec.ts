@@ -59,10 +59,10 @@ describe('AccountModuleService', () => {
 
     mockAuthService = {
       userAuthStates: jest.fn(),
-      checkExternalId: jest.fn(),
+      // checkExternalId: jest.fn(),
       findUserPhoneNumber: jest.fn(),
       userCreate: jest.fn(),
-      findOneUser: jest.fn(),
+      findExternalId: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;
 
     mockConfigService = {
@@ -192,10 +192,29 @@ describe('AccountModuleService', () => {
           verificationServiceTerms: true,
         },
       };
-      mockAuthService.checkExternalId.mockResolvedValue(null);
+      mockAuthService.findExternalId.mockResolvedValue(null);
       mockAuthService.userAuthStates = {
         [createUserDto.phoneNumber]: { isVerified: false },
       };
+
+      expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if findExternalId true', async () => {
+      const createUserDto = {
+        externalId: 'bookPang@bookpang.com',
+        nickname: 'bookPang',
+        password: 'bookpang12345',
+        phoneNumber: '01012345678',
+        termsOfService: {
+          serviceTerms: true,
+          privacyPolicy: true,
+          carrierTerms: true,
+          identificationInfoPolicy: true,
+          verificationServiceTerms: true,
+        },
+      };
+      mockAuthService.findExternalId.mockResolvedValue(dummyUserData);
 
       expect(service.userCreate(createUserDto)).rejects.toThrow(BadRequestException);
     });
@@ -215,7 +234,7 @@ describe('AccountModuleService', () => {
         },
       };
 
-      mockAuthService.checkExternalId.mockResolvedValue(null);
+      mockAuthService.findExternalId.mockResolvedValue(null);
       mockAuthService.findUserPhoneNumber.mockResolvedValue(null);
       mockAuthService.userAuthStates = {
         [createUserDto.phoneNumber]: { isVerified: true },
@@ -238,7 +257,7 @@ describe('AccountModuleService', () => {
         },
       };
 
-      mockAuthService.checkExternalId.mockResolvedValue(null);
+      mockAuthService.findExternalId.mockResolvedValue(null);
       mockAuthService.userAuthStates = {
         [createUserDto.phoneNumber]: { isVerified: true },
       };
@@ -262,7 +281,7 @@ describe('AccountModuleService', () => {
         },
       };
 
-      mockAuthService.checkExternalId.mockResolvedValue(null);
+      mockAuthService.findExternalId.mockResolvedValue(null);
       mockAuthService.findUserPhoneNumber.mockResolvedValue(null);
       mockAuthService.userAuthStates = {
         [createUserDto.phoneNumber]: { isVerified: true },
@@ -272,7 +291,7 @@ describe('AccountModuleService', () => {
 
       await service.userCreate(createUserDto);
 
-      expect(mockAuthService.checkExternalId).toHaveBeenCalled();
+      expect(mockAuthService.findExternalId).toHaveBeenCalled();
       expect(mockAuthService.findUserPhoneNumber).toHaveBeenCalled();
       expect(mockAuthService.userCreate).toHaveBeenCalled();
       expect(mockTermsOfServiceService.saveTermsOfService).toHaveBeenCalled();
@@ -304,7 +323,7 @@ describe('AccountModuleService', () => {
         password: 'bookpang12345',
       } as LogInDto;
 
-      mockAuthService.findOneUser.mockResolvedValue(null);
+      mockAuthService.findExternalId.mockResolvedValue(null);
       await expect(service.logIn(logInDto)).rejects.toThrow(BadRequestException);
     });
 
@@ -314,7 +333,7 @@ describe('AccountModuleService', () => {
         password: 'bookpang12345',
       } as LogInDto;
 
-      mockAuthService.findOneUser.mockResolvedValue(dummyUserData);
+      mockAuthService.findExternalId.mockResolvedValue(dummyUserData);
       (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(false);
 
       await expect(service.logIn(logInDto)).rejects.toThrow(UnauthorizedException);
@@ -335,8 +354,7 @@ describe('AccountModuleService', () => {
         deletedAt: null,
       };
 
-      // mockUsersRepository.findOne = jest.fn().mockResolvedValue(dummyUser);
-      mockAuthService.findOneUser.mockResolvedValue(dummyUserData);
+      mockAuthService.findExternalId.mockResolvedValue(dummyUserData);
       (bcrypt.compare as jest.Mock) = jest.fn().mockResolvedValue(true);
 
       jest

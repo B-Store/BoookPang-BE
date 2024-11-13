@@ -4,7 +4,7 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateCartDto } from './dto/update-cart.dto';
-import { JwtAccessGuards } from '../../common/jwt-strategy';
+import { JwtAccessGuards } from '../auth/providers/jwt-strategy';
 
 @ApiTags('장바구니')
 @Controller('ShoppingCart')

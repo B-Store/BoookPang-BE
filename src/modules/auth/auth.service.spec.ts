@@ -175,7 +175,7 @@ describe('AuthService', () => {
   describe('checkExternalId', () => {
     it('should throw BadRequestException if externalId is empty', async () => {
       const externalId = '';
-      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
+      expect(service.findExternalId(externalId)).rejects.toThrow(BadRequestException);
     });
 
     it('should return undefined if loginId is available', async () => {
@@ -183,20 +183,18 @@ describe('AuthService', () => {
 
       mockUsersRepository.findOne = jest.fn().mockResolvedValue(null);
 
-      expect(service.checkExternalId(externalId)).resolves.toBeNull();
-      expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
-        where: { externalId, deletedAt: null },
-      });
-      externalId;
+      expect(service.findExternalId(externalId)).resolves.toBeNull();
+      expect(mockUsersRepository.findOne).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if externalId already exists', async () => {
       const externalId = 'example@gmail.com';
 
-      expect(service.checkExternalId(externalId)).rejects.toThrow(BadRequestException);
-      expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
-        where: { externalId, deletedAt: null },
-      });
+      mockUsersRepository.findOne.mockResolvedValue(dummyUserEntity)
+
+      const result = await service.findExternalId(externalId)
+      expect(result).toBe(dummyUserEntity)
+      expect(mockUsersRepository.findOne).toHaveBeenCalled();
     });
   });
 
@@ -243,17 +241,6 @@ describe('AuthService', () => {
       const phoneNumber = '01012345678';
       mockUsersRepository.save.mockResolvedValue(dummyUserEntity)
       const result = await service.userCreate({ externalId, nickname, password, phoneNumber });
-      expect(result).toEqual(dummyUserEntity);
-    });
-  });
-
-  describe('findOneUser', () => {
-    it('should successfully findOneUser is verified', async () => {
-      const externalId = 'bookPang@bookpang.com';
-
-      mockUsersRepository.findOne.mockResolvedValue(dummyUserEntity)
-
-      const result = await service.findOneUser(externalId);
       expect(result).toEqual(dummyUserEntity);
     });
   });

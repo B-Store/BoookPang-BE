@@ -16,12 +16,12 @@ export class BooksCategoryService {
       where: { categoryId: In(categoryIds) },
     });
   }
-  
+
   public async findBooksByCategoryId(bookId: number) {
     return this.booksCategoryRepository.find({ where: { bookId: bookId } });
   }
 
-  public async findCategoryId(categoryId: number){
-    return this.booksCategoryRepository.find({where: {categoryId}})
+  public async findCategoryId(categoryId: number) {
+    return this.booksCategoryRepository.find({ where: { categoryId } });
   }
 }

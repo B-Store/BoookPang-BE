@@ -30,8 +30,6 @@ export class UserSeeder implements Seeder {
         phoneNumber: this.generateRandomPhoneNumber(),
       });
     }
-
-    console.log(data);
     await usersRepository.save(data);
   }
 

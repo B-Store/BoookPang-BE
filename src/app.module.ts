@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/typeorm/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BooksModule } from './modules/books/books.module';
-import { BookSearchModule } from './modules/book-search/book-search.module';
+import { BookSearchModule } from './double-modules/book-search/book-search.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ShoppingCartModule } from './modules/shopping-cart/shopping-cart.module';
 import { BookSchedulerModule } from './double-modules/schedule/book-scheduler.module';
@@ -43,10 +43,10 @@ import { BookReviewModuleModule } from './double-modules/book-review-module/book
     BookListModule,
     BookReviewModuleModule,
     CartBooksModule,
+    BookSearchModule,
     // double-modules
     AuthModule,
     BooksModule,
-    BookSearchModule,
     BooksCategoryModule,
     ShoppingCartModule,
     BookSchedulerModule,

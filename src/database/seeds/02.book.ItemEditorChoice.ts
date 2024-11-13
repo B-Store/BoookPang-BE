@@ -40,7 +40,6 @@ export class BookEditorRecommendedDomesticBooksSeeder implements Seeder {
         await this.processResponse(response, bookRepository, categoryRepository, booksCategoryRepository);
       }
     } catch (error) {
-      // console.log(error);
     }
   }
   

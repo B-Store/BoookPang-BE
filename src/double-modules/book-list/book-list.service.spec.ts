@@ -5,6 +5,7 @@ import { CategoryService } from '../../modules/category/category.service';
 import { BooksCategoryService } from '../../modules/books-category/books-category.service';
 import { OrderService } from '../../modules/order/order.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ReviewService } from '../../modules/review/review.service';
 
 describe('BookListService', () => {
   let service: BookListService;
@@ -13,6 +14,7 @@ describe('BookListService', () => {
   let mockCategoryService: jest.Mocked<CategoryService>;
   let mockBookCategoryService: jest.Mocked<BooksCategoryService>;
   let mockOrderService: jest.Mocked<OrderService>;
+  let mockReviewsService: jest.Mocked<ReviewService>
 
   beforeEach(async () => {
     mockCacheManager = {} as unknown as jest.Mocked<Cache>;
@@ -25,6 +27,7 @@ describe('BookListService', () => {
 
     mockOrderService = {} as unknown as jest.Mocked<OrderService>;
     
+    mockReviewsService = {} as unknown as jest.Mocked<ReviewService>
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookListService,
@@ -48,6 +51,10 @@ describe('BookListService', () => {
           provide: OrderService,
           useValue: mockOrderService,
         },
+        {
+          provide: ReviewService,
+          useValue: mockReviewsService
+        }
       ],
     }).compile();
 

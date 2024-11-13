@@ -4,11 +4,13 @@ import {
 } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
+import { BooksService } from '../../modules/books/books.service';
 
 @Injectable()
 export class BookSearchService {
   constructor(
     private elasticsearchService: ElasticsearchService,
+    private booksService: BooksService
   ) {}
 
   public async findBookSearchList(query: Object, page: number, limit: number) {
@@ -29,7 +31,6 @@ export class BookSearchService {
     }
   
     const books = response.hits.hits.map((hit) => hit._source);
-  
     return {
       books,
       total,
@@ -47,6 +48,8 @@ export class BookSearchService {
     if (response.hits.hits.length === 0) {
       throw new NotFoundException('도서를 찾을 수 없습니다.');
     }
-    return response.hits.hits.map((hit) => hit._source);
+    const searchData = response.hits.hits.map((hit) => hit._source);
+    const result = await this.booksService.findBooksIdSearch(searchData)
+    return result
   }
 }
