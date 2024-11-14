@@ -13,8 +13,12 @@ export class BookSearchService {
     private booksService: BooksService
   ) {}
 
-  public async findBookSearchList(query: Object, page: number, limit: number) {
-    const response = await this.elasticsearchService.search({
+  public async findBookSearch(
+    query: object, 
+    page?: number, 
+    limit?: number
+  ) {
+    const response: SearchResponse<any> = await this.elasticsearchService.search({
       index: 'books',
       body: query,
     });
@@ -25,31 +29,14 @@ export class BookSearchService {
     } else {
       total = response.hits.total.value;
     }
-    
+  
     if (response.hits.hits.length === 0) {
       throw new NotFoundException('도서를 찾을 수 없습니다.');
     }
   
     const books = response.hits.hits.map((hit) => hit._source);
-    return {
-      books,
-      total,
-      page,
-      limit,
-    };
-  }
+    const result = await this.booksService.findBooksIdSearch(books);
   
-  public async findSearch(query: object) {
-    const response: SearchResponse<any> = await this.elasticsearchService.search({
-      index: 'books',
-      body: query,
-      _source: ['id', 'title', 'author', 'publisher', 'cover', 'averageRating', 'suggest'],
-    });
-    if (response.hits.hits.length === 0) {
-      throw new NotFoundException('도서를 찾을 수 없습니다.');
-    }
-    const searchData = response.hits.hits.map((hit) => hit._source);
-    const result = await this.booksService.findBooksIdSearch(searchData)
-    return result
+    return page && limit ? { books: result, total, page, limit } : result;
   }
 }

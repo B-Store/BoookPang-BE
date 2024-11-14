@@ -20,9 +20,10 @@ import { AccountModuleModule } from './double-modules/account-module/account-mod
 import { ElasticIndexModuleModule } from './double-modules/elastic-index-module/elastic-index-module.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BookDetailModule } from './double-modules/book-detail/book-detail.module';
-import { BookListModule } from './double-modules/book-list/book-list.module';
 import { CartBooksModule } from './double-modules/cart-books/cart-books.module';
 import { BookReviewModuleModule } from './double-modules/book-review-module/book-review-module.module';
+import { MainPageModule } from './double-modules/main-page/main-page.module';
+import { BookCategoryListModule } from './double-modules/book-category-list/book-category-list.module';
 
 @Module({
   imports: [
@@ -40,10 +41,11 @@ import { BookReviewModuleModule } from './double-modules/book-review-module/book
     AccountModuleModule,
     ElasticIndexModuleModule,
     BookDetailModule,
-    BookListModule,
     BookReviewModuleModule,
     CartBooksModule,
     BookSearchModule,
+    MainPageModule,
+    BookCategoryListModule,
     // double-modules
     AuthModule,
     BooksModule,

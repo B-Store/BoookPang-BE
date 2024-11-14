@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createLogger, format, transports } from 'winston';
 import { SPLAT } from 'triple-beam';
-import DailyRotateFile from 'winston-daily-rotate-file'; // 이 부분 확인
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 const localFormat = format.printf(({ level, message, timestamp, label, ...meta }) => {
   let logMessage = `${timestamp} [${label}] ${level}: ${message}`;

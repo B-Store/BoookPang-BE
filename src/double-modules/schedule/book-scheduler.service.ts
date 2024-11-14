@@ -10,7 +10,7 @@ import { ElasticIndexModuleService } from '../elastic-index-module/elastic-index
 import getLogger from '../../common/logger';
 import { BookEditorRecommendedDomesticBooksSeeder } from '../../database/seeds/02.book.ItemEditorChoice';
 
-const logger = getLogger('books-scheduler')
+const logger = getLogger('BookSchedulerService')
 
 @Injectable()
 export class BookSchedulerService {
@@ -28,32 +28,30 @@ export class BookSchedulerService {
   @Cron(CronExpression.EVERY_12_HOURS)
   public async handleCron() {
     await this.bookListSeeder.run(this.dataSource);
-    await this.bookEditorRecommendedDomesticBooksSeeder.run(this.dataSource)
-    await this.updateBookStock();
-    await this.elasticIndexModuleService.onModuleInit();
-    logger.info('모든 도서가 재인덱싱되었습니다.');
-  }
-
-  @Cron('0 */6 * * *') // 매 6시간마다
-  public async seedOrdersAndReviews() {
-    await this.orderSeeder.run(this.dataSource);
-    await this.reviewSeeder.run(this.dataSource);
-
-    logger.info('주문 및 리뷰 시딩이 완료되었습니다.');
-  }
+    await this.bookEditorRecommendedDomesticBooksSeeder.run(this.dataSource);
   
-  private async updateBookStock() {
     const result = await this.bookRepository
       .createQueryBuilder()
       .update(BooksEntity)
       .set({ stockQuantity: 10 })
       .where('stockQuantity < :stock', { stock: 10 })
       .execute();
-
+  
     if (result.affected && result.affected > 0) {
       logger.info('재고가 10개로 업데이트되었습니다.');
     } else {
       logger.info('업데이트할 재고가 없습니다.');
     }
+  
+    await this.elasticIndexModuleService.onModuleInit();
+    logger.info('모든 도서가 재인덱싱되었습니다.');
+  }
+  
+  @Cron('0 */6 * * *') // 매 6시간마다
+  public async seedOrdersAndReviews() {
+    await this.orderSeeder.run(this.dataSource);
+    await this.reviewSeeder.run(this.dataSource);
+
+    logger.info('주문 및 리뷰 시딩이 완료되었습니다.');
   }
 }

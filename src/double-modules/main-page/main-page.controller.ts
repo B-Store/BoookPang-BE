@@ -1,11 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { BookListService } from './book-list.service';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { MainPageService } from './main-page.service';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('도서 리스트')
-@Controller('book-list')
-export class BookListController {
-  constructor(private readonly bookListService: BookListService) {}
+@ApiTags('메인페이지')
+@Controller('main-page')
+export class MainPageController {
+  constructor(private readonly mainPageService: MainPageService) {}
 
   /**
    * 편집장 Pick
@@ -28,7 +28,7 @@ export class BookListController {
     @Query('limit') limit: number = 5,
     @Query('category') category: string = 'ItemEditorChoice',
   ) {
-    return this.bookListService.findRecommendedBooks(page, limit, category);
+    return this.mainPageService.findRecommendedBooks(page, limit, category);
   }
 
   /**
@@ -51,7 +51,7 @@ export class BookListController {
     @Query('limit') limit: number = 15,
     @Query('category') category: string = 'ItemNewAll',
   ) {
-    return this.bookListService.findNewBooks({ page, limit, category });
+    return this.mainPageService.findNewBooks({ page, limit, category });
   }
 
   /**
@@ -69,10 +69,12 @@ export class BookListController {
     description: '카테고리: 베스트셀러(Bestseller)',
     example: 'Bestseller',
   })
-  findBestsellers(@Query('page') page: number = 1, @Query('limit') limit: number = 24,
-  @Query('category') category: string = 'Bestseller',
-) {
-    return this.bookListService.findBestsellers({page, limit, category});
+  findBestsellers(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 24,
+    @Query('category') category: string = 'Bestseller',
+  ) {
+    return this.mainPageService.findBestsellers({ page, limit, category });
   }
 
   /**
@@ -88,36 +90,6 @@ export class BookListController {
     example: 3,
   })
   findItemNewSpecial(@Query('limit') limit: number = 3) {
-    return this.bookListService.findItemNewSpecial(limit);
-  }
-
-  // 추후에 수정
-  /**
-   *
-   * 책 카테고리 전체 리스트 (국내도서 등)
-   * @param category
-   * @returns
-   */
-  @Get('category-books-list')
-  @ApiQuery({ name: 'category', required: true, description: '카테고리', example: '국내도서' })
-  findBookDetail(@Query('category') category: string) {
-    return this.bookListService.findBookCategoryList(category);
-  }
-
-  /**
-   * 카테고리 ID에 따른 도서 리스트 조회
-   * @param categoryId
-   * @returns
-   */
-  @Get('category-books-list/:categoryId')
-  @ApiQuery({ name: 'page', required: true, description: '페이지 번호', example: 1 })
-  @ApiQuery({ name: 'limit', required: true, description: '페이지당 항목 수', example: 15 })
-  @ApiParam({ name: 'categoryId', required: true, description: '카테고리 고유키', example: 1 })
-  async findBooksByCategoryId(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 15,
-    @Param('categoryId') categoryId: number,
-  ) {
-    return this.bookListService.findBooksCategoryId({ categoryId, page, limit });
+    return this.mainPageService.findItemNewSpecial(limit);
   }
 }

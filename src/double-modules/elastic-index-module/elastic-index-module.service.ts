@@ -1,6 +1,9 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { BooksService } from '../../modules/books/books.service';
+import getLogger from '../../common/logger';
+
+const logger = getLogger('ElasticIndexModuleService');
 
 @Injectable()
 export class ElasticIndexModuleService implements OnModuleInit {
@@ -8,18 +11,6 @@ export class ElasticIndexModuleService implements OnModuleInit {
     private readonly elasticsearchService: ElasticsearchService,
     private readonly booksService: BooksService,
   ) {}
-
-  async getAllBooks() {
-    const result = await this.elasticsearchService.search({
-      index: 'books',
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-    return result.hits.hits.map((hit) => hit._source);
-  }
 
   public async onModuleInit() {
     await this.deleteAndCreateIndex('books');
@@ -29,7 +20,6 @@ export class ElasticIndexModuleService implements OnModuleInit {
   private async deleteAndCreateIndex(indexName: string) {
     if (await this.elasticsearchService.indices.exists({ index: indexName })) {
       await this.elasticsearchService.indices.delete({ index: indexName });
-      console.log(`Index deleted: ${indexName}`);
     }
 
     await this.elasticsearchService.indices.create({
@@ -66,22 +56,13 @@ export class ElasticIndexModuleService implements OnModuleInit {
         },
       },
     });
-    console.log(`Index created with edge_ngram: ${indexName}`);
   }
 
   private async indexAllBooks() {
     const books = await this.booksService.findAllBooks();
-    const processedBooks = books.map((book) => ({
-      id: book.id,
-      title: book.title,
-    }));
 
-    await this.indexBooks(processedBooks, 'books');
-  }
-
-  private async indexBooks(books: any[], indexName: string) {
     const bulkData = books.flatMap((book) => [
-      { index: { _index: indexName, _id: book.id.toString() } },
+      { index: { _index: 'books', _id: book.id.toString() } },
       { id: book.id, title: book.title, suggest: { input: [book.title], weight: 1 } },
     ]);
 
@@ -89,5 +70,7 @@ export class ElasticIndexModuleService implements OnModuleInit {
       body: bulkData,
       refresh: true,
     });
+
+    logger.info(`Elasticsearch 인덱스 생성 완료: ${books.length}`);
   }
 }
