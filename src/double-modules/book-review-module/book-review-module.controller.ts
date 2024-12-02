@@ -22,6 +22,7 @@ export class BookReviewModuleController {
     @RequestTokensByHttp() { user: { id: userId } }: { user: Pick<UsersEntity, 'id'> },
     @Body() reviewCreateDto: RevirewCreateDto,
   ) {
+    console.log(userId)
     return this.bookReviewModuleService.createReview(userId, reviewCreateDto);
   }
 }

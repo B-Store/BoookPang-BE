@@ -3,10 +3,6 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
-
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local';
-dotenv.config({ path: envFile });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

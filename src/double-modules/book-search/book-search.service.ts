@@ -5,12 +5,14 @@ import {
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { BooksService } from '../../modules/books/books.service';
+import { ReviewService } from '../../modules/review/review.service';
 
 @Injectable()
 export class BookSearchService {
   constructor(
     private elasticsearchService: ElasticsearchService,
-    private booksService: BooksService
+    private booksService: BooksService,
+    private reviewService: ReviewService,
   ) {}
 
   public async findBookSearch(
@@ -36,7 +38,16 @@ export class BookSearchService {
   
     const books = response.hits.hits.map((hit) => hit._source);
     const result = await this.booksService.findBooksIdSearch(books);
+    const topReview = await this.reviewService.findTopReviewWithCount(result[0].id);
+
+    const modifiedResult = result.map((book, index) => {
+      if (index === 0) {
+        return { ...book, topReview: topReview || null };
+      }
+      return book;
+    });
   
-    return page && limit ? { books: result, total, page, limit } : result;
+    console.log('modifiedResult', modifiedResult);
+    return page && limit ? { books: modifiedResult, total, page, limit } : modifiedResult;
   }
 }

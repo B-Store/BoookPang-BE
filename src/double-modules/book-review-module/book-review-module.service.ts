@@ -9,7 +9,7 @@ export class BookReviewModuleService {
     private readonly reviewService: ReviewService,
     private readonly booksService: BooksService,
   ) {}
-  
+
   async createReview(userId: number, reviewCreateDto: RevirewCreateDto) {
     const { title, bookId, comment, stars } = reviewCreateDto;
     if (!bookId || !title || !comment) {
@@ -35,7 +35,11 @@ export class BookReviewModuleService {
   private async updateBookAverageRating(bookId: number) {
     const reviews = await this.reviewService.findBookReview(bookId);
     const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
-    const averageRating = reviews.length > 0 ? totalStars / reviews.length : null;
+
+    const averageRatingRaw = reviews.length > 0 ? totalStars / reviews.length : null;
+
+    const averageRating =
+      averageRatingRaw !== null ? parseFloat((averageRatingRaw * 2).toFixed(1)) : null;
 
     return this.booksService.updateBooksReview(bookId, averageRating);
   }

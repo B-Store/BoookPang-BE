@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Auth } from '@vonage/auth';
 import { AuthController } from './auth.controller';
 import { UsersEntity } from './entities/users.entity';
+import { AccessTokenStrategy, RefreshTokenStrategy } from './providers/jwt-strategy';
 
 @Module({
   imports: [CacheModule.register(), TypeOrmModule.forFeature([UsersEntity])],
@@ -24,7 +25,8 @@ import { UsersEntity } from './entities/users.entity';
       },
       inject: [ConfigService],
     },
+    AccessTokenStrategy, RefreshTokenStrategy
   ],
-  exports: [AuthService, Vonage],
+  exports: [AuthService, Vonage, AccessTokenStrategy, RefreshTokenStrategy],
 })
 export class AuthModule {}
