@@ -3,9 +3,13 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { BookSearchService } from './book-search.service';
 import { BookSearchController } from './book-search.controller';
 import { ConfigService } from '@nestjs/config';
+import { BooksModule } from '../../modules/books/books.module';
+import { ReviewModule } from '../../modules/review/review.module';
 
 @Module({
   imports: [
+    ReviewModule,
+    BooksModule,
     ElasticsearchModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         node: configService.get<string>('ELASTICSEARCH_NODE'),

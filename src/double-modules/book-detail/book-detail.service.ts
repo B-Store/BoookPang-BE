@@ -9,26 +9,26 @@ const logger = getLogger('book-detail')
 
 @Injectable()
 export class BookDetailService {
-
   constructor(
     private bookService: BooksService,
     private categoryService: CategoryService,
     private bookCategoryService: BooksCategoryService,
     private reviewService: ReviewService
   ) {}
+
   public async findBookDetall(bookId: number) {
     if (!bookId) {
       throw new BadRequestException('bookId 값을 확인해 주세요.');
     }
 
-    const book = await this.bookService.findBook(bookId)
+    const book = await this.bookService.findOneBookId(bookId)
     logger.info('book data', book)
     if (!book) {
       throw new NotFoundException('book 관련 정보가 없습니다.');
     }
 
     const reviewCount = await this.reviewService.findReviewCount(book.id)
-    const reviewStars = await this.reviewService.findBooksreiew(book.id)
+    const reviewStars = await this.reviewService.findBookIdReiew(book.id)
 
     const totalStars = reviewStars.reduce((sum: number, review) => sum + review.stars, 0);
     const averageRating = totalStars / reviewStars.length;

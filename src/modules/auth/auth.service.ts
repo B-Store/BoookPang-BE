@@ -60,19 +60,14 @@ export class AuthService {
     await this.cacheManager.del(phoneNumber);
   }
 
-  public async checkExternalId(externalId: string) {
+  public async findExternalId(externalId: string) {
     if (!externalId) {
       throw new BadRequestException('externalId 값을 확인해 주세요.');
     }
 
-    const user = await this.userRepository.findOne({
+    return this.userRepository.findOne({
       where: { externalId, deletedAt: null },
     });
-    if (user) {
-      throw new BadRequestException('사용중인 아이디입니다.');
-    }
-
-    return null;
   }
 
   public async checkNickName(nickname: string) {
@@ -93,10 +88,6 @@ export class AuthService {
   public async userCreate({ externalId, nickname, password, phoneNumber }){
     return this.userRepository.save({externalId, nickname, password, phoneNumber})
   };
-
-  public async findOneUser(externalId: string){
-    return this.userRepository.findOne({where: {externalId: externalId, deletedAt: null}})
-  }
   
   public async checkUserForAuth({ id }) {
     return this.userRepository.findOne({ where: { id } });

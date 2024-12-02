@@ -9,8 +9,6 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:local": "NODE_ENV=local nest start --watch",
-    "start:production": "NODE_ENV=production nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -26,7 +24,7 @@
     "docker:restart": "docker build -t bookpang-backend . && docker stop BookPang-BE || true && docker rm BookPang-BE || true && docker run -d -p 9000:9000 --name BookPang-BE bookpang-backend"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.15.0",
+    "@elastic/elasticsearch": "^8.15.2",
     "@faker-js/faker": "^9.0.3",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.0",

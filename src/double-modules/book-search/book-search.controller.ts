@@ -36,7 +36,7 @@ export class BookSearchController {
       from,
       size: limit,
     };
-    return this.searchService.findBookSearchList(query, page, limit);
+    return this.searchService.findBookSearch(query, page, limit);
   }
 
   /**
@@ -45,6 +45,7 @@ export class BookSearchController {
    * @returns
    */
   @Get()
+  @ApiQuery({ name: 'title', required: true, description: '검색 내용', example: '책' })  
   async search(@Query('title') title: string) {
     const query = {
       query: {
@@ -56,6 +57,6 @@ export class BookSearchController {
         },
       },
     };
-    return this.searchService.findSearch(query);
+    return this.searchService.findBookSearch(query);
   }
 }

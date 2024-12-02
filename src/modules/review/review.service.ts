@@ -1,8 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewEntity } from './entities/reviews.entity';
 import { Repository } from 'typeorm';
-import { RevirewCreateDto } from './dto/create.review.dto';
 
 @Injectable()
 export class ReviewService {
@@ -11,7 +10,7 @@ export class ReviewService {
     private reviewRepository: Repository<ReviewEntity>,
   ) {}
 
-  async createReview({ userId, bookId, title, comment, stars }) {
+  public async createReview({ userId, bookId, title, comment, stars }) {
     const review = this.reviewRepository.create({
       userId,
       bookId,
@@ -22,7 +21,7 @@ export class ReviewService {
     return this.reviewRepository.save(review);
   }
 
-  async findBookReview(bookId: number) {
+  public async findBookReview(bookId: number) {
     return this.reviewRepository.find({ where: { bookId } });
   }
 
@@ -30,20 +29,37 @@ export class ReviewService {
     return this.reviewRepository.count({ where: { bookId } });
   }
 
-  public async getReviewsAndCount(bookId: number) {
-    const [reviews, reviewCount] = await Promise.all([
-      this.reviewRepository.find({
-        where: { bookId },
-        order: { createdAt: 'DESC', stars: 'DESC' },
-        take: 1,
-      }),
-      this.reviewRepository.count({ where: { bookId } }),
-    ]);
-
-    return { reviews, reviewCount };
-  }
-
-  public async findBooksreiew(bookId: number) {
+  public async findBookIdReiew(bookId: number) {
     return this.reviewRepository.find({ where: { bookId } });
   }
+
+  public async findTopReviewWithCount(bookId: number) {
+    const topReview = await this.reviewRepository.findOne({
+      where: { bookId },
+      order: { stars: 'DESC', createdAt: 'DESC' },
+    });
+
+    const totalReviews = await this.reviewRepository.count({
+      where: { bookId },
+    });
+  
+    return {
+      topReview,
+      totalReviews,
+    };
+  }
+  
+  // TODO 추후에 제거 예정
+  // public async getReviewsAndCount(bookId: number) {
+  //   const [reviews, reviewCount] = await Promise.all([
+  //     this.reviewRepository.find({
+  //       where: { bookId },
+  //       order: { createdAt: 'DESC', stars: 'DESC' },
+  //       take: 1,
+  //     }),
+  //     this.reviewRepository.count({ where: { bookId } }),
+  //   ]);
+
+  //   return { reviews, reviewCount };
+  // }
 }

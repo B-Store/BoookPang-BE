@@ -38,7 +38,7 @@ export class AuthController {
    */
   @Get('check-external-id/:externalId')
   async checkExternalId(@Param('externalId') externalId: string) {
-    await this.authService.checkExternalId(externalId);
+    await this.authService.findExternalId(externalId);
     return { message: '사용 가능한 아이디입니다.' };
   }
 

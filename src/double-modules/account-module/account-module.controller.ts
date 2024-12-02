@@ -4,7 +4,7 @@ import { AccountModuleService } from './account-module.service';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { CreateUserDto } from '../../modules/auth/dto/create-user.dto';
 import { LogInDto } from '../../modules/auth/dto/log-in.dto';
-import { JwtRefreshGuards } from '../../common/jwt-strategy';
+import { JwtRefreshGuards } from '../../modules/auth/providers/jwt-strategy';
 
 @ApiTags('인증')
 @Controller('account-module')

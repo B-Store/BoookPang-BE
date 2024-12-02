@@ -59,7 +59,7 @@ export class BooksEntity {
   cover: string;
 
   // 평가 및 검색
-  @Column({ name: 'average_rating', nullable: true })
+  @Column({ name: 'average_rating', type: 'float', nullable: true })
   averageRating: number;
 
   @Column({ name: 'source_type' })

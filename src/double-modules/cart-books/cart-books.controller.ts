@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CartBooksService } from './cart-books.service';
-import { JwtAccessGuards } from '../../common/jwt-strategy';
+import { JwtAccessGuards } from '../../modules/auth/providers/jwt-strategy';
 import { RequestTokensByHttp } from '../../decorator/jwt-http-request';
 import { ApiTags } from '@nestjs/swagger';
 

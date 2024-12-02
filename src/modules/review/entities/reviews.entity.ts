@@ -29,7 +29,7 @@ export class ReviewEntity {
   comment: string;
 
   @Column()
-  stars: number;
+  stars?: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
